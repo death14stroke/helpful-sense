@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="contact"
+            type="com.wafflecopter.multicontactpicker.ContactResult" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <com.github.pavlospt.roundedletterview.RoundedLetterView
+            android:id="@+id/roundLetterView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:firstLetter="@{contact.displayName}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/nameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{contact.displayName}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/roundLetterView"
+            android:padding="5dp" />
+        <TextView
+            android:id="@+id/phoneTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{contact.phoneNumbers.get(0).getNumber()}"
+            android:padding="5dp"
+            app:layout_constraintTop_toBottomOf="@id/nameTV"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/roundLetterView"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

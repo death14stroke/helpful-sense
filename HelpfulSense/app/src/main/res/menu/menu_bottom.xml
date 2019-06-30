@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_alert"
+        android:title="@string/alert"
+        android:icon="@drawable/ic_alert"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_message"
+        android:title="@string/message"
+        android:icon="@drawable/ic_message"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_contacts"
+        android:title="@string/contacts"
+        android:icon="@drawable/ic_contacts"
+        app:showAsAction="ifRoom" />
+</menu>

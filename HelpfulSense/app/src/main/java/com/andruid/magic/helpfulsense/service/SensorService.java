@@ -1,12 +1,13 @@
-package com.andruid.magic.helpfulsense;
+package com.andruid.magic.helpfulsense.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
+
+import timber.log.Timber;
 
 public class SensorService extends Service implements ShakeDetector.ShakeListener {
     private static final String TAG = "senselog";
@@ -42,6 +43,6 @@ public class SensorService extends Service implements ShakeDetector.ShakeListene
 
     @Override
     public void onShakeStopped() {
-        Log.d(TAG, "onShakeStopped: ");
+        Timber.tag(TAG).d("onShakeStopped: ");
     }
 }

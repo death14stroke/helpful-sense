@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Helpful Sense</string>
+    <string name="alert">Alert</string>
+    <string name="message">Message</string>
+    <string name="contacts">Contacts</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_contacts">Edit contacts</string>
+    <string name="send">Send</string>
+    <string name="enter_message">Enter message</string>
+    <string name="add_action">Add action</string>
 </resources>
