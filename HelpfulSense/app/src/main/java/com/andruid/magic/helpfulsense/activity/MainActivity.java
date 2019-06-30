@@ -2,6 +2,7 @@ package com.andruid.magic.helpfulsense.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -99,7 +100,11 @@ public class MainActivity extends AppCompatActivity {
     @NeedsPermission({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION})
     public void startSensorService() {
-        startService(new Intent(MainActivity.this, SensorService.class));
+        Intent intent = new Intent(MainActivity.this, SensorService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startForegroundService(intent);
+        else
+            startService(intent);
     }
 
     @OnShowRationale({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,

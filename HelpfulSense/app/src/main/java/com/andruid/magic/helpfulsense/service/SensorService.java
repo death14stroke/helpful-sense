@@ -13,7 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
+import com.andruid.magic.helpfulsense.util.NotificationUtil;
 import com.andruid.magic.helpfulsense.util.SmsUtil;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
@@ -24,10 +26,14 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Objects;
+
 import timber.log.Timber;
 
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
+import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
+import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
 
 public class SensorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener {
@@ -41,6 +47,9 @@ public class SensorService extends Service implements GoogleApiClient.Connection
     @Override
     public void onCreate() {
         super.onCreate();
+        NotificationCompat.Builder builder = NotificationUtil.buildNotification(getApplicationContext());
+        startForeground(NOTI_ID, Objects.requireNonNull(builder).build());
+        Timber.tag(TAG).d("start foreground done");
         Sensey.getInstance().init(getApplicationContext());
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(LocationServices.API)
@@ -59,6 +68,10 @@ public class SensorService extends Service implements GoogleApiClient.Connection
             if(extras != null)
                 message = extras.getString(KEY_MESSAGE);
             startLocationReq();
+        }
+        else if(intent != null && INTENT_SERVICE_STOP.equals(intent.getAction())) {
+            stopForeground(true);
+            stopSelf();
         }
         return START_STICKY;
     }
