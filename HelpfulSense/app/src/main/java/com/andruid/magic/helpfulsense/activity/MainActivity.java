@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -15,12 +17,6 @@ import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
 
@@ -28,22 +24,27 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 import timber.log.Timber;
 
 import static com.andruid.magic.helpfulsense.data.Constants.CONTACTS_PICKER_REQUEST;
 import static com.andruid.magic.helpfulsense.data.Constants.NO_OF_TABS;
 
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "contactslog";
     private ActivityMainBinding binding;
-    private ViewPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.senseBtn.setOnClickListener(v ->
-                startSensorService()
+                MainActivityPermissionsDispatcher.startSensorServiceWithPermissionCheck(this)
         );
         setBottomNav();
     }
@@ -59,10 +60,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 
     private void setBottomNav() {
         binding.viewPager.setOffscreenPageLimit(NO_OF_TABS);
-        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         binding.viewPager.setAdapter(pagerAdapter);
         binding.bottomNav.setActiveColor(R.color.colorPrimary)
                 .setInActiveColor("#FFFFFF")
@@ -90,25 +96,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startSensorService() {
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.SEND_SMS)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        startService(new Intent(MainActivity.this, SensorService.class));
-                    }
+    @NeedsPermission({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION})
+    public void startSensorService() {
+        startService(new Intent(MainActivity.this, SensorService.class));
+    }
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Toast.makeText(MainActivity.this, response.getPermissionName()+
-                                " denied", Toast.LENGTH_SHORT).show();
-                    }
+    @OnShowRationale({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION})
+    public void showRationale(PermissionRequest request){
+        new AlertDialog.Builder(this)
+                .setMessage("Send your location to your trusted contacts in case of emergency. " +
+                        "Grant SMS and location permissions for the same")
+                .setPositiveButton("Allow", (dialog, which) -> request.proceed())
+                .setNegativeButton("Deny", (dialog, which) -> request.cancel())
+                .show();
+    }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
+    @OnPermissionDenied({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION})
+    public void showDenied(){
+        Toast.makeText(this, "Denied", Toast.LENGTH_SHORT).show();
     }
 }

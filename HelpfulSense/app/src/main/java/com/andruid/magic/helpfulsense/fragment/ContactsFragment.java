@@ -1,7 +1,10 @@
 package com.andruid.magic.helpfulsense.fragment;
 
 import android.Manifest;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -22,12 +26,6 @@ import com.andruid.magic.helpfulsense.adapter.ContactAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentContactsBinding;
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
 import com.andruid.magic.helpfulsense.util.FileUtil;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
@@ -40,9 +38,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.andruid.magic.helpfulsense.data.Constants.CONTACTS_PICKER_REQUEST;
 
-public class ContactsFragment extends Fragment implements PermissionListener {
+@RuntimePermissions
+public class ContactsFragment extends Fragment {
     private FragmentContactsBinding binding;
 
     public static ContactsFragment newInstance() {
@@ -78,8 +84,14 @@ public class ContactsFragment extends Fragment implements PermissionListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_edit_contacts)
-            openContactsPicker();
+            ContactsFragmentPermissionsDispatcher.openContactsPickerWithPermissionCheck(this);
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ContactsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -94,11 +106,15 @@ public class ContactsFragment extends Fragment implements PermissionListener {
         EventBus.getDefault().unregister(this);
     }
 
-    private void openContactsPicker() {
-        Dexter.withActivity(getActivity())
-                .withPermission(Manifest.permission.READ_CONTACTS)
-                .withListener(this)
-                .check();
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    public void openContactsPicker() {
+        new MultiContactPicker.Builder(Objects.requireNonNull(getActivity()))
+                .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .limitToColumn(LimitColumn.PHONE)
+                .setSelectedContacts((ArrayList<ContactResult>) FileUtil.readContactsFromFile(
+                        Objects.requireNonNull(getContext())))
+                .showPickerForResult(CONTACTS_PICKER_REQUEST);
     }
 
     private void loadContacts(){
@@ -115,26 +131,32 @@ public class ContactsFragment extends Fragment implements PermissionListener {
         FileUtil.writeContactsToFile(Objects.requireNonNull(getContext()), results);
     }
 
-    @Override
-    public void onPermissionGranted(PermissionGrantedResponse response) {
-        if(response.getPermissionName().equals(Manifest.permission.READ_CONTACTS))
-            new MultiContactPicker.Builder(Objects.requireNonNull(getActivity()))
-                    .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                            android.R.anim.fade_in, android.R.anim.fade_out)
-                    .limitToColumn(LimitColumn.PHONE)
-                    .setSelectedContacts((ArrayList<ContactResult>) FileUtil.readContactsFromFile(
-                            Objects.requireNonNull(getContext())))
-                    .showPickerForResult(CONTACTS_PICKER_REQUEST);
-    }
-
-    @Override
-    public void onPermissionDenied(PermissionDeniedResponse response) {
-        Toast.makeText(getContext(), response.getPermissionName()+" denied", Toast.LENGTH_SHORT)
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    public void showRationale(PermissionRequest request){
+        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                .setMessage("Select your most trusted contacts who will receive your emergency texts. " +
+                        "Grant contacts permission for the same.")
+                .setPositiveButton("Allow", (dialog, which) -> request.proceed())
+                .setNegativeButton("Deny", (dialog, which) -> request.cancel())
                 .show();
     }
 
-    @Override
-    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-        token.continuePermissionRequest();
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    public void showSettingsDialog(){
+        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                .setMessage("Select your most trusted contacts who will receive your emergency texts")
+                .setPositiveButton("Settings", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Deny", null)
+                .show();
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    public void showDenied(){
+        Toast.makeText(getContext(), "Denied", Toast.LENGTH_SHORT).show();
     }
 }

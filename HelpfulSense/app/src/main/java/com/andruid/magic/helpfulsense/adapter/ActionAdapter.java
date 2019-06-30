@@ -13,6 +13,10 @@ import com.andruid.magic.helpfulsense.viewholder.ActionViewHolder;
 import java.util.List;
 
 public class ActionAdapter extends RecyclerView.Adapter<ActionViewHolder> {
+    public List<Action> getActions() {
+        return actions;
+    }
+
     private List<Action> actions;
 
     public ActionAdapter(List<Action> actions){
