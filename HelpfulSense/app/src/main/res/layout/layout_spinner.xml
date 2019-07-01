@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="category"
+            type="com.andruid.magic.helpfulsense.model.Category" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@{category.name}"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:drawableStart="@drawable/ic_contacts"
+            android:drawableTint="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimaryDark"
+            android:drawablePadding="10dp"
+            android:textSize="16sp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

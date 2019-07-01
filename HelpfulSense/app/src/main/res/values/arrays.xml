@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="tabColors">
-        <item>@color/colorPrimary</item>
-        <item>@color/colorPrimaryDark</item>
-        <item>@color/colorAccent</item>
+    <array name="category_names">
+        <item>@string/danger</item>
+        <item>@string/medical</item>
+        <item>@string/transport</item>
+    </array>
+    <array name="category_icons">
+        <item>@drawable/ic_contacts</item>
+        <item>@drawable/ic_message</item>
+        <item>@drawable/ic_alert</item>
     </array>
 </resources>

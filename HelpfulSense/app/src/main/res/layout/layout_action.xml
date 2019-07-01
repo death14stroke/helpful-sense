@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="8dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="7dp"
         android:foreground="?attr/selectableItemBackground"
         app:cardBackgroundColor="@android:color/holo_green_light">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,7 @@
                 android:text="@{action.message}"/>
             <ImageButton
                 android:id="@+id/sendBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:src="@android:drawable/ic_menu_send"
                 style="?borderlessButtonStyle"

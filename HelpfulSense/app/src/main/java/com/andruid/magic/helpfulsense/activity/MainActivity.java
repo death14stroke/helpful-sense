@@ -76,9 +76,12 @@ public class MainActivity extends AppCompatActivity {
                 .setBarBackgroundColor("#ECECEC")
                 .setMode(BottomNavigationBar.MODE_SHIFTING)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE)
-                .addItem(new BottomNavigationItem(R.drawable.ic_alert, getString(R.string.alert)))
-                .addItem(new BottomNavigationItem(R.drawable.ic_message, getString(R.string.message)))
-                .addItem(new BottomNavigationItem(R.drawable.ic_contacts, getString(R.string.contacts)))
+                .addItem(new BottomNavigationItem(R.drawable.ic_alert, getString(R.string.alert))
+                        .setActiveColorResource(R.color.colorTab1))
+                .addItem(new BottomNavigationItem(R.drawable.ic_message, getString(R.string.message))
+                        .setActiveColorResource(R.color.colorTab2))
+                .addItem(new BottomNavigationItem(R.drawable.ic_contacts, getString(R.string.contacts))
+                        .setActiveColorResource(R.color.colorTab3))
                 .setFirstSelectedPosition(0)
                 .initialise();
         binding.bottomNav.setAutoHideEnabled(true);

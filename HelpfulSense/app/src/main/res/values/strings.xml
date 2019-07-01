@@ -8,4 +8,7 @@
     <string name="send">Send</string>
     <string name="enter_message">Enter message</string>
     <string name="add_action">Add action</string>
+    <string name="danger">Danger</string>
+    <string name="medical">Medical</string>
+    <string name="transport">Transport</string>
 </resources>
