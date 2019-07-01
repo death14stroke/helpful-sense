@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="category_names">
+    <string-array name="category_names">
         <item>@string/danger</item>
         <item>@string/medical</item>
         <item>@string/transport</item>
-    </array>
+    </string-array>
     <array name="category_icons">
         <item>@drawable/ic_contacts</item>
         <item>@drawable/ic_message</item>
         <item>@drawable/ic_alert</item>
+    </array>
+    <array name="category_colors">
+        <item>@color/colorTab1</item>
+        <item>@color/colorTab2</item>
+        <item>@color/colorTab3</item>
     </array>
 </resources>

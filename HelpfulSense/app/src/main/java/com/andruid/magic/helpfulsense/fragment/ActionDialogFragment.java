@@ -1,6 +1,7 @@
 package com.andruid.magic.helpfulsense.fragment;
 
 import android.app.Dialog;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -37,10 +38,19 @@ public class ActionDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         String[] categoryNames = Objects.requireNonNull(getContext()).getResources()
                 .getStringArray(R.array.category_names);
-        int[] icons = getContext().getResources().getIntArray(R.array.category_icons);
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.category_icons);
+        int[] icons = new int[typedArray.length()];
+        for(int i=0; i<typedArray.length(); i++)
+            icons[i] = typedArray.getResourceId(i, -1);
+        typedArray.recycle();
+        typedArray = getResources().obtainTypedArray(R.array.category_colors);
+        int[] colors = new int[typedArray.length()];
+        for(int i=0; i<typedArray.length(); i++)
+            colors[i] = typedArray.getResourceId(i, -1);
+        typedArray.recycle();
         categories = new ArrayList<>();
         for(int i=0; i<icons.length; i++)
-            categories.add(new Category(categoryNames[i], icons[i]));
+            categories.add(new Category(categoryNames[i], icons[i], colors[i]));
         mySpinnerAdapter = new MySpinnerAdapter(categories);
     }
 
