@@ -1,7 +1,9 @@
 package com.andruid.magic.helpfulsense.service;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -47,7 +49,8 @@ public class SensorService extends Service implements GoogleApiClient.Connection
     @Override
     public void onCreate() {
         super.onCreate();
-        NotificationCompat.Builder builder = NotificationUtil.buildNotification(getApplicationContext());
+        NotificationCompat.Builder builder = NotificationUtil.buildProgressNotification(
+                getApplicationContext());
         startForeground(NOTI_ID, Objects.requireNonNull(builder).build());
         Timber.tag(TAG).d("start foreground done");
         Sensey.getInstance().init(getApplicationContext());
@@ -109,6 +112,10 @@ public class SensorService extends Service implements GoogleApiClient.Connection
                 .setInterval(1000)
                 .setFastestInterval(1000)
                 .setNumUpdates(1);
+        NotificationCompat.Builder builder = NotificationUtil.buildNotification(getApplicationContext());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTI_ID, Objects.requireNonNull(builder).build());
     }
 
     @Override

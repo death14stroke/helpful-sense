@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
@@ -28,6 +29,7 @@ import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.andruid.magic.helpfulsense.util.FileUtil;
+import com.andruid.magic.helpfulsense.util.SwipeCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,9 +71,11 @@ public class AlertFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_alert, container,
                 false);
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeCallback(getContext(), actionAdapter));
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        binding.swipeRefresh.setOnRefreshListener(this::loadActions);
         loadActions();
         return binding.getRoot();
     }
@@ -80,7 +84,6 @@ public class AlertFragment extends Fragment {
         actionAdapter = new ActionAdapter(FileUtil.readActionsFromFile(Objects.requireNonNull(
                 getContext())));
         binding.recyclerView.setAdapter(actionAdapter);
-        binding.swipeRefresh.setRefreshing(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
