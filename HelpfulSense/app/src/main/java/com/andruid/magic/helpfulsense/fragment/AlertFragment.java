@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
+import com.andruid.magic.helpfulsense.adapter.ActionAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding;
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
@@ -35,7 +36,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Objects;
 
-import eu.davidea.flexibleadapter.FlexibleAdapter;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -51,7 +51,7 @@ import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 @RuntimePermissions
 public class AlertFragment extends Fragment {
     private FragmentAlertBinding binding;
-    private FlexibleAdapter<Action> actionAdapter;
+    private ActionAdapter actionAdapter;
 
     public static AlertFragment newInstance() {
         return new AlertFragment();
@@ -78,7 +78,7 @@ public class AlertFragment extends Fragment {
     private void loadActions() {
         List<Action> actionList = FileUtil.readActionsFromFile(Objects.requireNonNull(
                 getContext()));
-        actionAdapter = new FlexibleAdapter<>(actionList);
+        actionAdapter = new ActionAdapter(getContext(), actionList);
         binding.recyclerView.setAdapter(actionAdapter);
         actionAdapter.setLongPressDragEnabled(true)
                 .setSwipeEnabled(true);

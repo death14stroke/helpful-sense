@@ -18,6 +18,8 @@ import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.model.Category;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.NiceSpinnerAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;

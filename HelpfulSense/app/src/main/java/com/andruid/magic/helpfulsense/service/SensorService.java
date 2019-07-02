@@ -21,6 +21,7 @@ import com.andruid.magic.helpfulsense.util.NotificationUtil;
 import com.andruid.magic.helpfulsense.util.SmsUtil;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
+import com.github.nisrulz.sensey.WristTwistDetector;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -36,9 +37,10 @@ import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
+import static com.andruid.magic.helpfulsense.data.Constants.SHAKE_THRESHOLD;
 
 public class SensorService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener {
+        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener, WristTwistDetector.WristTwistListener {
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private MyLocationCallback locationCallback;
@@ -65,7 +67,8 @@ public class SensorService extends Service implements GoogleApiClient.Connection
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Sensey.getInstance().startShakeDetection(this);
+        Sensey.getInstance().startShakeDetection(SHAKE_THRESHOLD ,0,
+                this);
         if(intent != null && INTENT_LOC_SMS.equals(intent.getAction())) {
             Bundle extras = intent.getExtras();
             if(extras != null)
@@ -135,6 +138,11 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         Timber.tag(TAG).d("onShakeStopped: ");
         message = "Shook phone. Sensing danger.";
         startLocationReq();
+    }
+
+    @Override
+    public void onWristTwist() {
+        Timber.tag(TAG).d("on wrist twist");
     }
 
     private class MyLocationCallback extends LocationCallback {

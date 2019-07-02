@@ -6,9 +6,9 @@
         <item>@string/transport</item>
     </string-array>
     <array name="category_icons">
-        <item>@drawable/ic_contacts</item>
-        <item>@drawable/ic_message</item>
-        <item>@drawable/ic_alert</item>
+        <item>@drawable/ic_danger</item>
+        <item>@drawable/ic_medical</item>
+        <item>@drawable/ic_transport</item>
     </array>
     <array name="category_colors">
         <item>@color/colorTab1</item>

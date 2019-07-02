@@ -7,4 +7,5 @@
     <color name="colorTab2">#5EB600</color>
     <color name="colorTab3">#2196F3</color>
     <color name="colorBg">#F9DEFF</color>
+    <color name="colorEdit">#FDD835</color>
 </resources>

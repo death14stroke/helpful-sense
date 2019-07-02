@@ -64,6 +64,7 @@ public class Action extends AbstractFlexibleItem<ActionViewHolder> {
         holder.actionTV.setText(message);
         holder.actionTV.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(
                 holder.itemView.getContext(), category.getIcon()), null, null, null);
+        holder.getFrontView().setBackgroundResource(category.getBgColor());
         holder.sendBtn.setOnClickListener(v ->
                 EventBus.getDefault().post(new ActionEvent(this, ACTION_SMS))
         );

@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
+            android:name=".service.AddressService"
+            android:exported="false"></service>
+        <service
             android:name=".service.SensorService"
             android:enabled="true"
             android:exported="true" />

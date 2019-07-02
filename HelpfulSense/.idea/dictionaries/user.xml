@@ -2,6 +2,7 @@
   <dictionary name="user">
     <words>
       <w>contactslog</w>
+      <w>swipeable</w>
     </words>
   </dictionary>
 </component>

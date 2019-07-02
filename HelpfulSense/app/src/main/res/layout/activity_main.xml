@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:background="@color/colorBg"
         android:fitsSystemWindows="true">
-        <androidx.viewpager.widget.ViewPager
+        <com.andruid.magic.helpfulsense.ui.NonSwipeableViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
