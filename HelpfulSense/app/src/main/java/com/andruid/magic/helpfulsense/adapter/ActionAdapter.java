@@ -28,13 +28,14 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionViewHolder> {
     public ActionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutActionBinding binding = LayoutActionBinding.inflate(LayoutInflater.from(
                 parent.getContext()), parent, false);
-        return new ActionViewHolder(binding);
+        //return new ActionViewHolder(binding);
+        return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ActionViewHolder holder, int position) {
         Action action = actions.get(position);
-        holder.bindAction(action);
+        //holder.bindAction(action);
     }
 
     @Override

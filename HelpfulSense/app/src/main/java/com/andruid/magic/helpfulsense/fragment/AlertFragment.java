@@ -19,17 +19,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
-import com.andruid.magic.helpfulsense.adapter.ActionAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding;
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.andruid.magic.helpfulsense.util.FileUtil;
-import com.andruid.magic.helpfulsense.util.SwipeCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,6 +35,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Objects;
 
+import eu.davidea.flexibleadapter.FlexibleAdapter;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -53,7 +51,7 @@ import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 @RuntimePermissions
 public class AlertFragment extends Fragment {
     private FragmentAlertBinding binding;
-    private ActionAdapter actionAdapter;
+    private FlexibleAdapter<Action> actionAdapter;
 
     public static AlertFragment newInstance() {
         return new AlertFragment();
@@ -71,9 +69,6 @@ public class AlertFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_alert, container,
                 false);
-        ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new SwipeCallback(getContext(), actionAdapter));
-        itemTouchHelper.attachToRecyclerView(binding.recyclerView);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         loadActions();
@@ -81,19 +76,20 @@ public class AlertFragment extends Fragment {
     }
 
     private void loadActions() {
-        actionAdapter = new ActionAdapter(FileUtil.readActionsFromFile(Objects.requireNonNull(
-                getContext())));
+        List<Action> actionList = FileUtil.readActionsFromFile(Objects.requireNonNull(
+                getContext()));
+        actionAdapter = new FlexibleAdapter<>(actionList);
         binding.recyclerView.setAdapter(actionAdapter);
+        actionAdapter.setLongPressDragEnabled(true)
+                .setSwipeEnabled(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onActionEvent(ActionEvent actionEvent){
         Action action = actionEvent.getAction();
         String command = actionEvent.getCommand();
-        if(ACTION_ADD.equals(command)) {
-            actionAdapter.getActions().add(action);
-            actionAdapter.notifyDataSetChanged();
-        }
+        if(ACTION_ADD.equals(command))
+            actionAdapter.addItem(action);
         else if(ACTION_SMS.equals(command)){
             AlertFragmentPermissionsDispatcher.sendSMSWithPermissionCheck(this, action);
         }
@@ -123,7 +119,7 @@ public class AlertFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        List<Action> actions = actionAdapter.getActions();
+        List<Action> actions = actionAdapter.getCurrentItems();
         if(!actions.isEmpty())
             FileUtil.writeActionsToFile(Objects.requireNonNull(getContext()), actions);
     }

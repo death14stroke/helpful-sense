@@ -12,17 +12,43 @@
         app:cardElevation="6dp"
         app:cardCornerRadius="7dp"
         android:layout_margin="10dp"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardBackgroundColor="@android:color/holo_green_light">
+        android:foreground="?attr/selectableItemBackground">
+        <RelativeLayout
+            android:id="@+id/rear_left_view"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@color/colorTab2"
+            android:visibility="gone">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?borderlessButtonStyle"
+                android:src="@android:drawable/ic_menu_edit"
+                android:contentDescription="@string/app_name" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rear_right_view"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="@color/colorAccent"
+            android:visibility="gone">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?borderlessButtonStyle"
+                android:src="@android:drawable/ic_menu_delete"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/app_name" />
+        </RelativeLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/frontView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_light">
             <TextView
                 android:id="@+id/actionTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_contacts"
                 android:drawablePadding="10dp"
                 android:layout_marginStart="7dp"
                 android:drawableTint="@color/colorPrimaryDark"

@@ -1,28 +1,40 @@
 package com.andruid.magic.helpfulsense.viewholder;
 
-import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-import com.andruid.magic.helpfulsense.databinding.LayoutActionBinding;
-import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
-import com.andruid.magic.helpfulsense.model.Action;
+import com.andruid.magic.helpfulsense.R;
 
-import org.greenrobot.eventbus.EventBus;
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.viewholders.FlexibleViewHolder;
 
-import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SMS;
+public class ActionViewHolder extends FlexibleViewHolder {
+    public TextView actionTV;
+    public ImageButton sendBtn;
+    private View frontView, rearLeftView, rearRightView;
 
-public class ActionViewHolder extends RecyclerView.ViewHolder {
-    private LayoutActionBinding binding;
-
-    public ActionViewHolder(LayoutActionBinding binding) {
-        super(binding.getRoot());
-        this.binding = binding;
+    public ActionViewHolder(View view, FlexibleAdapter adapter) {
+        super(view, adapter);
+        actionTV = view.findViewById(R.id.actionTV);
+        sendBtn = view.findViewById(R.id.sendBtn);
+        frontView = view.findViewById(R.id.frontView);
+        rearLeftView = view.findViewById(R.id.rear_left_view);
+        rearRightView = view.findViewById(R.id.rear_right_view);
     }
 
-    public void bindAction(Action action){
-        binding.sendBtn.setOnClickListener(v ->
-                EventBus.getDefault().post(new ActionEvent(action, ACTION_SMS))
-        );
-        binding.setAction(action);
-        binding.executePendingBindings();
+    @Override
+    public View getFrontView() {
+        return frontView;
+    }
+
+    @Override
+    public View getRearLeftView() {
+        return rearLeftView;
+    }
+
+    @Override
+    public View getRearRightView() {
+        return rearRightView;
     }
 }

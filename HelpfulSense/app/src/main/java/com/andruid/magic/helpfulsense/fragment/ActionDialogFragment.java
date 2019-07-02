@@ -67,7 +67,7 @@ public class ActionDialogFragment extends DialogFragment {
                     String message = binding.messageET.getText().toString().trim();
                     Category category = (Category) binding.spinner.getSelectedItem();
                     Timber.tag("spinnerlog").d("selected category %s", category.getName());
-                    Action action = new Action(message);
+                    Action action = new Action(message, category);
                     EventBus.getDefault().post(new ActionEvent(action, ACTION_ADD));
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, which) ->
