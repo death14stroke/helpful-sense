@@ -2,6 +2,7 @@ package com.andruid.magic.helpfulsense.fragment;
 
 import android.app.Dialog;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -18,22 +19,35 @@ import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.model.Category;
 
-import org.angmarch.views.NiceSpinner;
-import org.angmarch.views.NiceSpinnerAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import timber.log.Timber;
 
-import static com.andruid.magic.helpfulsense.data.Constants.ACTION_ADD;
+import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
+import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SWIPE;
+import static com.andruid.magic.helpfulsense.data.Constants.KEY_ACTION;
+import static com.andruid.magic.helpfulsense.data.Constants.KEY_COMMAND;
 
 public class ActionDialogFragment extends DialogFragment {
     private DialogActionBinding binding;
     private List<Category> categories;
     private MySpinnerAdapter mySpinnerAdapter;
+    private String command;
+
+    public static ActionDialogFragment newInstance(String command, Action action){
+        Bundle args = new Bundle();
+        args.putString(KEY_COMMAND, command);
+        args.putParcelable(KEY_ACTION, action);
+        ActionDialogFragment dialogFragment = new ActionDialogFragment();
+        dialogFragment.setArguments(args);
+        return dialogFragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +76,21 @@ public class ActionDialogFragment extends DialogFragment {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_action,
                 null, false);
         binding.spinner.setAdapter(mySpinnerAdapter);
+        Bundle args = getArguments();
+        if(args != null){
+            Action action = args.getParcelable(KEY_ACTION);
+            command = args.getString(KEY_COMMAND);
+            if(action != null) {
+                binding.messageET.setText(action.getMessage());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    OptionalInt pos = IntStream.range(0, categories.size())
+                            .filter(i -> action.getCategory().getName().equals(categories.get(i).getName()))
+                            .findFirst();
+                    if(pos.isPresent())
+                        binding.spinner.setSelection(pos.getAsInt());
+                }
+            }
+        }
         return new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(R.string.add_action)
                 .setView(binding.getRoot())
@@ -70,7 +99,9 @@ public class ActionDialogFragment extends DialogFragment {
                     Category category = (Category) binding.spinner.getSelectedItem();
                     Timber.tag("spinnerlog").d("selected category %s", category.getName());
                     Action action = new Action(message, category);
-                    EventBus.getDefault().post(new ActionEvent(action, ACTION_ADD));
+                    if(ACTION_SWIPE.equals(command))
+                        command = ACTION_EDIT;
+                    EventBus.getDefault().post(new ActionEvent(action, command));
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, which) ->
                         dialog.dismiss()

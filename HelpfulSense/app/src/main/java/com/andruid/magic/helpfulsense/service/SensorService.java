@@ -35,6 +35,7 @@ import timber.log.Timber;
 
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
+import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SMS_SENT;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
 import static com.andruid.magic.helpfulsense.data.Constants.SHAKE_THRESHOLD;
@@ -63,21 +64,26 @@ public class SensorService extends Service implements GoogleApiClient.Connection
                 .build();
         googleApiClient.connect();
         locationCallback = new MyLocationCallback();
+        Sensey.getInstance().startShakeDetection(SHAKE_THRESHOLD ,0,
+                this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Sensey.getInstance().startShakeDetection(SHAKE_THRESHOLD ,0,
-                this);
-        if(intent != null && INTENT_LOC_SMS.equals(intent.getAction())) {
+        if(intent == null)
+            return START_STICKY;
+        if(INTENT_LOC_SMS.equals(intent.getAction())) {
             Bundle extras = intent.getExtras();
             if(extras != null)
                 message = extras.getString(KEY_MESSAGE);
             startLocationReq();
         }
-        else if(intent != null && INTENT_SERVICE_STOP.equals(intent.getAction())) {
+        else if(INTENT_SERVICE_STOP.equals(intent.getAction())) {
             stopForeground(true);
             stopSelf();
+        }
+        else if(INTENT_SMS_SENT.equals(intent.getAction())){
+            Toast.makeText(getApplicationContext(), "sms sent", Toast.LENGTH_SHORT).show();
         }
         return START_STICKY;
     }
