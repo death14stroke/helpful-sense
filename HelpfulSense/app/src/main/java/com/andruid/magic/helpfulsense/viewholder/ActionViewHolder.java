@@ -27,7 +27,7 @@ public class ActionViewHolder extends FlexibleViewHolder {
         binding.setAction(action);
         binding.actionTV.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(
                 binding.frontView.getContext(), action.getCategory().getIcon()), null, null, null);
-        binding.frontView.setBackgroundResource(action.getCategory().getBgColor());
+        binding.frontView.setBackgroundResource(action.getCategory().getIconColor());
         binding.sendBtn.setOnClickListener(v ->
                 EventBus.getDefault().post(new ActionEvent(action, ACTION_SMS))
         );

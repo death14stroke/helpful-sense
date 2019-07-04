@@ -51,7 +51,6 @@ import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SWIPE;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
-import static com.andruid.magic.helpfulsense.data.Constants.KEY_COMMAND;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 
 @RuntimePermissions
@@ -132,11 +131,8 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     }
 
     private void openAddActionDialog() {
-        DialogFragment dialogFragment = new ActionDialogFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_COMMAND, ACTION_ADD);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getChildFragmentManager(), ACTION_ADD);
+        DialogFragment dialogFragment = ActionDialogFragment.newInstance(ACTION_ADD, null);
+        dialogFragment.show(getChildFragmentManager(), getString(R.string.add_action));
     }
 
     @Override

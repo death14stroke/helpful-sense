@@ -48,11 +48,11 @@ public class IntroActivity extends AppIntro {
     }
 
     private void goToMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
         PreferenceManager.getDefaultSharedPreferences(this)
                 .edit()
-                .putBoolean(getString(R.string.pref_first), true)
+                .putBoolean(getString(R.string.pref_first), false)
                 .apply();
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 

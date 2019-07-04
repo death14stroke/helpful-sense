@@ -5,18 +5,18 @@ import android.os.Parcelable;
 
 public class Category implements Parcelable {
     private final String name;
-    private final int icon, bgColor;
+    private final int icon, iconColor;
 
-    public Category(String name, int icon, int bgColor) {
+    public Category(String name, int icon, int iconColor) {
         this.name = name;
         this.icon = icon;
-        this.bgColor = bgColor;
+        this.iconColor = iconColor;
     }
 
     private Category(Parcel in) {
         name = in.readString();
         icon = in.readInt();
-        bgColor = in.readInt();
+        iconColor = in.readInt();
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -39,8 +39,8 @@ public class Category implements Parcelable {
         return icon;
     }
 
-    public int getBgColor() {
-        return bgColor;
+    public int getIconColor() {
+        return iconColor;
     }
 
     @Override
@@ -52,6 +52,6 @@ public class Category implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeInt(icon);
-        dest.writeInt(bgColor);
+        dest.writeInt(iconColor);
     }
 }

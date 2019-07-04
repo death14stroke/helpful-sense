@@ -13,7 +13,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean first = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_first), false);
+                .getBoolean(getString(R.string.pref_first), true);
         if(first)
             startActivity(new Intent(this, IntroActivity.class));
         else
