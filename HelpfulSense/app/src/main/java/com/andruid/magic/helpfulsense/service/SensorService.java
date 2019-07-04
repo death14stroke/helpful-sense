@@ -63,7 +63,7 @@ public class SensorService extends Service implements GoogleApiClient.Connection
                 .build();
         googleApiClient.connect();
         locationCallback = new MyLocationCallback();
-        Sensey.getInstance().startShakeDetection(SHAKE_THRESHOLD ,0,
+        Sensey.getInstance().startShakeDetection(5 ,0,
                 this);
     }
 
@@ -122,7 +122,8 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         NotificationCompat.Builder builder = NotificationUtil.buildNotification(getApplicationContext());
         NotificationManager notificationManager = (NotificationManager) getSystemService(
                 Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTI_ID, Objects.requireNonNull(builder).build());
+        Objects.requireNonNull(notificationManager).notify(NOTI_ID, Objects.requireNonNull(builder)
+                .build());
     }
 
     @Override

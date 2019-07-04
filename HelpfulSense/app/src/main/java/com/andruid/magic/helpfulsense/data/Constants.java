@@ -11,5 +11,6 @@ public class Constants {
     public static final String CHANNEL_ID = "channel_sensor", CHANNEL_NAME = "Sensor Service";
     public static final String KEY_MESSAGE = "key_message", KEY_ACTION = "key_action",
             KEY_COMMAND = "key_command";
-    public static final int CONTACTS_PICKER_REQUEST = 0, NOTI_ID = 1, SHAKE_THRESHOLD = 15;
+    public static final int CONTACTS_PICKER_REQUEST = 0, MAX_CONTACTS = 5, NOTI_ID = 1,
+            SHAKE_THRESHOLD = 15;
 }
