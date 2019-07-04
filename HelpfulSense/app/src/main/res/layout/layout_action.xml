@@ -51,15 +51,15 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="10dp"
                 android:layout_marginStart="7dp"
-                android:drawableTint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorPrimary"
+                android:drawableTint="@color/colorPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:text="@{action.message}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sendBtn"
-                android:text="@{action.message}"/>
+                app:layout_constraintEnd_toStartOf="@id/sendBtn" />
             <ImageButton
                 android:id="@+id/sendBtn"
                 android:layout_width="wrap_content"

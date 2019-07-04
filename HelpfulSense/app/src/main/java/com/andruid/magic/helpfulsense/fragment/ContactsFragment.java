@@ -135,6 +135,7 @@ public class ContactsFragment extends Fragment {
                 .limitToColumn(LimitColumn.PHONE)
                 .setSelectedContacts((ArrayList<ContactResult>) FileUtil.readContactsFromFile(
                         Objects.requireNonNull(getContext())))
+                .setSelectionLimit(5)
                 .showPickerForResult(CONTACTS_PICKER_REQUEST);
     }
 
