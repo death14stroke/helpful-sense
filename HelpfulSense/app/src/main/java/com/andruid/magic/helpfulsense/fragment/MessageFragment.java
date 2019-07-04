@@ -3,6 +3,9 @@ package com.andruid.magic.helpfulsense.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.andruid.magic.helpfulsense.R;
+import com.andruid.magic.helpfulsense.activity.IntroActivity;
 import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding;
 import com.andruid.magic.helpfulsense.service.SensorService;
 
@@ -29,6 +33,7 @@ public class MessageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -38,6 +43,18 @@ public class MessageFragment extends Fragment {
                 false);
         binding.sendBtn.setOnClickListener(v -> sendSMS());
         return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_help, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.menu_help)
+            startActivity(new Intent(getContext(), IntroActivity.class));
+        return true;
     }
 
     private void sendSMS() {

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
+import com.andruid.magic.helpfulsense.activity.IntroActivity;
 import com.andruid.magic.helpfulsense.adapter.ActionAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding;
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
@@ -37,6 +38,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Objects;
 
+import eu.davidea.flexibleadapter.helpers.EmptyViewHelper;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -74,6 +76,9 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_alert, container,
                 false);
+        binding.emptyLayout.emptyView.setOnClickListener(v ->
+                openAddActionDialog()
+        );
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         loadActions();
@@ -87,6 +92,7 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         binding.recyclerView.setAdapter(actionAdapter);
         actionAdapter.setLongPressDragEnabled(true)
                 .setSwipeEnabled(true);
+        EmptyViewHelper.create(actionAdapter, binding.emptyLayout.emptyView);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -108,20 +114,29 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_action, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_add_action){
-            DialogFragment dialogFragment = new ActionDialogFragment();
-            Bundle args = new Bundle();
-            args.putString(KEY_COMMAND, ACTION_ADD);
-            dialogFragment.setArguments(args);
-            dialogFragment.show(getChildFragmentManager(), ACTION_ADD);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_add_action:
+                openAddActionDialog();
+                break;
+            case R.id.menu_help:
+                startActivity(new Intent(getContext(), IntroActivity.class));
+                break;
         }
         return true;
+    }
+
+    private void openAddActionDialog() {
+        DialogFragment dialogFragment = new ActionDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_COMMAND, ACTION_ADD);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getChildFragmentManager(), ACTION_ADD);
     }
 
     @Override

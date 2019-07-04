@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
+import com.andruid.magic.helpfulsense.activity.IntroActivity;
 import com.andruid.magic.helpfulsense.adapter.ContactAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentContactsBinding;
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
@@ -77,14 +78,20 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_contacts, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_edit_contacts)
-            ContactsFragmentPermissionsDispatcher.openContactsPickerWithPermissionCheck(this);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_edit_contacts:
+                ContactsFragmentPermissionsDispatcher.openContactsPickerWithPermissionCheck(this);
+                break;
+            case R.id.menu_help:
+                startActivity(new Intent(getContext(), IntroActivity.class));
+                break;
+        }
         return true;
     }
 

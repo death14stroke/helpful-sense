@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.preference.PreferenceManager;
+
+import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.andruid.magic.helpfulsense.util.SmsUtil;
 
@@ -32,6 +35,10 @@ public class SystemReceiver extends BroadcastReceiver {
         }
         else if(Intent.ACTION_BATTERY_LOW.equals(action)) {
             Timber.d("battery low receiver");
+            boolean send = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean(context.getString(R.string.pref_low_battery), false);
+            if(!send)
+                return;
             Intent i = new Intent(context, SensorService.class);
             i.setAction(INTENT_LOC_SMS);
             i.putExtra(KEY_MESSAGE, "Battery low. ");
