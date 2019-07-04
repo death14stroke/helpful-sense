@@ -24,7 +24,8 @@ import com.wafflecopter.multicontactpicker.Views.RoundLetterView;
 import java.util.ArrayList;
 import java.util.List;
 
-class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements FastScroller.SectionIndexer, Filterable {
+class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
+        FastScroller.SectionIndexer, Filterable {
 
     private List<Contact> contactItemList;
     private List<Contact> contactItemListOriginal;
@@ -210,10 +211,10 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ContactViewHolder(View view) {
             super(view);
             this.mView = view;
-            this.vRoundLetterView = (RoundLetterView) view.findViewById(R.id.vRoundLetterView);
-            this.tvContactName = (TextView) view.findViewById(R.id.tvContactName);
-            this.tvNumber = (TextView) view.findViewById(R.id.tvNumber);
-            this.ivSelectedState = (ImageView) view.findViewById(R.id.ivSelectedState);
+            this.vRoundLetterView = view.findViewById(R.id.vRoundLetterView);
+            this.tvContactName = view.findViewById(R.id.tvContactName);
+            this.tvNumber = view.findViewById(R.id.tvNumber);
+            this.ivSelectedState = view.findViewById(R.id.ivSelectedState);
         }
     }
 
@@ -257,5 +258,4 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         return results;
     }
-
 }

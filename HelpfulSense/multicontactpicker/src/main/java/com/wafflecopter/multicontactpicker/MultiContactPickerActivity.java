@@ -23,15 +23,12 @@ import com.wafflecopter.multicontactpicker.RxContacts.RxContacts;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class MultiContactPickerActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener {
@@ -69,14 +66,14 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
         setContentView(R.layout.activity_multi_contact_picker);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        controlPanel = (LinearLayout) findViewById(R.id.controlPanel);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        tvSelectAll = (TextView) findViewById(R.id.tvSelectAll);
-        tvSelectBtn = (TextView) findViewById(R.id.tvSelect);
-        tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
-        recyclerView = (FastScrollRecyclerView) findViewById(R.id.recyclerView);
+        toolbar = findViewById(R.id.toolbar);
+        searchView = findViewById(R.id.search_view);
+        controlPanel = findViewById(R.id.controlPanel);
+        progressBar = findViewById(R.id.progressBar);
+        tvSelectAll = findViewById(R.id.tvSelectAll);
+        tvSelectBtn = findViewById(R.id.tvSelect);
+        tvNoContacts = findViewById(R.id.tvNoContacts);
+        recyclerView = findViewById(R.id.recyclerView);
 
         initialiseUI(builder);
 
@@ -87,13 +84,10 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        adapter = new MultiContactPickerAdapter(builder.selectionLimit, contactList, new MultiContactPickerAdapter.ContactSelectListener() {
-            @Override
-            public void onContactSelected(Contact contact, int totalSelectedContacts) {
-                updateSelectBarContents(totalSelectedContacts);
-                if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE){
-                    finishPicking();
-                }
+        adapter = new MultiContactPickerAdapter(builder.selectionLimit, contactList, (contact, totalSelectedContacts) -> {
+            updateSelectBarContents(totalSelectedContacts);
+            if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE){
+                finishPicking();
             }
         });
 
@@ -101,30 +95,22 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
         recyclerView.setAdapter(adapter);
 
-        tvSelectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finishPicking();
+        tvSelectBtn.setOnClickListener(view -> finishPicking());
+
+        tvSelectAll.setOnClickListener(view -> {
+
+            if (isSelectAllEnabled) {
+                allSelected = !allSelected;
+                if (adapter != null)
+                    adapter.setAllSelected(allSelected);
+                if (allSelected)
+                    tvSelectAll.setText(getString(R.string.tv_unselect_all_btn_text));
+                else
+                    tvSelectAll.setText(getString(R.string.tv_select_all_btn_text));
+            } else {
+                Toast.makeText(MultiContactPickerActivity.this, "Feature is disabled as selection limit is " + builder.selectionLimit + " contacts", Toast.LENGTH_SHORT).show();
             }
-        });
 
-        tvSelectAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (isSelectAllEnabled) {
-                    allSelected = !allSelected;
-                    if (adapter != null)
-                        adapter.setAllSelected(allSelected);
-                    if (allSelected)
-                        tvSelectAll.setText(getString(R.string.tv_unselect_all_btn_text));
-                    else
-                        tvSelectAll.setText(getString(R.string.tv_select_all_btn_text));
-                } else {
-                    Toast.makeText(MultiContactPickerActivity.this, "Feature is disabled as selection limit is " + builder.selectionLimit + " contacts", Toast.LENGTH_SHORT).show();
-                }
-
-            }
         });
 
     }
@@ -211,18 +197,8 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         RxContacts.fetch(builder.columnLimit, this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        disposables.add(disposable);
-                    }
-                })
-                .filter(new Predicate<Contact>() {
-                    @Override
-                    public boolean test(Contact contact) throws Exception {
-                        return contact.getDisplayName() != null;
-                    }
-                })
+                .doOnSubscribe(disposable -> disposables.add(disposable))
+                .filter(contact -> contact.getDisplayName() != null)
                 .subscribe(new Observer<Contact>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -234,12 +210,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
                         if(builder.selectedItems.contains(value.getId())){
                             adapter.setContactSelected(value.getId());
                         }
-                        Collections.sort(contactList, new Comparator<Contact>() {
-                            @Override
-                            public int compare(Contact contact, Contact t1) {
-                                return contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName());
-                            }
-                        });
+                        Collections.sort(contactList, (contact, t1) -> contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName()));
                         if(builder.loadingMode == MultiContactPicker.LOAD_ASYNC) {
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();

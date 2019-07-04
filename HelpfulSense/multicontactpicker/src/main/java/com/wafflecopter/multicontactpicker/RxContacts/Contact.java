@@ -18,7 +18,7 @@ public class Contact implements Comparable<Contact> {
     private List<String> mEmails = new ArrayList<>();
     private List<PhoneNumber> mPhoneNumbers = new ArrayList<>();
     private boolean isSelected;
-    private int backgroundColor = Color.BLUE;
+    private int backgroundColor;
 
     Contact(long id) {
         this.mId = id;
