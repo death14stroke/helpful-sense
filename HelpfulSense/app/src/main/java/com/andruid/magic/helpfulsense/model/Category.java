@@ -13,7 +13,7 @@ public class Category implements Parcelable {
         this.bgColor = bgColor;
     }
 
-    protected Category(Parcel in) {
+    private Category(Parcel in) {
         name = in.readString();
         icon = in.readInt();
         bgColor = in.readInt();

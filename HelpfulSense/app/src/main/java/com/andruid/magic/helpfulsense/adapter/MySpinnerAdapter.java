@@ -20,6 +20,10 @@ public class MySpinnerAdapter extends BaseAdapter {
         this.categories = categories;
     }
 
+    public List<Category> getCategories() {
+        return categories;
+    }
+
     @Override
     public int getCount() {
         return categories.size();

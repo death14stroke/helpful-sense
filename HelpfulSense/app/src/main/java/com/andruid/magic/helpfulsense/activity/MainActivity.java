@@ -124,6 +124,6 @@ public class MainActivity extends AppCompatActivity {
     @OnPermissionDenied({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION})
     public void showDenied(){
-        Toast.makeText(this, "Denied", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Permissions denied", Toast.LENGTH_SHORT).show();
     }
 }

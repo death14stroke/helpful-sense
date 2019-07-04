@@ -22,10 +22,7 @@ import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SMS_SENT;
 public class SmsUtil {
 
     private static String getMapsUrl(Location loc){
-        return " http://maps.google.com/?q=" +
-                loc.getLatitude() +
-                "," +
-                loc.getLongitude();
+        return " http://maps.google.com/?q=" + loc.getLatitude() + "," + loc.getLongitude();
     }
 
     public static void sendSMS(Context context, Location location, String message){
@@ -34,7 +31,6 @@ public class SmsUtil {
         SmsManager smsManager = SmsManager.getDefault();
         ArrayList<String> parts = smsManager.divideMessage(message);
         List<ContactResult> contacts = FileUtil.readContactsFromFile(context);
-
         Intent intent = new Intent(context, SensorService.class);
         intent.setAction(INTENT_SMS_SENT);
         PendingIntent sentIntent;
@@ -46,7 +42,7 @@ public class SmsUtil {
                     PendingIntent.FLAG_UPDATE_CURRENT);
         ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
         pendingIntents.add(sentIntent);
-        Timber.tag("smslog").d("before sending sms");
+        Timber.d("before sending sms");
         for(ContactResult contact : contacts){
             List<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
             for(PhoneNumber phone : phoneNumbers){

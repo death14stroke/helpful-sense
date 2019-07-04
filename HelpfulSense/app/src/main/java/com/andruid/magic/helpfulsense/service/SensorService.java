@@ -17,11 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.util.NotificationUtil;
 import com.andruid.magic.helpfulsense.util.SmsUtil;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
-import com.github.nisrulz.sensey.WristTwistDetector;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -41,13 +41,12 @@ import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
 import static com.andruid.magic.helpfulsense.data.Constants.SHAKE_THRESHOLD;
 
 public class SensorService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener, WristTwistDetector.WristTwistListener {
+        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private MyLocationCallback locationCallback;
     private boolean apiConnected = false;
     private String message = "";
-    private static final String TAG = "servicelog";
 
     @Override
     public void onCreate() {
@@ -55,7 +54,7 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         NotificationCompat.Builder builder = NotificationUtil.buildProgressNotification(
                 getApplicationContext());
         startForeground(NOTI_ID, Objects.requireNonNull(builder).build());
-        Timber.tag(TAG).d("start foreground done");
+        Timber.d("start foreground done");
         Sensey.getInstance().init(getApplicationContext());
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(LocationServices.API)
@@ -70,20 +69,19 @@ public class SensorService extends Service implements GoogleApiClient.Connection
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent == null)
-            return START_STICKY;
-        if(INTENT_LOC_SMS.equals(intent.getAction())) {
-            Bundle extras = intent.getExtras();
-            if(extras != null)
-                message = extras.getString(KEY_MESSAGE);
-            startLocationReq();
-        }
-        else if(INTENT_SERVICE_STOP.equals(intent.getAction())) {
-            stopForeground(true);
-            stopSelf();
-        }
-        else if(INTENT_SMS_SENT.equals(intent.getAction())){
-            Toast.makeText(getApplicationContext(), "sms sent", Toast.LENGTH_SHORT).show();
+        if(intent != null) {
+            if (INTENT_LOC_SMS.equals(intent.getAction())) {
+                Bundle extras = intent.getExtras();
+                if (extras != null)
+                    message = extras.getString(KEY_MESSAGE);
+                startLocationReq();
+            }
+            else if (INTENT_SERVICE_STOP.equals(intent.getAction())) {
+                stopForeground(true);
+                stopSelf();
+            }
+            else if (INTENT_SMS_SENT.equals(intent.getAction()))
+                Toast.makeText(getApplicationContext(), "sms sent", Toast.LENGTH_SHORT).show();
         }
         return START_STICKY;
     }
@@ -100,8 +98,8 @@ public class SensorService extends Service implements GoogleApiClient.Connection
 
     @Override
     public void onDestroy() {
-        Sensey.getInstance().stopShakeDetection(this);
         super.onDestroy();
+        Sensey.getInstance().stopShakeDetection(this);
         Sensey.getInstance().stop();
         googleApiClient.disconnect();
         LocationServices.getFusedLocationProviderClient(getApplicationContext())
@@ -141,14 +139,9 @@ public class SensorService extends Service implements GoogleApiClient.Connection
 
     @Override
     public void onShakeStopped() {
-        Timber.tag(TAG).d("onShakeStopped: ");
-        message = "Shook phone. Sensing danger.";
+        Timber.d("onShakeStopped: ");
+        message = getString(R.string.shake_msg);
         startLocationReq();
-    }
-
-    @Override
-    public void onWristTwist() {
-        Timber.tag(TAG).d("on wrist twist");
     }
 
     private class MyLocationCallback extends LocationCallback {

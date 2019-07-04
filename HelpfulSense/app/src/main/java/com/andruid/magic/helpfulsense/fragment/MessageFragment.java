@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -46,6 +45,5 @@ public class MessageFragment extends Fragment {
         Intent intent = new Intent(getContext(), SensorService.class);
         intent.setAction(INTENT_LOC_SMS);
         intent.putExtra(KEY_MESSAGE, message);
-        Toast.makeText(getContext(), "Message sent", Toast.LENGTH_SHORT).show();
     }
 }

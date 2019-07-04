@@ -19,6 +19,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".service.SensorService"
             android:enabled="true"
@@ -35,13 +44,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.IntroActivity"
+        <activity
+            android:name=".activity.IntroActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:launchMode="singleTop" />
     </application>
+
 </manifest>

@@ -106,17 +106,6 @@ public class ContactsFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @NeedsPermission(Manifest.permission.READ_CONTACTS)
-    public void openContactsPicker() {
-        new MultiContactPicker.Builder(Objects.requireNonNull(getActivity()))
-                .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                        android.R.anim.fade_in, android.R.anim.fade_out)
-                .limitToColumn(LimitColumn.PHONE)
-                .setSelectedContacts((ArrayList<ContactResult>) FileUtil.readContactsFromFile(
-                        Objects.requireNonNull(getContext())))
-                .showPickerForResult(CONTACTS_PICKER_REQUEST);
-    }
-
     private void loadContacts(){
         List<ContactResult> contacts = FileUtil.readContactsFromFile(Objects.requireNonNull(
                 getContext()));
@@ -131,8 +120,19 @@ public class ContactsFragment extends Fragment {
         FileUtil.writeContactsToFile(Objects.requireNonNull(getContext()), results);
     }
 
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    void openContactsPicker() {
+        new MultiContactPicker.Builder(Objects.requireNonNull(getActivity()))
+                .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .limitToColumn(LimitColumn.PHONE)
+                .setSelectedContacts((ArrayList<ContactResult>) FileUtil.readContactsFromFile(
+                        Objects.requireNonNull(getContext())))
+                .showPickerForResult(CONTACTS_PICKER_REQUEST);
+    }
+
     @OnShowRationale(Manifest.permission.READ_CONTACTS)
-    public void showRationale(PermissionRequest request){
+    void showRationale(PermissionRequest request){
         new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                 .setMessage("Select your most trusted contacts who will receive your emergency texts. " +
                         "Grant contacts permission for the same.")
@@ -142,7 +142,7 @@ public class ContactsFragment extends Fragment {
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
-    public void showSettingsDialog(){
+    void showSettingsDialog(){
         new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                 .setMessage("Select your most trusted contacts who will receive your emergency texts")
                 .setPositiveButton("Settings", (dialog, which) -> {
@@ -151,12 +151,12 @@ public class ContactsFragment extends Fragment {
                     intent.setData(uri);
                     startActivity(intent);
                 })
-                .setNegativeButton("Deny", null)
+                .setNegativeButton("Deny", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
-    public void showDenied(){
-        Toast.makeText(getContext(), "Denied", Toast.LENGTH_SHORT).show();
+    void showDenied(){
+        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,13 +6,10 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 
-import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.model.Category;
 import com.github.pavlospt.roundedletterview.RoundedLetterView;
 
 import java.util.Random;
-
-import timber.log.Timber;
 
 public class DataBindingAdapter {
     @BindingAdapter("firstLetter")
@@ -28,19 +25,6 @@ public class DataBindingAdapter {
     @BindingAdapter("category")
     public static void setCategory(TextView textView, Category category){
         textView.setText(category.getName());
-        switch (category.getBgColor()){
-            case R.color.colorTab1:
-                Timber.tag("bindlog").d("color tab 1");
-                break;
-            case R.color.colorTab2:
-                Timber.tag("bindlog").d("color tab 2");
-                break;
-            case R.color.colorTab3:
-                Timber.tag("bindlog").d("color tab 3");
-                break;
-            default:
-                Timber.tag("bindlog").d("no id match");
-        }
         textView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(textView.getContext(),
                 category.getIcon()), null, null, null);
         textView.setBackgroundColor(ContextCompat.getColor(textView.getContext(),

@@ -11,4 +11,6 @@
     <string name="danger">Danger</string>
     <string name="medical">Medical</string>
     <string name="transport">Transport</string>
+    <string name="pref_first">pref_first</string>
+    <string name="shake_msg">Shook phone. Sensing danger.</string>
 </resources>

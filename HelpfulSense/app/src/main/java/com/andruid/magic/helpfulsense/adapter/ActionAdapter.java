@@ -1,39 +1,28 @@
 package com.andruid.magic.helpfulsense.adapter;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 
-import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
-import com.andruid.magic.helpfulsense.fragment.ActionDialogFragment;
 import com.andruid.magic.helpfulsense.model.Action;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
-import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
-import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SWIPE;
-
 public class ActionAdapter extends FlexibleAdapter<Action> {
-    private Context context;
+    private SwipeListener mListener;
 
-    public ActionAdapter(Context context, @Nullable List<Action> items) {
+    public ActionAdapter(@Nullable List<Action> items, SwipeListener mListener) {
         super(items);
-        this.context = context;
+        this.mListener = mListener;
     }
 
     @Override
     public void onItemSwiped(int position, int direction) {
         super.onItemSwiped(position, direction);
-        if(direction == ItemTouchHelper.LEFT || position == ItemTouchHelper.START)
-            removeItem(position);
-        else
-            EventBus.getDefault().post(new ActionEvent(getItem(position), ACTION_SWIPE));
+        mListener.onSwipe(position, direction);
+    }
+
+    public interface SwipeListener {
+        void onSwipe(int position, int direction);
     }
 }

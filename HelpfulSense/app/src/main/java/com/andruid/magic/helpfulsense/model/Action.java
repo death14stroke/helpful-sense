@@ -4,21 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 
-import androidx.core.content.ContextCompat;
-
 import com.andruid.magic.helpfulsense.R;
-import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.viewholder.ActionViewHolder;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
-
-import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SMS;
 
 public class Action extends AbstractFlexibleItem<ActionViewHolder> implements Parcelable {
     private final String message;
@@ -84,13 +77,7 @@ public class Action extends AbstractFlexibleItem<ActionViewHolder> implements Pa
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ActionViewHolder holder, int position, List<Object> payloads) {
-        holder.actionTV.setText(message);
-        holder.actionTV.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(
-                holder.itemView.getContext(), category.getIcon()), null, null, null);
-        holder.getFrontView().setBackgroundResource(category.getBgColor());
-        holder.sendBtn.setOnClickListener(v ->
-                EventBus.getDefault().post(new ActionEvent(this, ACTION_SMS))
-        );
+        holder.bindAction((Action) adapter.getItem(position));
     }
 
     @Override

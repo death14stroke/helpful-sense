@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
@@ -52,9 +53,10 @@ import static com.andruid.magic.helpfulsense.data.Constants.KEY_COMMAND;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 
 @RuntimePermissions
-public class AlertFragment extends Fragment {
+public class AlertFragment extends Fragment implements ActionAdapter.SwipeListener {
     private FragmentAlertBinding binding;
     private ActionAdapter actionAdapter;
+    private int swipedPos;
 
     public static AlertFragment newInstance() {
         return new AlertFragment();
@@ -81,7 +83,7 @@ public class AlertFragment extends Fragment {
     private void loadActions() {
         List<Action> actionList = FileUtil.readActionsFromFile(Objects.requireNonNull(
                 getContext()));
-        actionAdapter = new ActionAdapter(getContext(), actionList);
+        actionAdapter = new ActionAdapter(actionList, this);
         binding.recyclerView.setAdapter(actionAdapter);
         actionAdapter.setLongPressDragEnabled(true)
                 .setSwipeEnabled(true);
@@ -93,12 +95,8 @@ public class AlertFragment extends Fragment {
         String command = actionEvent.getCommand();
         if(ACTION_ADD.equals(command))
             actionAdapter.addItem(action);
-        else if(ACTION_SWIPE.equals(command)) {
-            DialogFragment dialogFragment = ActionDialogFragment.newInstance(command, action);
-            dialogFragment.show(getChildFragmentManager(), command);
-        }
         else if(ACTION_EDIT.equals(command))
-            actionAdapter.updateItem(action);
+            actionAdapter.updateItem(swipedPos, action, null);
         else if(ACTION_SMS.equals(command))
             AlertFragmentPermissionsDispatcher.sendSMSWithPermissionCheck(this, action);
     }
@@ -140,6 +138,18 @@ public class AlertFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public void onSwipe(int position, int direction) {
+        swipedPos = position;
+        if(direction == ItemTouchHelper.LEFT || position == ItemTouchHelper.START)
+            actionAdapter.removeItem(position);
+        else {
+            DialogFragment dialogFragment = ActionDialogFragment.newInstance(ACTION_SWIPE,
+                    actionAdapter.getItem(position));
+            dialogFragment.show(getChildFragmentManager(), getString(R.string.add_action));
+        }
+    }
+
     @NeedsPermission(Manifest.permission.SEND_SMS)
     void sendSMS(Action action) {
         Intent intent = new Intent(getContext(), SensorService.class);
@@ -172,7 +182,7 @@ public class AlertFragment extends Fragment {
                     intent.setData(uri);
                     startActivity(intent);
                 })
-                .setNegativeButton("Deny", null)
+                .setNegativeButton("Deny", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 }
