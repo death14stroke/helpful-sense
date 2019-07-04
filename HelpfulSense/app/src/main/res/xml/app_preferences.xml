@@ -8,7 +8,7 @@
             android:key="@string/pref_low_battery"
             android:title="SMS when low battery"
             android:defaultValue="false"
-            android:summaryOn="Let trusted people know my phone might go dead"
+            android:summaryOn="Let trusted people know battery low"
             android:summaryOff="Don't let anyone know"
             app:iconSpaceReserved="false" />
         <EditTextPreference
