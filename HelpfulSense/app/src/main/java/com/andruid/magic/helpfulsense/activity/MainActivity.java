@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
                         .setActiveColorResource(R.color.colorTab2))
                 .addItem(new BottomNavigationItem(R.drawable.ic_contacts, getString(R.string.contacts))
                         .setActiveColorResource(R.color.colorTab3))
+                .addItem(new BottomNavigationItem(R.drawable.ic_settings, getString(R.string.settings))
+                        .setActiveColorResource(R.color.colorTab4))
                 .setFirstSelectedPosition(0)
                 .initialise();
         binding.bottomNav.setAutoHideEnabled(true);

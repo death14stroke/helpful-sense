@@ -13,4 +13,9 @@
     <string name="transport">Transport</string>
     <string name="pref_first">pref_first</string>
     <string name="shake_msg">Shook phone. Sensing danger.</string>
+    <string name="sms">SMS</string>
+    <string name="pref_low_battery">pref_low_battery</string>
+    <string name="pref_shutdown">pref_shutdown_contact</string>
+    <string name="pref_help">pref_help</string>
+    <string name="settings">Settings</string>
 </resources>

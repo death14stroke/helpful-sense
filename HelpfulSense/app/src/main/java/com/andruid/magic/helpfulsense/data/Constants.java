@@ -1,7 +1,8 @@
 package com.andruid.magic.helpfulsense.data;
 
 public class Constants {
-    public static final int NO_OF_TABS = 3, POS_ALERT = 0, POS_MESSAGE = 1, POS_CONTACTS = 2;
+    public static final int NO_OF_TABS = 4, POS_ALERT = 0, POS_MESSAGE = 1, POS_CONTACTS = 2,
+            POS_SETTINGS = 3;
     public static final String FILE_CONTACTS = "contacts.json", FILE_ACTIONS = "actions.json";
     public static final String ACTION_ADD = "action_add", ACTION_EDIT = "action_edit",
             ACTION_SMS = "action_sms", ACTION_SWIPE = "action_swipe";

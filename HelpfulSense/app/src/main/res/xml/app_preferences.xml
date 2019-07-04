@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="SMS"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:key="@string/pref_low_battery"
+            android:title="SMS when low battery"
+            android:defaultValue="false"
+            android:summaryOn="Let trusted people know my phone might go dead"
+            android:summaryOff="Don't let anyone know"
+            app:iconSpaceReserved="false" />
+        <EditTextPreference
+            android:key="@string/pref_shutdown"
+            android:title="SMS to when phone switching off"
+            android:defaultValue="Switching off"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Help"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="@string/pref_help"
+            android:title="View help"
+            android:summary="Take the tutorial again"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
