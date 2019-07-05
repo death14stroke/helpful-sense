@@ -47,6 +47,6 @@ public class ActionViewHolder extends FlexibleViewHolder {
 
     @Override
     public View getRearRightView() {
-        return binding.rearRightView;
+        return binding.rearRightLayout.rearView;
     }
 }

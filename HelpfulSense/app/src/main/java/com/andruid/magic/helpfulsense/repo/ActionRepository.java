@@ -2,7 +2,6 @@ package com.andruid.magic.helpfulsense.repo;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.andruid.magic.helpfulsense.model.Action;
@@ -19,7 +18,7 @@ public class ActionRepository {
     public static ActionRepository getInstance() {
         if(sInstance == null){
             synchronized (LOCK) {
-                Timber.tag("viewlog").d("Created repository instance");
+                Timber.tag("viewlog").d("Created action repository instance");
                 sInstance = new ActionRepository();
             }
         }

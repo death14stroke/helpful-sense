@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.repo.ActionRepository;
-import com.andruid.magic.helpfulsense.service.ActionIntentService;
+import com.andruid.magic.helpfulsense.service.UpdateIntentService;
 
 import java.util.List;
 
@@ -17,11 +17,9 @@ import timber.log.Timber;
 
 public class ActionViewModel extends AndroidViewModel {
     private MutableLiveData<List<Action>> actionLiveData;
-    private Application application;
 
     public ActionViewModel(@NonNull Application application) {
         super(application);
-        this.application = application;
         Timber.tag("viewlog").d("created view model");
         actionLiveData = ActionRepository.getInstance()
                 .getActionsFromFile(application.getApplicationContext());
@@ -34,6 +32,6 @@ public class ActionViewModel extends AndroidViewModel {
 
     public void updateSavedActions(List<Action> actions){
         actionLiveData.setValue(actions);
-        ActionIntentService.startActionUpdate(application, actions);
+        UpdateIntentService.startActionUpdate(getApplication(), actions);
     }
 }

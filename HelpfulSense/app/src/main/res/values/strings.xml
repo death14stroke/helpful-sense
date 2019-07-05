@@ -24,4 +24,5 @@
     <string name="pref_time_stop">pref_time_stop</string>
     <string name="def_threshold">10</string>
     <string name="def_time_stop">5</string>
+    <string name="empty_contacts">No contacts added</string>
 </resources>

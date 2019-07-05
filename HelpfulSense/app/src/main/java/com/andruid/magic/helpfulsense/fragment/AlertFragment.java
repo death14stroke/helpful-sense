@@ -84,6 +84,8 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         binding.emptyLayout.emptyView.setOnClickListener(v ->
                 openAddActionDialog()
         );
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         setUpViewModel();
         return binding.getRoot();
     }
@@ -95,8 +97,6 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
             actionAdapter.setLongPressDragEnabled(true)
                     .setSwipeEnabled(true);
             EmptyViewHelper.create(actionAdapter, binding.emptyLayout.emptyView);
-            binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         });
     }
 
@@ -139,11 +139,6 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     private void openAddActionDialog() {
         DialogFragment dialogFragment = ActionDialogFragment.newInstance(ACTION_ADD, null);
         dialogFragment.show(getChildFragmentManager(), getString(R.string.add_action));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".service.ActionIntentService"
+            android:name=".service.UpdateIntentService"
             android:exported="false"></service>
 
         <activity
@@ -39,7 +39,8 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"/>
 
         <receiver android:name=".receiver.SystemReceiver">
             <intent-filter>

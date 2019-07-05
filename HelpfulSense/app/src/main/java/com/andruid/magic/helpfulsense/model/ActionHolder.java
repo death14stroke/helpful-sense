@@ -27,8 +27,8 @@ public class ActionHolder extends AbstractFlexibleItem<ActionViewHolder> {
     public boolean equals(Object o) {
         if(o == null || o.getClass() != getClass())
             return false;
-        Action a = (Action) o;
-        return action.equals(a);
+        ActionHolder a = (ActionHolder) o;
+        return action.equals(a.action);
     }
 
     @Override
@@ -53,7 +53,6 @@ public class ActionHolder extends AbstractFlexibleItem<ActionViewHolder> {
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ActionViewHolder holder, int position, List<Object> payloads) {
-        holder.bindAction(((ActionHolder) Objects.requireNonNull(adapter.getItem(position)))
-                .getAction());
+        holder.bindAction(((ActionHolder) Objects.requireNonNull(adapter.getItem(position))).action);
     }
 }

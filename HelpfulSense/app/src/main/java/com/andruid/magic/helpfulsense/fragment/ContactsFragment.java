@@ -17,16 +17,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.activity.IntroActivity;
-import com.andruid.magic.helpfulsense.adapter.ContactAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentContactsBinding;
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
+import com.andruid.magic.helpfulsense.model.ContactHolder;
+import com.andruid.magic.helpfulsense.repo.ContactRepository;
 import com.andruid.magic.helpfulsense.util.FileUtil;
+import com.andruid.magic.helpfulsense.util.HolderUtil;
+import com.andruid.magic.helpfulsense.viewmodel.ContactViewModel;
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
@@ -39,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.helpers.EmptyViewHelper;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -52,6 +58,8 @@ import static com.andruid.magic.helpfulsense.data.Constants.MAX_CONTACTS;
 @RuntimePermissions
 public class ContactsFragment extends Fragment {
     private FragmentContactsBinding binding;
+    private ContactViewModel contactViewModel;
+    private FlexibleAdapter<ContactHolder> contactsAdapter;
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
@@ -62,6 +70,7 @@ public class ContactsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         EventBus.getDefault().register(this);
+        contactViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
     }
 
     @Override
@@ -69,12 +78,12 @@ public class ContactsFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container,
                 false);
+        binding.emptyLayout.textView.setText(getString(R.string.empty_contacts));
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(
                 getContext()), DividerItemDecoration.VERTICAL));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        binding.swipeRefresh.setRefreshing(true);
-        binding.swipeRefresh.setOnRefreshListener(this::loadContacts);
+        setUpViewModel();
         return binding.getRoot();
     }
 
@@ -103,29 +112,29 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        loadContacts();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
+        List<ContactResult> contacts = HolderUtil.getContactsFromContactHolders(contactsAdapter.getCurrentItems());
+        if(!contacts.isEmpty())
+            contactViewModel.updateSavedContacts(contacts);
         EventBus.getDefault().unregister(this);
     }
 
-    private void loadContacts(){
-        List<ContactResult> contacts = FileUtil.readContactsFromFile(Objects.requireNonNull(
-                getContext()));
-        ContactAdapter contactAdapter = new ContactAdapter(contacts);
-        binding.recyclerView.setAdapter(contactAdapter);
-        binding.swipeRefresh.setRefreshing(false);
+    private void setUpViewModel(){
+        contactViewModel.getSavedContacts().observe(this, contacts -> {
+            contactsAdapter = new FlexibleAdapter<>(HolderUtil
+                    .getContactHoldersFromContacts(contacts));
+            binding.recyclerView.setAdapter(contactsAdapter);
+            EmptyViewHelper.create(contactsAdapter, binding.emptyLayout.emptyView);
+            contactsAdapter.setLongPressDragEnabled(true);
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onContactsEvent(ContactsEvent contactsEvent){
         List<ContactResult> results = contactsEvent.getResults();
-        FileUtil.writeContactsToFile(Objects.requireNonNull(getContext()), results);
+        contactViewModel.updateSavedContacts(results);
+        ContactRepository.getInstance().saveContactsToFile(getContext(), results);
     }
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
