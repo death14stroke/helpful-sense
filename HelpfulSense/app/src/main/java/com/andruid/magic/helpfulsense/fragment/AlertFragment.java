@@ -51,6 +51,7 @@ import permissions.dispatcher.RuntimePermissions;
 import timber.log.Timber;
 
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_ADD;
+import static com.andruid.magic.helpfulsense.data.Constants.ACTION_DIALOG_CANCEL;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SWIPE;
@@ -108,6 +109,8 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
             actionAdapter.addItem(new ActionHolder(action));
         else if(ACTION_EDIT.equals(command))
             actionAdapter.updateItem(swipedPos, new ActionHolder(action), null);
+        else if(ACTION_DIALOG_CANCEL.equals(command))
+            actionAdapter.notifyDataSetChanged();
         else if(ACTION_SMS.equals(command))
             AlertFragmentPermissionsDispatcher.sendSMSWithPermissionCheck(this, action);
     }
@@ -144,10 +147,12 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if(actionAdapter == null)
+            return;
         List<Action> actions = HolderUtil.getActionsFromActionHolders(actionAdapter.getCurrentItems());
         if(!actions.isEmpty())
             actionViewModel.updateSavedActions(actions);
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -161,7 +166,7 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
             Timber.tag("viewlog").d("dir: right");
             DialogFragment dialogFragment = ActionDialogFragment.newInstance(ACTION_SWIPE,
                     Objects.requireNonNull(actionAdapter.getItem(position)).getAction());
-            dialogFragment.show(getChildFragmentManager(), getString(R.string.add_action));
+            dialogFragment.show(getChildFragmentManager(), getString(R.string.edit_action));
         }
     }
 

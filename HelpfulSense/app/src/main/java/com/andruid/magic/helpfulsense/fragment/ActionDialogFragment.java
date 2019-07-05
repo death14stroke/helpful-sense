@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
+import static com.andruid.magic.helpfulsense.data.Constants.ACTION_DIALOG_CANCEL;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_SWIPE;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_ACTION;
@@ -93,7 +94,7 @@ public class ActionDialogFragment extends DialogFragment {
             }
         }
         return new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                .setTitle(R.string.add_action)
+                .setTitle(getTag())
                 .setView(binding.getRoot())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     String message = binding.messageET.getText().toString().trim();
@@ -105,7 +106,7 @@ public class ActionDialogFragment extends DialogFragment {
                     EventBus.getDefault().post(new ActionEvent(action, command));
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, which) ->
-                        dialog.dismiss()
+                        EventBus.getDefault().post(new ActionEvent(null, ACTION_DIALOG_CANCEL))
                 )
                 .create();
     }

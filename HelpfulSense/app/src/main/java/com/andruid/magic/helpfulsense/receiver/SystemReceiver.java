@@ -29,10 +29,6 @@ public class SystemReceiver extends BroadcastReceiver {
             else
                 context.startService(i);
         }
-        else if(Intent.ACTION_SHUTDOWN.equals(action)) {
-            Timber.d("shutdown receiver");
-            SmsUtil.sendBootSms(context, "Phone shutdown.");
-        }
         else if(Intent.ACTION_BATTERY_LOW.equals(action)) {
             Timber.d("battery low receiver");
             boolean send = PreferenceManager.getDefaultSharedPreferences(context)

@@ -51,17 +51,4 @@ public class SmsUtil {
             }
         }
     }
-
-    public static void sendBootSms(Context context, String message){
-        SmsManager smsManager = SmsManager.getDefault();
-        List<ContactResult> contacts = FileUtil.readContactsFromFile(context);
-        for(ContactResult contact : contacts){
-            List<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
-            for(PhoneNumber phone : phoneNumbers){
-                smsManager.sendTextMessage(phone.getNumber(), null, message, null,
-                        null);
-            }
-        }
-        Timber.d("sendBootSms method end");
-    }
 }

@@ -47,11 +47,21 @@ public class MainActivity extends AppCompatActivity {
         binding.senseBtn.setOnClickListener(v ->
                 MainActivityPermissionsDispatcher.startSensorServiceWithPermissionCheck(this)
         );
-        setBottomNav();
+        int firstSelected = 0;
+        if(savedInstanceState != null)
+            firstSelected = savedInstanceState.getInt(getString(R.string.key_tab), 0);
+        setBottomNav(firstSelected);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(getString(R.string.key_tab), binding.viewPager.getCurrentItem());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CONTACTS_PICKER_REQUEST){
             if(resultCode == RESULT_OK){
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
@@ -67,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private void setBottomNav() {
+    private void setBottomNav(int firstSelected) {
         binding.viewPager.setOffscreenPageLimit(NO_OF_TABS);
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         binding.viewPager.setAdapter(pagerAdapter);
@@ -84,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         .setActiveColorResource(R.color.colorTab3))
                 .addItem(new BottomNavigationItem(R.drawable.ic_settings, getString(R.string.settings))
                         .setActiveColorResource(R.color.colorTab4))
-                .setFirstSelectedPosition(0)
+                .setFirstSelectedPosition(firstSelected)
                 .initialise();
         binding.bottomNav.setAutoHideEnabled(true);
         binding.bottomNav.setFab(binding.senseBtn);

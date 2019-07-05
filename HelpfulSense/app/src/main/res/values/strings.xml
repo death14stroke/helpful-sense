@@ -25,4 +25,6 @@
     <string name="def_threshold">10</string>
     <string name="def_time_stop">5</string>
     <string name="empty_contacts">No contacts added</string>
+    <string name="edit_action">Edit action</string>
+    <string name="key_tab">key_tab</string>
 </resources>

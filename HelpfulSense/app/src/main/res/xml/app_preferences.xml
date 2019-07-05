@@ -11,11 +11,6 @@
             android:summaryOn="Let trusted people know battery low"
             android:summaryOff="Don't let anyone know"
             app:iconSpaceReserved="false" />
-        <Preference
-            android:key="@string/pref_shutdown"
-            android:title="SMS to when phone switching off"
-            android:defaultValue="None"
-            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:title="Shake phone"
