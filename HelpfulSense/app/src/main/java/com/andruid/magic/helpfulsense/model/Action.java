@@ -2,18 +2,8 @@ package com.andruid.magic.helpfulsense.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
 
-import com.andruid.magic.helpfulsense.R;
-import com.andruid.magic.helpfulsense.viewholder.ActionViewHolder;
-
-import java.util.List;
-
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import eu.davidea.flexibleadapter.items.IFlexible;
-
-public class Action extends AbstractFlexibleItem<ActionViewHolder> implements Parcelable {
+public class Action implements Parcelable {
     private final String message;
     private final Category category;
 
@@ -48,36 +38,11 @@ public class Action extends AbstractFlexibleItem<ActionViewHolder> implements Pa
     }
 
     @Override
-    public boolean equals(Object o) {
-        if(o == null || o.getClass() != this.getClass())
+    public boolean equals(Object obj) {
+        if(obj == null || obj.getClass() != getClass())
             return false;
-        Action a = (Action) o;
-        return message.equals(a.message);
-    }
-
-    @Override
-    public boolean isDraggable() {
-        return true;
-    }
-
-    @Override
-    public boolean isSwipeable() {
-        return true;
-    }
-
-    @Override
-    public int getLayoutRes() {
-        return R.layout.layout_action;
-    }
-
-    @Override
-    public ActionViewHolder createViewHolder(View view, FlexibleAdapter<IFlexible> adapter) {
-        return new ActionViewHolder(view, adapter);
-    }
-
-    @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ActionViewHolder holder, int position, List<Object> payloads) {
-        holder.bindAction((Action) adapter.getItem(position));
+        Action a = (Action) obj;
+        return message.equals(a.message) && category.equals(a.category);
     }
 
     @Override

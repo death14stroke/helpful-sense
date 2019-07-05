@@ -12,6 +12,8 @@
         app:cardElevation="6dp"
         app:cardCornerRadius="7dp"
         android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
         android:foreground="?attr/selectableItemBackground">
         <RelativeLayout
             android:id="@+id/rear_left_view"

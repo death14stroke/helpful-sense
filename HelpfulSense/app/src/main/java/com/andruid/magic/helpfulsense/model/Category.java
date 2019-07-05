@@ -44,6 +44,14 @@ public class Category implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if(obj == null || obj.getClass() != getClass())
+            return false;
+        Category c = (Category) obj;
+        return name.equals(c.name) && icon == c.icon && iconColor == c.iconColor;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

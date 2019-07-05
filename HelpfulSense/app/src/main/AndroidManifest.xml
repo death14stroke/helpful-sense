@@ -19,11 +19,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:launchMode="singleTop" >
+        <service
+            android:name=".service.ActionIntentService"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

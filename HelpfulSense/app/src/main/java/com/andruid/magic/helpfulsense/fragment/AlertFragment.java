@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,8 +29,10 @@ import com.andruid.magic.helpfulsense.adapter.ActionAdapter;
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding;
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
+import com.andruid.magic.helpfulsense.model.ActionHolder;
 import com.andruid.magic.helpfulsense.service.SensorService;
-import com.andruid.magic.helpfulsense.util.FileUtil;
+import com.andruid.magic.helpfulsense.util.HolderUtil;
+import com.andruid.magic.helpfulsense.viewmodel.ActionViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,6 +48,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import timber.log.Timber;
 
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_ADD;
 import static com.andruid.magic.helpfulsense.data.Constants.ACTION_EDIT;
@@ -57,6 +61,7 @@ import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 public class AlertFragment extends Fragment implements ActionAdapter.SwipeListener {
     private FragmentAlertBinding binding;
     private ActionAdapter actionAdapter;
+    private ActionViewModel actionViewModel;
     private int swipedPos;
 
     public static AlertFragment newInstance() {
@@ -68,6 +73,7 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         EventBus.getDefault().register(this);
+        actionViewModel  = ViewModelProviders.of(this).get(ActionViewModel.class);
     }
 
     @Override
@@ -78,20 +84,20 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         binding.emptyLayout.emptyView.setOnClickListener(v ->
                 openAddActionDialog()
         );
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        loadActions();
+        setUpViewModel();
         return binding.getRoot();
     }
 
-    private void loadActions() {
-        List<Action> actionList = FileUtil.readActionsFromFile(Objects.requireNonNull(
-                getContext()));
-        actionAdapter = new ActionAdapter(actionList, this);
-        binding.recyclerView.setAdapter(actionAdapter);
-        actionAdapter.setLongPressDragEnabled(true)
-                .setSwipeEnabled(true);
-        EmptyViewHelper.create(actionAdapter, binding.emptyLayout.emptyView);
+    private void setUpViewModel() {
+        actionViewModel.getSavedActions().observe(this, actions -> {
+            actionAdapter = new ActionAdapter(actions, AlertFragment.this);
+            binding.recyclerView.setAdapter(actionAdapter);
+            actionAdapter.setLongPressDragEnabled(true)
+                    .setSwipeEnabled(true);
+            EmptyViewHelper.create(actionAdapter, binding.emptyLayout.emptyView);
+            binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -99,9 +105,9 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         Action action = actionEvent.getAction();
         String command = actionEvent.getCommand();
         if(ACTION_ADD.equals(command))
-            actionAdapter.addItem(action);
+            actionAdapter.addItem(new ActionHolder(action));
         else if(ACTION_EDIT.equals(command))
-            actionAdapter.updateItem(swipedPos, action, null);
+            actionAdapter.updateItem(swipedPos, new ActionHolder(action), null);
         else if(ACTION_SMS.equals(command))
             AlertFragmentPermissionsDispatcher.sendSMSWithPermissionCheck(this, action);
     }
@@ -138,25 +144,28 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     @Override
     public void onPause() {
         super.onPause();
-        List<Action> actions = actionAdapter.getCurrentItems();
-        if(!actions.isEmpty())
-            FileUtil.writeActionsToFile(Objects.requireNonNull(getContext()), actions);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        List<Action> actions = HolderUtil.getActionsFromActionHolders(actionAdapter.getCurrentItems());
+        if(!actions.isEmpty())
+            actionViewModel.updateSavedActions(actions);
         EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onSwipe(int position, int direction) {
+        Timber.tag("viewlog").d("swiped: %d", position);
         swipedPos = position;
-        if(direction == ItemTouchHelper.LEFT || position == ItemTouchHelper.START)
+        if(direction == ItemTouchHelper.LEFT || position == ItemTouchHelper.START) {
             actionAdapter.removeItem(position);
-        else {
+            Timber.tag("viewlog").d("dir: left");
+        } else {
+            Timber.tag("viewlog").d("dir: right");
             DialogFragment dialogFragment = ActionDialogFragment.newInstance(ACTION_SWIPE,
-                    actionAdapter.getItem(position));
+                    Objects.requireNonNull(actionAdapter.getItem(position)).getAction());
             dialogFragment.show(getChildFragmentManager(), getString(R.string.add_action));
         }
     }

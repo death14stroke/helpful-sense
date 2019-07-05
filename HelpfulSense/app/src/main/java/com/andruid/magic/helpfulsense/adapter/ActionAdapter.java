@@ -1,18 +1,18 @@
 package com.andruid.magic.helpfulsense.adapter;
 
-import androidx.annotation.Nullable;
-
 import com.andruid.magic.helpfulsense.model.Action;
+import com.andruid.magic.helpfulsense.model.ActionHolder;
+import com.andruid.magic.helpfulsense.util.HolderUtil;
 
 import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 
-public class ActionAdapter extends FlexibleAdapter<Action> {
+public class ActionAdapter extends FlexibleAdapter<ActionHolder> {
     private SwipeListener mListener;
 
-    public ActionAdapter(@Nullable List<Action> items, SwipeListener mListener) {
-        super(items);
+    public ActionAdapter(List<Action> actions, SwipeListener mListener) {
+        super(HolderUtil.getActionHoldersFromActions(actions));
         this.mListener = mListener;
     }
 

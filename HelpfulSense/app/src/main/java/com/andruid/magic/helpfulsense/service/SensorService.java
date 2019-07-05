@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.util.NotificationUtil;
@@ -38,10 +40,10 @@ import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SMS_SENT;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
-import static com.andruid.magic.helpfulsense.data.Constants.SHAKE_THRESHOLD;
 
 public class SensorService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener {
+        ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private MyLocationCallback locationCallback;
@@ -63,8 +65,9 @@ public class SensorService extends Service implements GoogleApiClient.Connection
                 .build();
         googleApiClient.connect();
         locationCallback = new MyLocationCallback();
-        Sensey.getInstance().startShakeDetection(5 ,0,
-                this);
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+        initShakeDetection(PreferenceManager.getDefaultSharedPreferences(this));
     }
 
     @Override
@@ -99,6 +102,8 @@ public class SensorService extends Service implements GoogleApiClient.Connection
     @Override
     public void onDestroy() {
         super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
         Sensey.getInstance().stopShakeDetection(this);
         Sensey.getInstance().stop();
         googleApiClient.disconnect();
@@ -143,6 +148,22 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         Timber.d("onShakeStopped: ");
         message = getString(R.string.shake_msg);
         startLocationReq();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if(s.equals(getString(R.string.pref_threshold)) || s.equals(getString(R.string.pref_time_stop))){
+            Sensey.getInstance().stopShakeDetection(this);
+            initShakeDetection(sharedPreferences);
+        }
+    }
+
+    private void initShakeDetection(SharedPreferences sharedPreferences) {
+        int threshold = Integer.parseInt(sharedPreferences.getString(getString(R.string.pref_threshold),
+                getString(R.string.def_threshold)));
+        int timeStop = Integer.parseInt(sharedPreferences.getString(getString(R.string.pref_time_stop),
+                getString(R.string.def_time_stop)));
+        Sensey.getInstance().startShakeDetection(threshold, timeStop, this);
     }
 
     private class MyLocationCallback extends LocationCallback {
