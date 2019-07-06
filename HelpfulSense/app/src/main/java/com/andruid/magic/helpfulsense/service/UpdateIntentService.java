@@ -24,16 +24,16 @@ public class UpdateIntentService extends IntentService {
     }
 
     public static void startActionUpdate(Context context, List<Action> actions) {
-        Intent intent = new Intent(context, UpdateIntentService.class);
-        intent.setAction(INTENT_ACTION_UPDATE);
-        intent.putParcelableArrayListExtra(KEY_ACTIONS, (ArrayList<? extends Parcelable>) actions);
+        Intent intent = new Intent(context, UpdateIntentService.class)
+                .setAction(INTENT_ACTION_UPDATE)
+                .putParcelableArrayListExtra(KEY_ACTIONS, (ArrayList<? extends Parcelable>) actions);
         context.startService(intent);
     }
 
     public static void startContactUpdate(Context context, List<ContactResult> contacts) {
-        Intent intent = new Intent(context, UpdateIntentService.class);
-        intent.setAction(INTENT_CONTACT_UPDATE);
-        intent.putParcelableArrayListExtra(KEY_CONTACTS, (ArrayList<? extends Parcelable>) contacts);
+        Intent intent = new Intent(context, UpdateIntentService.class)
+                .setAction(INTENT_CONTACT_UPDATE)
+                .putParcelableArrayListExtra(KEY_CONTACTS, (ArrayList<? extends Parcelable>) contacts);
         context.startService(intent);
     }
 

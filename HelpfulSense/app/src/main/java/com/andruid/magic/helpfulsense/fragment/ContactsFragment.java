@@ -2,9 +2,7 @@ package com.andruid.magic.helpfulsense.fragment;
 
 import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -27,7 +24,7 @@ import com.andruid.magic.helpfulsense.activity.IntroActivity;
 import com.andruid.magic.helpfulsense.databinding.FragmentContactsBinding;
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
 import com.andruid.magic.helpfulsense.model.ContactHolder;
-import com.andruid.magic.helpfulsense.repo.ContactRepository;
+import com.andruid.magic.helpfulsense.util.DialogUtil;
 import com.andruid.magic.helpfulsense.util.FileUtil;
 import com.andruid.magic.helpfulsense.util.HolderUtil;
 import com.andruid.magic.helpfulsense.viewmodel.ContactViewModel;
@@ -53,10 +50,10 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.andruid.magic.helpfulsense.data.Constants.CONTACTS_PICKER_REQUEST;
-import static com.andruid.magic.helpfulsense.data.Constants.MAX_CONTACTS;
 
 @RuntimePermissions
 public class ContactsFragment extends Fragment {
+    private static final int MAX_CONTACTS = 5;
     private FragmentContactsBinding binding;
     private ContactViewModel contactViewModel;
     private FlexibleAdapter<ContactHolder> contactsAdapter;
@@ -114,7 +111,8 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        List<ContactResult> contacts = HolderUtil.getContactsFromContactHolders(contactsAdapter.getCurrentItems());
+        List<ContactResult> contacts = HolderUtil
+                .getContactsFromContactHolders(contactsAdapter.getCurrentItems());
         if(!contacts.isEmpty())
             contactViewModel.updateSavedContacts(contacts);
         EventBus.getDefault().unregister(this);
@@ -134,7 +132,6 @@ public class ContactsFragment extends Fragment {
     public void onContactsEvent(ContactsEvent contactsEvent){
         List<ContactResult> results = contactsEvent.getResults();
         contactViewModel.updateSavedContacts(results);
-        ContactRepository.getInstance().saveContactsToFile(getContext(), results);
     }
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
@@ -151,25 +148,13 @@ public class ContactsFragment extends Fragment {
 
     @OnShowRationale(Manifest.permission.READ_CONTACTS)
     void showRationale(PermissionRequest request){
-        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
-                .setMessage("Select your most trusted contacts who will receive your emergency texts. " +
-                        "Grant contacts permission for the same.")
-                .setPositiveButton("Allow", (dialog, which) -> request.proceed())
-                .setNegativeButton("Deny", (dialog, which) -> request.cancel())
+        DialogUtil.buildInfoDialog(getContext(), getString(R.string.contact_permission), request)
                 .show();
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
     void showSettingsDialog(){
-        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
-                .setMessage("Select your most trusted contacts who will receive your emergency texts")
-                .setPositiveButton("Settings", (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
-                    intent.setData(uri);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Deny", (dialog, which) -> dialog.dismiss())
+        DialogUtil.buildSettingsDialog(getContext(), getString(R.string.contact_permission))
                 .show();
     }
 

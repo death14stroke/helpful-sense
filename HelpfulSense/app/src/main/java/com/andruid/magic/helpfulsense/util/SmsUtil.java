@@ -20,7 +20,6 @@ import timber.log.Timber;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SMS_SENT;
 
 public class SmsUtil {
-
     private static String getMapsUrl(Location loc){
         return " http://maps.google.com/?q=" + loc.getLatitude() + "," + loc.getLongitude();
     }

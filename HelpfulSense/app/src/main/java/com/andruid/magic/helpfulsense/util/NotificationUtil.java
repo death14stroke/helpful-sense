@@ -14,13 +14,13 @@ import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.activity.MainActivity;
 import com.andruid.magic.helpfulsense.service.SensorService;
 
-import static com.andruid.magic.helpfulsense.data.Constants.CHANNEL_ID;
-import static com.andruid.magic.helpfulsense.data.Constants.CHANNEL_NAME;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 
 public class NotificationUtil {
+    private static final String CHANNEL_ID = "channel_sensor", CHANNEL_NAME = "Sensor Service";
+
     public static NotificationCompat.Builder buildNotification(Context context){
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE);

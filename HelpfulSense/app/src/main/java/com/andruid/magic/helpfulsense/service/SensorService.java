@@ -39,11 +39,11 @@ import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SMS_SENT;
 import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
-import static com.andruid.magic.helpfulsense.data.Constants.NOTI_ID;
 
 public class SensorService extends Service implements GoogleApiClient.ConnectionCallbacks,
         ShakeDetector.ShakeListener, GoogleApiClient.OnConnectionFailedListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final int NOTI_ID = 1;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private MyLocationCallback locationCallback;

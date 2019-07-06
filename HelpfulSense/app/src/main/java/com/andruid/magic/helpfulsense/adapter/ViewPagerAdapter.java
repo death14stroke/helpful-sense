@@ -11,11 +11,9 @@ import com.andruid.magic.helpfulsense.fragment.MessageFragment;
 import com.andruid.magic.helpfulsense.fragment.SettingsFragment;
 
 import static com.andruid.magic.helpfulsense.data.Constants.NO_OF_TABS;
-import static com.andruid.magic.helpfulsense.data.Constants.POS_ALERT;
-import static com.andruid.magic.helpfulsense.data.Constants.POS_CONTACTS;
-import static com.andruid.magic.helpfulsense.data.Constants.POS_MESSAGE;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+    private static final int POS_ALERT = 0, POS_MESSAGE = 1, POS_CONTACTS = 2;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

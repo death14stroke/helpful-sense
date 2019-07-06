@@ -1,7 +1,6 @@
 package com.andruid.magic.helpfulsense.fragment;
 
 import android.app.Dialog;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -17,12 +16,12 @@ import com.andruid.magic.helpfulsense.databinding.DialogActionBinding;
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent;
 import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.model.Category;
+import com.andruid.magic.helpfulsense.util.FileUtil;
 import com.annimon.stream.IntStream;
 import com.annimon.stream.OptionalInt;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +38,7 @@ public class ActionDialogFragment extends DialogFragment {
     private MySpinnerAdapter mySpinnerAdapter;
     private String command;
 
-    static ActionDialogFragment newInstance(String command, Action action){
+    public static ActionDialogFragment newInstance(String command, Action action){
         Bundle args = new Bundle();
         args.putString(KEY_COMMAND, command);
         args.putParcelable(KEY_ACTION, action);
@@ -55,22 +54,8 @@ public class ActionDialogFragment extends DialogFragment {
     }
 
     private void setUpAdapter() {
-        String[] categoryNames = Objects.requireNonNull(getContext()).getResources()
-                .getStringArray(R.array.category_names);
-        TypedArray typedArray = getResources().obtainTypedArray(R.array.category_icons);
-        int[] icons = new int[typedArray.length()];
-        for(int i=0; i<typedArray.length(); i++)
-            icons[i] = typedArray.getResourceId(i, -1);
-        typedArray.recycle();
-        typedArray = getResources().obtainTypedArray(R.array.category_colors);
-        int[] colors = new int[typedArray.length()];
-        for(int i=0; i<typedArray.length(); i++)
-            colors[i] = typedArray.getResourceId(i, -1);
-        typedArray.recycle();
-        List<Category> categories = new ArrayList<>();
-        for(int i=0; i<icons.length; i++)
-            categories.add(new Category(categoryNames[i], icons[i], colors[i]));
-        mySpinnerAdapter = new MySpinnerAdapter(categories);
+        mySpinnerAdapter = new MySpinnerAdapter(FileUtil
+                .getCategoryFromRes(Objects.requireNonNull(getContext())));
     }
 
     @NonNull

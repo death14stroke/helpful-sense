@@ -20,13 +20,13 @@ public class ActionViewModel extends AndroidViewModel {
 
     public ActionViewModel(@NonNull Application application) {
         super(application);
-        Timber.tag("viewlog").d("created view model");
+        Timber.d("created view model");
         actionLiveData = ActionRepository.getInstance()
                 .getActionsFromFile(application.getApplicationContext());
     }
 
     public LiveData<List<Action>> getSavedActions() {
-        Timber.tag("viewlog").d("get live data from view model");
+        Timber.d("get live data from view model");
         return actionLiveData;
     }
 

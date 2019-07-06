@@ -1,8 +1,11 @@
 package com.andruid.magic.helpfulsense.util;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 
+import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.model.Action;
+import com.andruid.magic.helpfulsense.model.Category;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wafflecopter.multicontactpicker.ContactResult;
@@ -16,10 +19,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.andruid.magic.helpfulsense.data.Constants.FILE_ACTIONS;
-import static com.andruid.magic.helpfulsense.data.Constants.FILE_CONTACTS;
-
 public class FileUtil {
+    private static final String FILE_CONTACTS = "contacts.json", FILE_ACTIONS = "actions.json";
+
     public static List<ContactResult> readContactsFromFile(Context context){
         List<ContactResult> results = new ArrayList<>();
         try{
@@ -71,5 +73,23 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<Category> getCategoryFromRes(Context context){
+        String[] categoryNames = context.getResources().getStringArray(R.array.category_names);
+        TypedArray typedArray = context.getResources().obtainTypedArray(R.array.category_icons);
+        int[] icons = new int[typedArray.length()];
+        for(int i=0; i<typedArray.length(); i++)
+            icons[i] = typedArray.getResourceId(i, -1);
+        typedArray.recycle();
+        typedArray = context.getResources().obtainTypedArray(R.array.category_colors);
+        int[] colors = new int[typedArray.length()];
+        for(int i=0; i<typedArray.length(); i++)
+            colors[i] = typedArray.getResourceId(i, -1);
+        typedArray.recycle();
+        List<Category> categories = new ArrayList<>();
+        for(int i=0; i<icons.length; i++)
+            categories.add(new Category(categoryNames[i], icons[i], colors[i]));
+        return categories;
     }
 }

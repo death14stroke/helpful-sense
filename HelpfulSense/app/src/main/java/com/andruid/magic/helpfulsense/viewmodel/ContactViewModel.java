@@ -20,7 +20,7 @@ public class ContactViewModel extends AndroidViewModel {
 
     public ContactViewModel(@NonNull Application application) {
         super(application);
-        Timber.tag("viewlog").d("created view model");
+        Timber.d("created view model");
         contactLiveData = ContactRepository.getInstance()
                 .getContactsFromFile(application.getApplicationContext());
     }
