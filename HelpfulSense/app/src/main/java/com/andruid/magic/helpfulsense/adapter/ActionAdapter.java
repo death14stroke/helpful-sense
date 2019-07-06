@@ -22,6 +22,10 @@ public class ActionAdapter extends FlexibleAdapter<ActionHolder> {
         mListener.onSwipe(position, direction);
     }
 
+    public void release() {
+        mListener = null;
+    }
+
     public interface SwipeListener {
         void onSwipe(int position, int direction);
     }

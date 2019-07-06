@@ -77,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
         MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding.unbind();
+    }
+
     private void setBottomNav(int firstSelected) {
         binding.viewPager.setOffscreenPageLimit(NO_OF_TABS);
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

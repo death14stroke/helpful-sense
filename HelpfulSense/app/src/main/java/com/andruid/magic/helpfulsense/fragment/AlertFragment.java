@@ -88,6 +88,12 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         return binding.getRoot();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.unbind();
+    }
+
     private void setUpViewModel() {
         actionViewModel.getSavedActions().observe(this, actions -> {
             actionAdapter = new ActionAdapter(actions, AlertFragment.this);
@@ -146,6 +152,7 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
         List<Action> actions = HolderUtil.getActionsFromActionHolders(actionAdapter.getCurrentItems());
         if(!actions.isEmpty())
             actionViewModel.updateSavedActions(actions);
+        actionAdapter.release();
     }
 
     @Override
