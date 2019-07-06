@@ -27,4 +27,7 @@
     <string name="empty_contacts">No contacts added</string>
     <string name="edit_action">Edit action</string>
     <string name="key_tab">key_tab</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="alert_msg">I need help. Emergency.</string>
 </resources>

@@ -44,11 +44,11 @@ dependencies {
     implementation 'com.github.AppIntro:AppIntro:5.1.0'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation "org.permissionsdispatcher:permissionsdispatcher:4.5.0"
     annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:4.5.0"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
+
     implementation project(path: ':multicontactpicker')
 }

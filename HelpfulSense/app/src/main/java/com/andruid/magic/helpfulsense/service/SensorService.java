@@ -171,6 +171,7 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             Location loc = locationResult.getLocations().get(0);
+            Timber.d("loc obtained");
             SmsUtil.sendSMS(getApplicationContext(), loc, message);
         }
     }

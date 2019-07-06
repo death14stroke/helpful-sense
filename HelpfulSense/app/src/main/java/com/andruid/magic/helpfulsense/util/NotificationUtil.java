@@ -16,7 +16,9 @@ import com.andruid.magic.helpfulsense.service.SensorService;
 
 import static com.andruid.magic.helpfulsense.data.Constants.CHANNEL_ID;
 import static com.andruid.magic.helpfulsense.data.Constants.CHANNEL_NAME;
+import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
 import static com.andruid.magic.helpfulsense.data.Constants.INTENT_SERVICE_STOP;
+import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
 
 public class NotificationUtil {
     public static NotificationCompat.Builder buildNotification(Context context){
@@ -34,9 +36,9 @@ public class NotificationUtil {
             notificationChannel.setLightColor(Color.RED);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-
-        Intent intent = new Intent(context, SensorService.class);
-        intent.setAction(INTENT_SERVICE_STOP);
+        Intent stopIntent = new Intent(context, SensorService.class);
+        stopIntent.setAction(INTENT_SERVICE_STOP);
+        Intent alertIntent = buildAlertIntent(context);
         return new NotificationCompat.Builder(context,CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -48,7 +50,10 @@ public class NotificationUtil {
                 .setContentText("We are ready for your safety!")
                 .setShowWhen(true)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop",
-                        PendingIntent.getService(context, 0, intent,
+                        PendingIntent.getService(context, 0, stopIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT))
+                .addAction(R.drawable.ic_message, "Alert",
+                        PendingIntent.getService(context, 0, alertIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
@@ -68,8 +73,8 @@ public class NotificationUtil {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        Intent intent = new Intent(context, SensorService.class);
-        intent.setAction(INTENT_SERVICE_STOP);
+        Intent intent = new Intent(context, SensorService.class)
+                .setAction(INTENT_SERVICE_STOP);
         return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -84,5 +89,11 @@ public class NotificationUtil {
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop",
                         PendingIntent.getService(context, 0, intent,
                                 PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    public static Intent buildAlertIntent(Context context){
+        return new Intent(context, SensorService.class)
+                .setAction(INTENT_LOC_SMS)
+                .putExtra(KEY_MESSAGE, context.getString(R.string.alert_msg));
     }
 }
