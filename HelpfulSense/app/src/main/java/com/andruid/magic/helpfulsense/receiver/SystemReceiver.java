@@ -9,15 +9,11 @@ import androidx.preference.PreferenceManager;
 
 import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.service.SensorService;
-import com.andruid.magic.helpfulsense.util.SmsUtil;
+import com.andruid.magic.helpfulsense.util.IntentUtil;
 
 import timber.log.Timber;
 
-import static com.andruid.magic.helpfulsense.data.Constants.INTENT_LOC_SMS;
-import static com.andruid.magic.helpfulsense.data.Constants.KEY_MESSAGE;
-
 public class SystemReceiver extends BroadcastReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -35,9 +31,8 @@ public class SystemReceiver extends BroadcastReceiver {
                     .getBoolean(context.getString(R.string.pref_low_battery), false);
             if(!send)
                 return;
-            Intent i = new Intent(context, SensorService.class);
-            i.setAction(INTENT_LOC_SMS);
-            i.putExtra(KEY_MESSAGE, "Battery low. ");
+            Intent i = IntentUtil.buildServiceSmsIntent(context,
+                    context.getString(R.string.low_battery_message));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 context.startForegroundService(i);
             else

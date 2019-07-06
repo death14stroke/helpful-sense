@@ -19,7 +19,7 @@ public class ContactRepository {
         if(sInstance == null){
             synchronized (LOCK){
                 sInstance = new ContactRepository();
-                Timber.tag("viewlog").d("Created contact repository instance");
+                Timber.d("Created contact repository instance");
             }
         }
         return sInstance;

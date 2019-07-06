@@ -18,7 +18,7 @@ public class ActionRepository {
     public static ActionRepository getInstance() {
         if(sInstance == null){
             synchronized (LOCK) {
-                Timber.tag("viewlog").d("Created action repository instance");
+                Timber.d("Created action repository instance");
                 sInstance = new ActionRepository();
             }
         }
