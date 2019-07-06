@@ -25,7 +25,7 @@ public class IntroActivity extends AppIntro {
                 R.drawable.ic_alert, R.color.colorAccent).build()));
         addSlide(AppIntroFragment.newInstance(buildSliderPage("Battery and boot",
                 "Start listening for sensors when device is booted up. Send message when " +
-                        "battery low or phone shuts down so your loved ones don't worry",
+                        "battery low so your loved ones don't worry",
                 R.drawable.ic_low_battery, R.color.colorTab1).build()));
         addSlide(AppIntroFragment.newInstance(buildSliderPage("Quick gestures",
                 "Shake your phone to send emergency SMS to trusted contacts",

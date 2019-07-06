@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -16,6 +15,7 @@ import com.andruid.magic.helpfulsense.adapter.ViewPagerAdapter;
 import com.andruid.magic.helpfulsense.databinding.ActivityMainBinding;
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent;
 import com.andruid.magic.helpfulsense.service.SensorService;
+import com.andruid.magic.helpfulsense.util.DialogUtil;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.wafflecopter.multicontactpicker.ContactResult;
@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
@@ -37,7 +38,6 @@ import static com.andruid.magic.helpfulsense.data.Constants.NO_OF_TABS;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "contactslog";
     private ActivityMainBinding binding;
 
     @Override
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == CONTACTS_PICKER_REQUEST){
             if(resultCode == RESULT_OK){
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
-                Timber.tag(TAG).d("in activity: %d selected", results.size());
+                Timber.d("in activity: %d selected", results.size());
                 EventBus.getDefault().post(new ContactsEvent(results));
             }
         }
@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         binding.viewPager.setAdapter(pagerAdapter);
         binding.bottomNav.setActiveColor(R.color.colorPrimary)
-                .setInActiveColor("#FFFFFF")
-                .setBarBackgroundColor("#ECECEC")
                 .setMode(BottomNavigationBar.MODE_SHIFTING)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE)
                 .addItem(new BottomNavigationItem(R.drawable.ic_alert, getString(R.string.alert))
@@ -125,11 +123,14 @@ public class MainActivity extends AppCompatActivity {
     @OnShowRationale({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION})
     public void showRationale(PermissionRequest request){
-        new AlertDialog.Builder(this)
-                .setMessage("Send your location to your trusted contacts in case of emergency. " +
-                        "Grant SMS and location permissions for the same")
-                .setPositiveButton("Allow", (dialog, which) -> request.proceed())
-                .setNegativeButton("Deny", (dialog, which) -> request.cancel())
+        DialogUtil.buildInfoDialog(this, getString(R.string.loc_permission), request)
+                .show();
+    }
+
+    @OnNeverAskAgain({Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION})
+    public void showSettingsDialog(){
+        DialogUtil.buildSettingsDialog(this, getString(R.string.loc_permission))
                 .show();
     }
 

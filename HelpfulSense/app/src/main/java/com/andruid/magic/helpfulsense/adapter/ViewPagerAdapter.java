@@ -1,5 +1,6 @@
 package com.andruid.magic.helpfulsense.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -13,17 +14,17 @@ import static com.andruid.magic.helpfulsense.data.Constants.NO_OF_TABS;
 import static com.andruid.magic.helpfulsense.data.Constants.POS_ALERT;
 import static com.andruid.magic.helpfulsense.data.Constants.POS_CONTACTS;
 import static com.andruid.magic.helpfulsense.data.Constants.POS_MESSAGE;
-import static com.andruid.magic.helpfulsense.data.Constants.POS_SETTINGS;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     public ViewPagerAdapter(FragmentManager fm) {
-        super(fm);
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
+        Fragment fragment;
         switch (position){
             case POS_ALERT:
                 fragment = AlertFragment.newInstance();
@@ -34,7 +35,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case POS_CONTACTS:
                 fragment = ContactsFragment.newInstance();
                 break;
-            case POS_SETTINGS:
+            default:
                 fragment = SettingsFragment.newInstance();
                 break;
         }

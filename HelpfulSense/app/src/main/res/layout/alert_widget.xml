@@ -2,20 +2,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5B000000"
-    android:orientation="vertical"
-    android:weightSum="2">
+    android:orientation="horizontal"
+    android:weightSum="3">
+    <ImageButton
+        android:id="@+id/activityBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@mipmap/ic_launcher_foreground"
+        android:tint="@android:color/white"
+        style="?android:borderlessButtonStyle"
+        android:contentDescription="@string/app_name"/>
     <ImageButton
         android:id="@+id/alertBtn"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:src="@drawable/ic_alert"
         style="?android:borderlessButtonStyle"
         android:contentDescription="@string/app_name"/>
     <ImageButton
         android:id="@+id/serviceBtn"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:src="@drawable/ic_sensor"
         style="?android:borderlessButtonStyle"

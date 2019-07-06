@@ -32,6 +32,7 @@ import com.andruid.magic.helpfulsense.model.Action;
 import com.andruid.magic.helpfulsense.model.ActionHolder;
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.andruid.magic.helpfulsense.util.HolderUtil;
+import com.andruid.magic.helpfulsense.util.IntentUtil;
 import com.andruid.magic.helpfulsense.viewmodel.ActionViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -196,12 +197,9 @@ public class AlertFragment extends Fragment implements ActionAdapter.SwipeListen
     void showSettingsDialog(){
         new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                 .setMessage("Send emergency SMS to your selected trusted people")
-                .setPositiveButton("Settings", (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
-                    intent.setData(uri);
-                    startActivity(intent);
-                })
+                .setPositiveButton("Settings", (dialog, which) ->
+                        startActivity(IntentUtil.buildSettingsIntent(getContext()))
+                )
                 .setNegativeButton("Deny", (dialog, which) -> dialog.dismiss())
                 .show();
     }
