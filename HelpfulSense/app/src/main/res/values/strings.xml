@@ -33,4 +33,5 @@
     <string name="sms_permission">Send emergency SMS to your selected trusted people</string>
     <string name="contact_permission">Select your most trusted contacts who will receive your emergency texts.</string>
     <string name="low_battery_message">Battery low.</string>
+    <string name="disabled">Disabled</string>
 </resources>

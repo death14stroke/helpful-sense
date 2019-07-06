@@ -49,15 +49,19 @@ public class SensorService extends Service implements GoogleApiClient.Connection
     private MyLocationCallback locationCallback;
     private boolean apiConnected = false;
     private String message = "";
+    private Intent startIntent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        init();
+    }
+
+    private void init() {
         NotificationCompat.Builder builder = NotificationUtil.buildProgressNotification(
                 getApplicationContext());
         startForeground(NOTI_ID, Objects.requireNonNull(builder).build());
-        Timber.d("start foreground done");
-        Sensey.getInstance().init(getApplicationContext());
+        Sensey.getInstance().init(getApplicationContext(), Sensey.SAMPLING_PERIOD_NORMAL);
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -73,20 +77,29 @@ public class SensorService extends Service implements GoogleApiClient.Connection
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null) {
-            if (INTENT_LOC_SMS.equals(intent.getAction())) {
-                Bundle extras = intent.getExtras();
-                if (extras != null)
-                    message = extras.getString(KEY_MESSAGE);
-                startLocationReq();
+            if(!apiConnected) {
+                startIntent = intent;
+                init();
             }
-            else if (INTENT_SERVICE_STOP.equals(intent.getAction())) {
-                stopForeground(true);
-                stopSelf();
-            }
-            else if (INTENT_SMS_SENT.equals(intent.getAction()))
-                Toast.makeText(getApplicationContext(), "sms sent", Toast.LENGTH_SHORT).show();
+            else
+                handleIntent(intent);
         }
         return START_STICKY;
+    }
+
+    private void handleIntent(Intent intent) {
+        if (INTENT_LOC_SMS.equals(intent.getAction())) {
+            Bundle extras = intent.getExtras();
+            if (extras != null)
+                message = extras.getString(KEY_MESSAGE);
+            startLocationReq();
+        }
+        else if (INTENT_SERVICE_STOP.equals(intent.getAction())) {
+            stopForeground(true);
+            stopSelf();
+        }
+        else if (INTENT_SMS_SENT.equals(intent.getAction()))
+            Toast.makeText(getApplicationContext(), "sms sent", Toast.LENGTH_SHORT).show();
     }
 
     private void startLocationReq(){
@@ -129,6 +142,10 @@ public class SensorService extends Service implements GoogleApiClient.Connection
                 Context.NOTIFICATION_SERVICE);
         Objects.requireNonNull(notificationManager).notify(NOTI_ID, Objects.requireNonNull(builder)
                 .build());
+        if(startIntent != null){
+            handleIntent(startIntent);
+            startIntent = null;
+        }
     }
 
     @Override
@@ -170,7 +187,7 @@ public class SensorService extends Service implements GoogleApiClient.Connection
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
-            Location loc = locationResult.getLocations().get(0);
+            Location loc = locationResult.getLastLocation();
             Timber.d("loc obtained");
             SmsUtil.sendSMS(getApplicationContext(), loc, message);
         }

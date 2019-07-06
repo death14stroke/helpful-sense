@@ -38,7 +38,8 @@ public class NotificationUtil {
         }
         Intent stopIntent = new Intent(context, SensorService.class);
         stopIntent.setAction(INTENT_SERVICE_STOP);
-        Intent alertIntent = buildAlertIntent(context);
+        Intent alertIntent = IntentUtil.
+                buildServiceSmsIntent(context, context.getString(R.string.alert_msg));
         return new NotificationCompat.Builder(context,CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -89,11 +90,5 @@ public class NotificationUtil {
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop",
                         PendingIntent.getService(context, 0, intent,
                                 PendingIntent.FLAG_UPDATE_CURRENT));
-    }
-
-    public static Intent buildAlertIntent(Context context){
-        return new Intent(context, SensorService.class)
-                .setAction(INTENT_LOC_SMS)
-                .putExtra(KEY_MESSAGE, context.getString(R.string.alert_msg));
     }
 }

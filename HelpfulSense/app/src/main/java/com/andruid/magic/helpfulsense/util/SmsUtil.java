@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.telephony.SmsManager;
-import android.widget.Toast;
 
 import com.andruid.magic.helpfulsense.service.SensorService;
 import com.wafflecopter.multicontactpicker.ContactResult;
@@ -25,8 +24,8 @@ public class SmsUtil {
     }
 
     public static void sendSMS(Context context, Location location, String message){
-        message = message + getMapsUrl(location);
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        if(location != null)
+            message = message + getMapsUrl(location);
         SmsManager smsManager = SmsManager.getDefault();
         ArrayList<String> parts = smsManager.divideMessage(message);
         List<ContactResult> contacts = FileUtil.readContactsFromFile(context);

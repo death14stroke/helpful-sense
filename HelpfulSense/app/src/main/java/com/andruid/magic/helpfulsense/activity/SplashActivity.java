@@ -1,10 +1,10 @@
 package com.andruid.magic.helpfulsense.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.andruid.magic.helpfulsense.R;
 

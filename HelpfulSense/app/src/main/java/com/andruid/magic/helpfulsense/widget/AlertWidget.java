@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 import com.andruid.magic.helpfulsense.R;
 import com.andruid.magic.helpfulsense.activity.MainActivity;
 import com.andruid.magic.helpfulsense.service.SensorService;
-import com.andruid.magic.helpfulsense.util.NotificationUtil;
+import com.andruid.magic.helpfulsense.util.IntentUtil;
 
 public class AlertWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
@@ -18,7 +18,8 @@ public class AlertWidget extends AppWidgetProvider {
         Intent serIntent = new Intent(context, SensorService.class);
         views.setOnClickPendingIntent(R.id.serviceBtn, PendingIntent.getService(context, 0,
                 serIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-        Intent alertIntent = NotificationUtil.buildAlertIntent(context);
+        Intent alertIntent = IntentUtil.
+                buildServiceSmsIntent(context, context.getString(R.string.alert_msg));
         views.setOnClickPendingIntent(R.id.alertBtn, PendingIntent.getService(context, 0,
                 alertIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         views.setOnClickPendingIntent(R.id.activityBtn, PendingIntent.getActivity(context, 0,
