@@ -13,8 +13,8 @@ import com.andruid.magic.helpfulsense.databinding.ActivityMainBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.service.SensorService
 import com.andruid.magic.helpfulsense.ui.adapter.ViewPagerAdapter
-import com.andruid.magic.helpfulsense.util.buildInfoDialog
-import com.andruid.magic.helpfulsense.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
+import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.ashokvarma.bottomnavigation.BottomNavigationBar
 import com.ashokvarma.bottomnavigation.BottomNavigationItem

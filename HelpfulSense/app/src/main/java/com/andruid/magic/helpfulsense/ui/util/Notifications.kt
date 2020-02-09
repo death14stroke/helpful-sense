@@ -1,4 +1,4 @@
-package com.andruid.magic.helpfulsense.util
+package com.andruid.magic.helpfulsense.ui.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,17 +8,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
 import com.andruid.magic.helpfulsense.service.SensorService
 import com.andruid.magic.helpfulsense.ui.activity.MainActivity
+import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
+import splitties.systemservices.notificationManager
 
 private const val CHANNEL_ID = "channel_sensor"
 private const val CHANNEL_NAME = "Sensor Service"
 
 fun Context.buildNotification(): NotificationCompat.Builder {
-    val notificationManager = getSystemService<NotificationManager>()!!
     val importance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         NotificationManager.IMPORTANCE_HIGH
     else {
@@ -53,7 +53,6 @@ fun Context.buildNotification(): NotificationCompat.Builder {
 }
 
 fun Context.buildProgressNotification(): NotificationCompat.Builder {
-    val notificationManager = getSystemService<NotificationManager>()!!
     val importance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         NotificationManager.IMPORTANCE_HIGH
     else {

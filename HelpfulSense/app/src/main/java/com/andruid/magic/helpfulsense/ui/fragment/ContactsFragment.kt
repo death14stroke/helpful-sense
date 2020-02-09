@@ -20,12 +20,11 @@ import com.andruid.magic.helpfulsense.model.ContactHolder
 import com.andruid.magic.helpfulsense.model.toContactHolder
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
-import com.andruid.magic.helpfulsense.util.buildInfoDialog
-import com.andruid.magic.helpfulsense.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
+import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import eu.davidea.flexibleadapter.FlexibleAdapter
-import eu.davidea.flexibleadapter.helpers.EmptyViewHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,14 +56,11 @@ class ContactsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false)
         binding.apply {
-            emptyLayout.apply {
-                textView.text = getString(R.string.empty_contacts)
-                EmptyViewHelper.create(contactsAdapter, emptyView)
-            }
             recyclerView.apply {
                 adapter = contactsAdapter
                 itemAnimator = DefaultItemAnimator()
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+                setEmptyViewClickListener { openContactsPicker() }
             }
             contactsAdapter.isLongPressDragEnabled = true
         }

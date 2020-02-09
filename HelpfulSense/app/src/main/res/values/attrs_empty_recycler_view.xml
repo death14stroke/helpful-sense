@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="EmptyRecyclerView">
+        <attr name="emptyView" format="reference" />
+    </declare-styleable>
+</resources>

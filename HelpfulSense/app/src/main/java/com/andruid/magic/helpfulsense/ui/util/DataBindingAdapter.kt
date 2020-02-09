@@ -1,4 +1,4 @@
-package com.andruid.magic.helpfulsense.util
+package com.andruid.magic.helpfulsense.ui.util
 
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter

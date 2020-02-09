@@ -28,9 +28,9 @@ class AlertWidget : AppWidgetProvider() {
         }
     }
 
-    override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         for (appWidgetId in requireNotNull(appWidgetIds, { "App Widget IDs is null" }))
-            updateAppWidget(requireNotNull(context), requireNotNull(appWidgetManager), appWidgetId)
+            updateAppWidget(context, appWidgetManager, appWidgetId)
     }
 }

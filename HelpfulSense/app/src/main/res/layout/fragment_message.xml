@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="10dp"
-            app:layout_constraintHeight_percent="0.6"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/sendBtn">
+            app:layout_constraintBottom_toTopOf="@id/sendBtn"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintTop_toTopOf="parent">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/messageET"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textCapSentences"
-                android:hint="@string/enter_message"
                 android:gravity="top|start"
-                android:padding="5dp"
-                tools:ignore="Autofill"  />
+                android:hint="@string/enter_message"
+                android:inputType="textCapSentences"
+                android:padding="5dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/sendBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
             android:background="@drawable/round_btn"
-            android:padding="5dp"
-            android:textColor="@android:color/primary_text_dark"
-            android:textAllCaps="false"
             android:drawableEnd="@android:drawable/ic_menu_send"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="5dp"
+            android:text="@string/send"
+            android:textAllCaps="false"
+            android:textColor="@android:color/primary_text_dark"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/messageInput"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/messageInput" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

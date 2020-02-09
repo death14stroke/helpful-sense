@@ -2,22 +2,23 @@ package com.andruid.magic.helpfulsense.service
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.app.Service
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import androidx.annotation.RequiresPermission
-import androidx.core.content.getSystemService
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_LOC_SMS
 import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
 import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
 import com.andruid.magic.helpfulsense.data.KEY_MESSAGE
+import com.andruid.magic.helpfulsense.ui.util.buildNotification
+import com.andruid.magic.helpfulsense.ui.util.buildProgressNotification
 import com.andruid.magic.helpfulsense.util.*
 import com.github.nisrulz.sensey.Sensey
 import com.github.nisrulz.sensey.ShakeDetector.ShakeListener
@@ -32,6 +33,9 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import splitties.systemservices.locationManager
+import splitties.systemservices.notificationManager
 import splitties.toast.toast
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -45,6 +49,7 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
     private val job = Job()
+    private val serviceScope = CoroutineScope(coroutineContext)
 
     private val locationCallback = MyLocationCallback()
     private val googleApiClient by lazy {
@@ -54,12 +59,32 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
                 .addOnConnectionFailedListener(this)
                 .build()
     }
-
-    private lateinit var locationRequest: LocationRequest
+    private val locationRequest = LocationRequest.create().apply {
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        interval = 1000
+        fastestInterval = 1000
+        numUpdates = 1
+    }
 
     private var apiConnected = false
     private var message = ""
     private var startIntent: Intent? = null
+
+    private val gpsReceiver = object : BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action) {
+                requestLocation()
+                unregisterReceiver(this)
+            }
+        }
+    }
+
+    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
+    private fun requestLocation() {
+        LocationServices.getFusedLocationProviderClient(applicationContext)
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -95,12 +120,6 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
 
     override fun onConnected(bundle: Bundle?) {
         apiConnected = true
-        locationRequest = LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(1000)
-                .setFastestInterval(1000)
-                .setNumUpdates(1)
-        val notificationManager = getSystemService<NotificationManager>()!!
         notificationManager.notify(NOTI_ID, buildNotification().build())
         startIntent?.let {
             handleIntent(it)
@@ -116,7 +135,6 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
 
     override fun onShakeDetected() {}
 
-    @SuppressLint("MissingPermission")
     override fun onShakeStopped() {
         Timber.d("onShakeStopped: ")
         message = getString(R.string.shake_msg)
@@ -146,7 +164,6 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         Sensey.getInstance().startShakeDetection(threshold.toFloat(), timeStop.toLong(), this)
     }
 
-    @SuppressLint("MissingPermission")
     private fun handleIntent(intent: Intent) {
         when (intent.action) {
             ACTION_LOC_SMS -> {
@@ -162,10 +179,15 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         }
     }
 
-    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
+    @SuppressLint("MissingPermission")
     private fun startLocationReq() {
-        LocationServices.getFusedLocationProviderClient(applicationContext)
-                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            requestLocation()
+        else {
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+            registerReceiver(gpsReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+        }
     }
 
     private inner class MyLocationCallback : LocationCallback() {
@@ -173,7 +195,7 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
             super.onLocationResult(locationResult)
             val loc = locationResult.lastLocation
             Timber.d("loc obtained")
-            sendSMS(loc, message)
+            serviceScope.launch { sendSMS(loc, message) }
         }
     }
 }

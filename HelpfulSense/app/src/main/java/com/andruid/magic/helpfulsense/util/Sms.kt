@@ -9,12 +9,14 @@ import android.telephony.SmsManager
 import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.service.SensorService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 fun Location.getMapsUrl() = "http://maps.google.com/?q=${latitude},$longitude"
 
-fun Context.sendSMS(location: Location, msg: String) {
-    val message = msg + location.getMapsUrl()
+suspend fun Context.sendSMS(location: Location, msg: String) {
+    val message = "$msg ${location.getMapsUrl()}"
     val smsManager = SmsManager.getDefault()
     val parts = smsManager.divideMessage(message)
     val intent = Intent(this, SensorService::class.java).apply {
@@ -25,7 +27,7 @@ fun Context.sendSMS(location: Location, msg: String) {
     else
         PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     Timber.d("before sending sms")
-    val contacts = DbRepository.getInstance().fetchContacts()
+    val contacts = withContext(Dispatchers.IO) { DbRepository.getInstance().fetchContacts() }
     for (contact in contacts) {
         for (phone in contact.phoneNumbers) {
             smsManager.sendMultipartTextMessage(phone.number, null, parts,

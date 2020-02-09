@@ -19,9 +19,12 @@ import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
+import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
+import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.util.openAddActionDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
-import com.andruid.magic.helpfulsense.util.*
-import eu.davidea.flexibleadapter.helpers.EmptyViewHelper
+import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
+import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -52,13 +55,12 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_alert, container, false)
         binding.apply {
-            emptyLayout.emptyView.setOnClickListener {
-                childFragmentManager.openAddActionDialog(getString(R.string.add_action), ACTION_ADD, null)
-            }
-            EmptyViewHelper.create(actionAdapter, emptyLayout.emptyView)
             recyclerView.apply {
                 adapter = actionAdapter
                 itemAnimator = DefaultItemAnimator()
+                setEmptyViewClickListener {
+                    childFragmentManager.openAddActionDialog(getString(R.string.add_action), ACTION_ADD, null)
+                }
             }
             actionAdapter.apply {
                 isLongPressDragEnabled = true
@@ -136,7 +138,7 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
 
     @OnShowRationale(Manifest.permission.SEND_SMS)
     fun showRationale(request: PermissionRequest) {
-        requireContext().buildInfoDialog(R.string.sms_permission, request).show()
+        buildInfoDialog(R.string.sms_permission, request).show()
     }
 
     @OnPermissionDenied(Manifest.permission.SEND_SMS)
@@ -146,6 +148,6 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
 
     @OnNeverAskAgain(Manifest.permission.SEND_SMS)
     fun showSettingsDialog() {
-        requireContext().buildSettingsDialog(R.string.sms_permission).show()
+        buildSettingsDialog(R.string.sms_permission).show()
     }
 }

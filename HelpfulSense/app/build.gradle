@@ -71,7 +71,8 @@ dependencies {
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.6.0"
 
     implementation "com.louiscad.splitties:splitties-alertdialog-appcompat:$splitties_version"
-    implementation("com.louiscad.splitties:splitties-toast:$splitties_version")
+    implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
+    implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
 

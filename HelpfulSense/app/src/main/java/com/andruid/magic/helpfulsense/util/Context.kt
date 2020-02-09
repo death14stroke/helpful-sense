@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -12,6 +13,7 @@ import androidx.core.content.res.use
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.model.Category
+import com.andruid.magic.helpfulsense.ui.custom.EmptyRecyclerView
 
 fun Context.color(color: Int) =
         ContextCompat.getColor(this, color)
@@ -70,4 +72,12 @@ fun Context.getCategoryFromRes(): List<Category> {
     for (i in icons.indices)
         categories.add(Category(categoryNames[i], icons[i], colors[i]))
     return categories.toList()
+}
+
+fun View.hide() {
+    visibility = View.GONE
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
 }

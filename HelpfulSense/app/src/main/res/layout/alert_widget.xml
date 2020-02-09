@@ -4,29 +4,32 @@
     android:background="#5B000000"
     android:orientation="horizontal"
     android:weightSum="3">
+
     <ImageButton
         android:id="@+id/activityBtn"
+        style="?android:borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:contentDescription="@string/app_name"
         android:src="@mipmap/ic_launcher_foreground"
-        android:tint="@android:color/white"
-        style="?android:borderlessButtonStyle"
-        android:contentDescription="@string/app_name"/>
+        android:tint="@android:color/white" />
+
     <ImageButton
         android:id="@+id/alertBtn"
+        style="?android:borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_alert"
-        style="?android:borderlessButtonStyle"
-        android:contentDescription="@string/app_name"/>
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_alert" />
+
     <ImageButton
         android:id="@+id/serviceBtn"
+        style="?android:borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_sensor"
-        style="?android:borderlessButtonStyle"
-        android:contentDescription="@string/app_name"/>
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_sensor" />
 </LinearLayout>
