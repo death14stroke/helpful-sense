@@ -21,8 +21,6 @@
     <string name="actions_empty">No actions added</string>
     <string name="pref_threshold">pref_threshold</string>
     <string name="pref_time_stop">pref_time_stop</string>
-    <string name="def_threshold">10</string>
-    <string name="def_time_stop">5</string>
     <string name="empty_contacts">No contacts added</string>
     <string name="edit_action">Edit action</string>
     <string name="key_tab">key_tab</string>
@@ -34,4 +32,18 @@
     <string name="contact_permission">Select your most trusted contacts who will receive your emergency texts.</string>
     <string name="low_battery_message">Battery low.</string>
     <string name="disabled">Disabled</string>
+    <string name="safety_service_title">Safety Service</string>
+    <string name="safety_service_text">We are ready for your safety!</string>
+    <string name="stop">Stop</string>
+    <string name="progress_noti_title">Starting service</string>
+    <string name="progress_noti_text">Please wait while we initialize your sensors and GPS…</string>
+    <string name="sms_sent">SMS sent!</string>
+    <string name="quick_actions_title">Quick actions</string>
+    <string name="quick_actions_desc">Save custom messages to send in case of emergency with location at one tap</string>
+    <string name="autostart_title">Battery and boot</string>
+    <string name="autostart_desc">Start listening for sensors when device is booted up. Send message when battery low so your loved ones don\'t worry</string>
+    <string name="quick_gestures_title">Quick gestures</string>
+    <string name="quick_gestures_desc">Shake your phone to send emergency SMS to trusted contacts</string>
+    <string name="emergency_contacts_title">Select contacts</string>
+    <string name="emergency_contacts_desc">Select contacts you trust to send your location and message to get help</string>
 </resources>

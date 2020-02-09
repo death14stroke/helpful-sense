@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="true">
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".ui.activity.SplashActivity"
             android:launchMode="singleTop"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -30,23 +30,19 @@
         </activity>
 
         <activity
-            android:name=".activity.IntroActivity"
+            android:name=".ui.activity.IntroActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/FullScreenTheme" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".service.UpdateIntentService"
-            android:exported="false" />
 
         <service
             android:name=".service.SensorService"

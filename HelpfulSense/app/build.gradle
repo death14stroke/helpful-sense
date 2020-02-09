@@ -1,10 +1,14 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.andruid.magic.helpfulsense"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -16,24 +20,42 @@ android {
         }
     }
     dataBinding {
-        enabled true
+        enabled = true
+    }
+    androidExtensions {
+        experimental = true
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
+    def room_version = "2.2.3"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation "androidx.core:core-ktx:1.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.fragment:fragment-ktx:1.2.1"
+
+    implementation 'androidx.appcompat:appcompat:1.2.0-alpha02'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha02'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0-alpha02'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -45,8 +67,11 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation "org.permissionsdispatcher:permissionsdispatcher:4.5.0"
-    annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:4.5.0"
+    implementation "org.permissionsdispatcher:permissionsdispatcher:4.6.0"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.6.0"
+
+    implementation "com.louiscad.splitties:splitties-alertdialog-appcompat:$splitties_version"
+    implementation("com.louiscad.splitties:splitties-toast:$splitties_version")
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-2'
 

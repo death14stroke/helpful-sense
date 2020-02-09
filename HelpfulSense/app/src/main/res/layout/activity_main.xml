@@ -5,11 +5,11 @@
         android:layout_height="match_parent"
         android:background="@color/colorBg"
         android:fitsSystemWindows="true">
-        <com.andruid.magic.helpfulsense.ui.NonSwipeableViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="64dp"/>
+            android:layout_marginBottom="64dp" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/senseBtn"
             android:layout_width="wrap_content"

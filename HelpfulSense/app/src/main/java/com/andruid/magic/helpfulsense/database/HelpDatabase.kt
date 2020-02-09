@@ -1,0 +1,38 @@
+package com.andruid.magic.helpfulsense.database
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.andruid.magic.helpfulsense.database.dao.ActionDao
+import com.andruid.magic.helpfulsense.database.dao.ContactDao
+import com.andruid.magic.helpfulsense.database.entity.Action
+import com.andruid.magic.helpfulsense.database.entity.Contact
+
+@Database(entities = [Action::class, Contact::class], version = 1)
+@TypeConverters(Converter::class)
+abstract class HelpDatabase : RoomDatabase() {
+    companion object {
+        @Volatile
+        private lateinit var instance: HelpDatabase
+        private val LOCK = Any()
+
+        operator fun invoke(context: Context): HelpDatabase {
+            if (!::instance.isInitialized)
+                synchronized(LOCK) {
+                    instance = buildDatabase(context)
+                }
+            return instance
+        }
+
+        private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
+                HelpDatabase::class.java, "help-sense.db")
+                .build()
+
+    }
+
+    abstract fun actionDao(): ActionDao
+
+    abstract fun contactDao(): ContactDao
+}

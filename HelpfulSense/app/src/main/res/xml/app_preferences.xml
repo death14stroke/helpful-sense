@@ -18,13 +18,13 @@
         <EditTextPreference
             android:key="@string/pref_threshold"
             android:title="Threshold"
-            android:defaultValue="@string/def_threshold"
+            android:defaultValue="@integer/def_threshold"
             android:inputType="number"
             app:iconSpaceReserved="false" />
         <EditTextPreference
             android:key="@string/pref_time_stop"
             android:title="Time before shake stopped"
-            android:defaultValue="@string/def_time_stop"
+            android:defaultValue="@integer/def_time_stop"
             android:inputType="number"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="contact"
-            type="com.wafflecopter.multicontactpicker.ContactResult" />
+            type="com.andruid.magic.helpfulsense.database.entity.Contact" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frontView"
@@ -15,7 +15,7 @@
             android:id="@+id/roundLetterView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:firstLetter="@{contact.displayName}"
+            app:firstLetter="@{contact.name}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -23,7 +23,7 @@
             android:id="@+id/nameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{contact.displayName}"
+            android:text="@{contact.name}"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
             android:textSize="15sp"
