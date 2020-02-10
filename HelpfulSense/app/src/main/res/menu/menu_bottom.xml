@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_alert"
-        android:title="@string/alert"
+    <item
+        android:id="@+id/menu_alert"
         android:icon="@drawable/ic_alert"
+        android:title="@string/alert"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_message"
-        android:title="@string/message"
+    <item
+        android:id="@+id/menu_message"
         android:icon="@drawable/ic_message"
+        android:title="@string/message"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_contacts"
-        android:title="@string/contacts"
+    <item
+        android:id="@+id/menu_contacts"
         android:icon="@drawable/ic_contacts"
+        android:title="@string/contacts"
         app:showAsAction="ifRoom" />
 </menu>

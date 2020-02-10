@@ -11,7 +11,11 @@ import com.andruid.magic.helpfulsense.util.show
 
 class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : RecyclerView(context, attrs, defStyleAttr) {
-    private var emptyView: View
+    private lateinit var emptyView: View
+
+    private var emptyViewID: Int
+    private var emptyClickListener: ((View) -> Unit)? = null
+
     private val emptyObserver = object : AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
@@ -37,9 +41,16 @@ class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: Attri
     init {
         val a = context.obtainStyledAttributes(
                 attrs, R.styleable.EmptyRecyclerView, defStyleAttr, 0)
-        val emptyViewID = a.getResourceIdOrThrow(R.styleable.EmptyRecyclerView_emptyView)
-        emptyView = findViewById(emptyViewID)
+        emptyViewID = a.getResourceIdOrThrow(R.styleable.EmptyRecyclerView_emptyView)
         a.recycle()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        emptyView = (parent as View).findViewById<View>(emptyViewID).apply {
+            setOnClickListener(emptyClickListener)
+        }
+        emptyObserver.onChanged()
     }
 
     override fun setAdapter(adapter: Adapter<*>?) {
@@ -51,10 +62,12 @@ class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun setEmptyViewClickListener(l: (View) -> Unit) {
-        emptyView.setOnClickListener(l)
+        emptyClickListener = l
     }
 
     private fun toggleVisibility() {
+        if (!::emptyView.isInitialized)
+            return
         if (adapter?.itemCount == 0) {
             emptyView.show()
             hide()

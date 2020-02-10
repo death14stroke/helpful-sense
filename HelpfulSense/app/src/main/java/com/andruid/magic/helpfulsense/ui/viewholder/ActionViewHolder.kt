@@ -2,9 +2,9 @@ package com.andruid.magic.helpfulsense.ui.viewholder
 
 import android.view.View
 import com.andruid.magic.helpfulsense.data.ACTION_SMS
+import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.LayoutActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
-import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.util.drawable
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible

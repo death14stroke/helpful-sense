@@ -10,8 +10,8 @@ import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
-import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import permissions.dispatcher.*
 import splitties.toast.toast

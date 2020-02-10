@@ -22,5 +22,5 @@ object Converter {
     @JvmStatic
     @TypeConverter
     fun stringToNumbers(numbers: String): List<PhoneNumber> =
-            Gson().fromJson(numbers, object: TypeToken<List<PhoneNumber>>(){}.type)
+            Gson().fromJson(numbers, object : TypeToken<List<PhoneNumber>>() {}.type)
 }

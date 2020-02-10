@@ -6,6 +6,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.telephony.SmsManager
+import android.util.Log
 import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.service.SensorService
@@ -29,9 +30,12 @@ suspend fun Context.sendSMS(location: Location, msg: String) {
     Timber.d("before sending sms")
     val contacts = withContext(Dispatchers.IO) { DbRepository.getInstance().fetchContacts() }
     for (contact in contacts) {
-        for (phone in contact.phoneNumbers) {
-            smsManager.sendMultipartTextMessage(phone.number, null, parts,
-                    arrayListOf<PendingIntent>(sentIntent), null)
+        Timber.d("${contact.name} : ${contact.phoneNumbers.size} numbers")
+        for (phone in contact.phoneNumbers.distinctBy { phoneNumber -> phoneNumber.number }) {
+            Timber.d("sendSMS: ${contact.name} : ${phone.number}")
+            //TODO: uncomment to send actual sms
+            /*smsManager.sendMultipartTextMessage(phone.number, null, parts,
+                    arrayListOf<PendingIntent>(sentIntent), null)*/
         }
     }
 }

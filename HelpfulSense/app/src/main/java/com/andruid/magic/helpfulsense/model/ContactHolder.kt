@@ -22,9 +22,9 @@ data class ContactHolder(
 
     override fun getLayoutRes() = R.layout.layout_contact
 
-    override fun isSwipeable() = true
-
     override fun isDraggable() = true
+
+    override fun isSwipeable() = true
 }
 
 fun Contact.toContactHolder() = ContactHolder(this)
