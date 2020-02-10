@@ -13,7 +13,6 @@ import androidx.core.content.res.use
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.model.Category
-import com.andruid.magic.helpfulsense.ui.custom.EmptyRecyclerView
 
 fun Context.color(color: Int) =
         ContextCompat.getColor(this, color)

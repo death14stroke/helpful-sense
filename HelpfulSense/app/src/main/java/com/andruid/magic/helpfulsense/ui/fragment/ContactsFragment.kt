@@ -19,9 +19,9 @@ import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.model.ContactHolder
 import com.andruid.magic.helpfulsense.model.toContactHolder
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
-import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
 import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -60,7 +60,7 @@ class ContactsFragment : Fragment() {
                 adapter = contactsAdapter
                 itemAnimator = DefaultItemAnimator()
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-                setEmptyViewClickListener { openContactsPicker() }
+                setEmptyViewClickListener { openContactsPickerWithPermissionCheck() }
             }
             contactsAdapter.isLongPressDragEnabled = true
         }

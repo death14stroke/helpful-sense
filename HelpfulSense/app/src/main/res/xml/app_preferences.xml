@@ -5,27 +5,27 @@
         android:title="SMS"
         app:iconSpaceReserved="false">
         <SwitchPreference
-            android:key="@string/pref_low_battery"
-            android:title="SMS when low battery"
             android:defaultValue="false"
-            android:summaryOn="Let trusted people know battery low"
+            android:key="@string/pref_low_battery"
             android:summaryOff="Don't let anyone know"
+            android:summaryOn="Let trusted people know battery low"
+            android:title="SMS when low battery"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:title="Shake phone"
         app:iconSpaceReserved="false">
         <EditTextPreference
-            android:key="@string/pref_threshold"
-            android:title="Threshold"
             android:defaultValue="@integer/def_threshold"
             android:inputType="number"
+            android:key="@string/pref_threshold"
+            android:title="Threshold"
             app:iconSpaceReserved="false" />
         <EditTextPreference
-            android:key="@string/pref_time_stop"
-            android:title="Time before shake stopped"
             android:defaultValue="@integer/def_time_stop"
             android:inputType="number"
+            android:key="@string/pref_time_stop"
+            android:title="Time before shake stopped"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

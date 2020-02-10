@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_edit_contacts"
-        android:title="@string/edit_contacts"
+    <item
+        android:id="@+id/menu_edit_contacts"
         android:icon="@drawable/ic_edit_contacts"
+        android:title="@string/edit_contacts"
         app:showAsAction="never" />
-    <item android:id="@+id/menu_help"
-        android:title="@string/help"
+    <item
+        android:id="@+id/menu_help"
         android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help"
         app:showAsAction="never" />
 </menu>

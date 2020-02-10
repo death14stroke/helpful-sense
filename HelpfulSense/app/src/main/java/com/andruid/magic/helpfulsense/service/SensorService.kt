@@ -19,7 +19,10 @@ import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
 import com.andruid.magic.helpfulsense.data.KEY_MESSAGE
 import com.andruid.magic.helpfulsense.ui.util.buildNotification
 import com.andruid.magic.helpfulsense.ui.util.buildProgressNotification
-import com.andruid.magic.helpfulsense.util.*
+import com.andruid.magic.helpfulsense.util.getShakeStopTime
+import com.andruid.magic.helpfulsense.util.getShakeThreshold
+import com.andruid.magic.helpfulsense.util.hasLocationPermissions
+import com.andruid.magic.helpfulsense.util.sendSMS
 import com.github.nisrulz.sensey.Sensey
 import com.github.nisrulz.sensey.ShakeDetector.ShakeListener
 import com.google.android.gms.common.ConnectionResult

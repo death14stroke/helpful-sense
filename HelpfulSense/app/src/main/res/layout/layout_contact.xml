@@ -1,46 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="contact"
             type="com.andruid.magic.helpfulsense.database.entity.Contact" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frontView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp">
+
         <com.github.pavlospt.roundedletterview.RoundedLetterView
             android:id="@+id/roundLetterView"
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:firstLetter="@{contact.name}"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/nameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:text="@{contact.name}"
-            android:textStyle="bold"
             android:textColor="@color/colorAccent"
             android:textSize="15sp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/roundLetterView"
-            android:padding="5dp" />
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/phoneTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:text="@{contact.phoneNumbers.get(0).getNumber()}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="13sp"
             android:textStyle="italic"
-            android:padding="5dp"
-            app:layout_constraintTop_toBottomOf="@id/nameTV"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/roundLetterView"/>
+            app:layout_constraintStart_toEndOf="@id/roundLetterView"
+            app:layout_constraintTop_toBottomOf="@id/nameTV" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

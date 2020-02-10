@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.andruid.magic.helpfulsense.model.Category
+import com.andruid.magic.helpfulsense.util.color
+import com.andruid.magic.helpfulsense.util.drawable
 import com.github.pavlospt.roundedletterview.RoundedLetterView
 import com.wafflecopter.multicontactpicker.ColorUtils
 

@@ -10,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.*
+import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.DialogActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
-import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.model.Category
 import com.andruid.magic.helpfulsense.ui.adapter.MySpinnerAdapter
 import com.andruid.magic.helpfulsense.util.getCategoryFromRes
@@ -66,8 +66,8 @@ class ActionDialogFragment : DialogFragment() {
                     val message = binding.messageET.text.toString().trim()
                     val category = binding.spinner.selectedItem as Category
                     Timber.d("selected category %s", category.name)
-                    val action = action?.copy(message = message, category = category) ?:
-                    Action(message = message, category = category)
+                    val action = action?.copy(message = message, category = category)
+                            ?: Action(message = message, category = category)
                     command = if (ACTION_SWIPE == command) ACTION_EDIT else command
                     EventBus.getDefault().post(ActionEvent(action, command))
                 }
