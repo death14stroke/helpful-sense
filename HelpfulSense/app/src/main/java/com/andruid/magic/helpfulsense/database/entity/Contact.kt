@@ -16,5 +16,5 @@ data class Contact(
 fun ContactResult.toContact(): Contact {
     return Contact(contactID = contactID,
             name = displayName,
-            phoneNumbers = phoneNumbers)
+            phoneNumbers = phoneNumbers.distinctBy { phoneNumber -> phoneNumber.number })
 }

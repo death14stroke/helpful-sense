@@ -16,12 +16,12 @@ import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_LOC_SMS
 import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
 import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
-import com.andruid.magic.helpfulsense.data.KEY_MESSAGE
+import com.andruid.magic.helpfulsense.data.EXTRA_MESSAGE
 import com.andruid.magic.helpfulsense.ui.util.buildNotification
 import com.andruid.magic.helpfulsense.ui.util.buildProgressNotification
 import com.andruid.magic.helpfulsense.util.getShakeStopTime
 import com.andruid.magic.helpfulsense.util.getShakeThreshold
-import com.andruid.magic.helpfulsense.util.hasLocationPermissions
+import com.andruid.magic.helpfulsense.util.hasLocationPermission
 import com.andruid.magic.helpfulsense.util.sendSMS
 import com.github.nisrulz.sensey.Sensey
 import com.github.nisrulz.sensey.ShakeDetector.ShakeListener
@@ -76,10 +76,8 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     private val gpsReceiver = object : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
-            if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action) {
+            if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action)
                 requestLocation()
-                unregisterReceiver(this)
-            }
         }
     }
 
@@ -117,6 +115,11 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         googleApiClient.disconnect()
         LocationServices.getFusedLocationProviderClient(applicationContext)
                 .removeLocationUpdates(locationCallback)
+        try {
+            unregisterReceiver(gpsReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -141,7 +144,7 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     override fun onShakeStopped() {
         Timber.d("onShakeStopped: ")
         message = getString(R.string.shake_msg)
-        if (apiConnected && hasLocationPermissions())
+        if (apiConnected && hasLocationPermission())
             startLocationReq()
     }
 
@@ -170,8 +173,8 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     private fun handleIntent(intent: Intent) {
         when (intent.action) {
             ACTION_LOC_SMS -> {
-                message = intent.extras?.getString(KEY_MESSAGE) ?: ""
-                if (apiConnected && hasLocationPermissions())
+                message = intent.extras?.getString(EXTRA_MESSAGE) ?: ""
+                if (apiConnected && hasLocationPermission())
                     startLocationReq()
             }
             ACTION_STOP_SERVICE -> {

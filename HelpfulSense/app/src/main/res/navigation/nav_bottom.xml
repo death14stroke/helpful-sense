@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_bottom"
+    app:startDestination="@id/alertFragment">
+
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.andruid.magic.helpfulsense.ui.fragment.AlertFragment"
+        android:label="AlertFragment"
+        tools:layout="@layout/fragment_alert" >
+        <action
+            android:id="@+id/action_alertFragment_to_menu_add_action"
+            app:destination="@id/menu_add_action" />
+    </fragment>
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.andruid.magic.helpfulsense.ui.fragment.MessageFragment"
+        android:label="MessageFragment"
+        tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.andruid.magic.helpfulsense.ui.fragment.ContactsFragment"
+        android:label="ContactsFragment"
+        tools:layout="@layout/fragment_contacts" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.andruid.magic.helpfulsense.ui.fragment.SettingsFragment"
+        android:label="SettingsFragment">
+    </fragment>
+    <activity
+        android:id="@+id/menu_help"
+        android:name="com.andruid.magic.helpfulsense.ui.activity.IntroActivity"
+        android:label="IntroActivity" />
+    <dialog
+        android:id="@+id/menu_add_action"
+        android:name="com.andruid.magic.helpfulsense.ui.fragment.ActionDialogFragment"
+        android:label="ActionDialogFragment"
+        tools:layout="@layout/dialog_action">
+        <argument
+            android:name="command"
+            android:defaultValue="action_swipe"
+            app:argType="string" />
+        <argument
+            android:name="action"
+            android:defaultValue="@null"
+            app:argType="com.andruid.magic.helpfulsense.database.entity.Action"
+            app:nullable="true" />
+    </dialog>
+</navigation>

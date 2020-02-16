@@ -1,9 +1,8 @@
 package com.andruid.magic.helpfulsense.ui.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.andruid.magic.helpfulsense.database.DbRepository
 
-class ActionViewModel(application: Application) : AndroidViewModel(application) {
+class ActionViewModel : ViewModel() {
     val actionLiveData = DbRepository.getInstance().fetchActions()
 }

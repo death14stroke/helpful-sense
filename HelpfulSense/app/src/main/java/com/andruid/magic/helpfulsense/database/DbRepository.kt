@@ -34,10 +34,12 @@ class DbRepository {
     fun insertAll(contacts: List<Contact>) {
         val oldContacts = fetchContacts()
         val deletedContacts = oldContacts.minus(contacts)
-        deletedContacts.forEach {
-            database.contactDao().delete(it.contactID)
-        }
+        deletedContacts.forEach { database.contactDao().delete(it) }
         database.contactDao().insertAll(contacts)
+    }
+
+    fun delete(contact: Contact) {
+        database.contactDao().delete(contact)
     }
 
     fun fetchLiveContacts() = database.contactDao().getLiveContacts()

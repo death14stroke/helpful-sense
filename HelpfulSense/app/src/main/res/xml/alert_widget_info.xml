@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/alert_widget"
     android:initialLayout="@layout/alert_widget"
     android:minWidth="180dp"
@@ -7,4 +8,4 @@
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
-    android:widgetCategory="home_screen|keyguard"></appwidget-provider>
+    android:widgetCategory="home_screen|keyguard" />

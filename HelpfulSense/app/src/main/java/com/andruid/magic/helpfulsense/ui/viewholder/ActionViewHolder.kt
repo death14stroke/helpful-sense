@@ -30,7 +30,7 @@ class ActionViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>?) 
 
     override fun getFrontView() = binding.frontView
 
-    override fun getRearLeftView() = binding.rearLeftView
+    override fun getRearLeftView() = binding.rearLeftLayout.rearLeftView
 
     override fun getRearRightView() = binding.rearRightLayout.rearView
 }

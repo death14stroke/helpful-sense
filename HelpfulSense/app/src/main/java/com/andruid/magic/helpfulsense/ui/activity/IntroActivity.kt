@@ -1,5 +1,6 @@
 package com.andruid.magic.helpfulsense.ui.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -26,6 +27,10 @@ class IntroActivity : AppIntro() {
                 getString(R.string.quick_gestures_desc), R.drawable.ic_message, R.color.colorTab2).build()))
         addSlide(AppIntroFragment.newInstance(buildSliderPage(getString(R.string.emergency_contacts_title),
                 getString(R.string.emergency_contacts_desc), R.drawable.ic_contacts, R.color.colorTab3).build()))
+
+        askForPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
+        askForPermissions(arrayOf(Manifest.permission.SEND_SMS), 3)
+        askForPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 4)
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {
@@ -40,7 +45,7 @@ class IntroActivity : AppIntro() {
 
     private fun goToMainActivity() {
         firstTimeDone()
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
 

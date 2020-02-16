@@ -1,26 +1,22 @@
 package com.andruid.magic.helpfulsense.ui.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.preference.EditTextPreference
 import androidx.preference.EditTextPreference.OnBindEditTextListener
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.util.getShakeStopTime
 import com.andruid.magic.helpfulsense.util.getShakeThreshold
 
 class SettingsFragment : PreferenceFragmentCompat(), OnBindEditTextListener, Preference.OnPreferenceChangeListener {
-    companion object {
-        fun newInstance() = SettingsFragment()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -47,9 +43,8 @@ class SettingsFragment : PreferenceFragmentCompat(), OnBindEditTextListener, Pre
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_help)
-            startActivity(Intent(context, IntroActivity::class.java))
-        return true
+        val navController = findNavController()
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
     override fun onBindEditText(editText: EditText) {

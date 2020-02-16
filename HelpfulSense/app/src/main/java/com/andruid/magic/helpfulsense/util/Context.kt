@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.res.use
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.model.Category
@@ -30,10 +31,9 @@ fun Context.getShakeStopTime(): Int {
             resources.getInteger(R.integer.def_time_stop).toString())!!.toInt()
 }
 
-fun Context.hasLocationPermissions(): Boolean {
+fun Context.hasLocationPermission(): Boolean {
     return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            PackageManager.PERMISSION_GRANTED
 }
 
 fun Context.isFirstTime() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -51,6 +51,10 @@ fun Context.startFgOrBgService(intent: Intent) {
         startForegroundService(intent)
     else
         startService(intent)
+}
+
+fun Fragment.startFgOrBgService(intent: Intent) {
+    requireContext().startFgOrBgService(intent)
 }
 
 fun Context.getCategoryFromRes(): List<Category> {

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.andruid.magic.helpfulsense.R
@@ -21,7 +23,6 @@ import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.ui.util.openAddActionDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
 import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
@@ -36,10 +37,6 @@ import timber.log.Timber
 
 @RuntimePermissions
 class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
-    companion object {
-        fun newInstance() = AlertFragment()
-    }
-
     private lateinit var binding: FragmentAlertBinding
 
     private val actionAdapter = ActionAdapter(this)
@@ -59,7 +56,8 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
                 adapter = actionAdapter
                 itemAnimator = DefaultItemAnimator()
                 setEmptyViewClickListener {
-                    childFragmentManager.openAddActionDialog(getString(R.string.add_action), ACTION_ADD, null)
+                    val navController = findNavController()
+                    navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_ADD, null))
                 }
             }
             actionAdapter.apply {
@@ -94,11 +92,10 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_add_action -> childFragmentManager.openAddActionDialog(getString(R.string.add_action),
-                    ACTION_ADD, null)
+            R.id.menu_add_action -> AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_ADD, null)
             R.id.menu_help -> startActivity(Intent(context, IntroActivity::class.java))
         }
-        return true
+        return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {
@@ -113,7 +110,10 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
             when (direction) {
                 ItemTouchHelper.LEFT, ItemTouchHelper.START ->
                     lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().delete(action) }
-                else -> childFragmentManager.openAddActionDialog(getString(R.string.edit_action), ACTION_SWIPE, action)
+                else -> {
+                    val navController = findNavController()
+                    navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_SWIPE, action))
+                }
             }
         }
     }
@@ -130,23 +130,23 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
         }
     }
 
-    @NeedsPermission(Manifest.permission.SEND_SMS)
+    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun sendSMS(action: Action) {
         val intent = buildServiceSmsIntent(requireContext(), action.message)
-        requireContext().startFgOrBgService(intent)
+        startFgOrBgService(intent)
     }
 
-    @OnShowRationale(Manifest.permission.SEND_SMS)
+    @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun showRationale(request: PermissionRequest) {
         buildInfoDialog(R.string.sms_permission, request).show()
     }
 
-    @OnPermissionDenied(Manifest.permission.SEND_SMS)
+    @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun showDenied() {
         toast("Denied permission")
     }
 
-    @OnNeverAskAgain(Manifest.permission.SEND_SMS)
+    @OnNeverAskAgain(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun showSettingsDialog() {
         buildSettingsDialog(R.string.sms_permission).show()
     }

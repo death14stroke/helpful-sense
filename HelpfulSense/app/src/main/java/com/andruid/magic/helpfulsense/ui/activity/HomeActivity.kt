@@ -6,18 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.CONTACTS_PICKER_REQUEST
 import com.andruid.magic.helpfulsense.database.entity.toContact
-import com.andruid.magic.helpfulsense.databinding.ActivityMainBinding
+import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.service.SensorService
-import com.andruid.magic.helpfulsense.ui.adapter.ViewPagerAdapter
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.util.color
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
-import com.ashokvarma.bottomnavigation.BottomNavigationBar
-import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import org.greenrobot.eventbus.EventBus
 import permissions.dispatcher.*
@@ -25,27 +25,31 @@ import splitties.toast.toast
 import timber.log.Timber
 
 @RuntimePermissions
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class HomeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.senseBtn.setOnClickListener {
-            startSensorServiceWithPermissionCheck()
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        binding.apply {
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                bottomNavView.setBackgroundColor(color(when (destination.id) {
+                    R.id.alertFragment -> R.color.colorTab1
+                    R.id.messageFragment -> R.color.colorTab2
+                    R.id.contactsFragment -> R.color.colorTab3
+                    else -> R.color.colorTab4
+                }))
+            }
+            bottomNavView.setupWithNavController(navController)
+            senseBtn.setOnClickListener { startSensorServiceWithPermissionCheck() }
         }
-        val firstSelected = savedInstanceState?.getInt(getString(R.string.key_tab), 0) ?: 0
-        setBottomNav(firstSelected)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding.unbind()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(getString(R.string.key_tab), binding.viewPager.currentItem)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,43 +89,5 @@ class MainActivity : AppCompatActivity() {
     @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     fun showDenied() {
         toast("Permissions denied")
-    }
-
-    private fun setBottomNav(firstSelected: Int) {
-        val pagerAdapter = ViewPagerAdapter(this)
-        binding.apply {
-            viewPager.apply {
-                adapter = pagerAdapter
-                isUserInputEnabled = false
-            }
-            bottomNav.apply {
-                activeColor = R.color.colorPrimary
-                setMode(BottomNavigationBar.MODE_SHIFTING)
-                setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE)
-
-                addItem(BottomNavigationItem(R.drawable.ic_alert, getString(R.string.alert))
-                        .setActiveColorResource(R.color.colorTab1))
-                addItem(BottomNavigationItem(R.drawable.ic_message, getString(R.string.message))
-                        .setActiveColorResource(R.color.colorTab2))
-                addItem(BottomNavigationItem(R.drawable.ic_contacts, getString(R.string.contacts))
-                        .setActiveColorResource(R.color.colorTab3))
-                addItem(BottomNavigationItem(R.drawable.ic_settings, getString(R.string.settings))
-                        .setActiveColorResource(R.color.colorTab4))
-
-                setFirstSelectedPosition(firstSelected)
-                initialise()
-
-                isAutoHideEnabled = true
-                setFab(binding.senseBtn)
-                setTabSelectedListener(object : BottomNavigationBar.OnTabSelectedListener {
-                    override fun onTabSelected(position: Int) {
-                        binding.viewPager.currentItem = position
-                    }
-
-                    override fun onTabUnselected(position: Int) {}
-                    override fun onTabReselected(position: Int) {}
-                })
-            }
-        }
     }
 }

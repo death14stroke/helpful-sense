@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
 import com.andruid.magic.helpfulsense.service.SensorService
-import com.andruid.magic.helpfulsense.ui.activity.MainActivity
+import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import splitties.systemservices.notificationManager
 
@@ -35,7 +35,7 @@ fun Context.buildNotification(): NotificationCompat.Builder {
         action = ACTION_STOP_SERVICE
     }
     val alertIntent = buildServiceSmsIntent(this, getString(R.string.alert_msg))
-    val clickIntent = Intent(this@buildNotification, MainActivity::class.java)
+    val clickIntent = Intent(this@buildNotification, HomeActivity::class.java)
     return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -68,7 +68,7 @@ fun Context.buildProgressNotification(): NotificationCompat.Builder {
     val intent = Intent(this, SensorService::class.java).apply {
         action = ACTION_STOP_SERVICE
     }
-    val clickIntent = Intent(this, MainActivity::class.java)
+    val clickIntent = Intent(this, HomeActivity::class.java)
     return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

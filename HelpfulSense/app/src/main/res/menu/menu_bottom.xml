@@ -2,18 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_alert"
+        android:id="@id/alertFragment"
         android:icon="@drawable/ic_alert"
         android:title="@string/alert"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_message"
+        android:id="@id/messageFragment"
         android:icon="@drawable/ic_message"
         android:title="@string/message"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_contacts"
+        android:id="@id/contactsFragment"
         android:icon="@drawable/ic_contacts"
         android:title="@string/contacts"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"
         app:showAsAction="ifRoom" />
 </menu>

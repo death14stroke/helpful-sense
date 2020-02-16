@@ -21,10 +21,6 @@ data class ActionHolder(
             ActionViewHolder(view, adapter)
 
     override fun getLayoutRes() = R.layout.layout_action
-
-    override fun isDraggable() = true
-
-    override fun isSwipeable() = true
 }
 
 fun Action.toActionHolder() = ActionHolder(this)

@@ -1,6 +1,7 @@
 package com.andruid.magic.helpfulsense.ui.viewholder
 
 import android.view.View
+import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.database.entity.Contact
 import com.andruid.magic.helpfulsense.databinding.LayoutContactBinding
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -13,6 +14,7 @@ class ContactViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>?)
     fun bind(contact: Contact) {
         binding.apply {
             this.contact = contact
+            frontView.setBackgroundResource(R.color.colorBg)
             executePendingBindings()
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,7 +12,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:layout_margin="10dp"
         android:clickable="true"
         android:focusable="true"
@@ -21,18 +22,22 @@
 
         <include
             android:id="@+id/rear_left_layout"
-            layout="@layout/layout_swipe_delete" />
+            layout="@layout/layout_swipe_delete_left"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
         <include
             android:id="@+id/rear_right_layout"
-            layout="@layout/layout_swipe_delete" />
+            layout="@layout/layout_swipe_delete_right"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/frontView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="5dp"
-            android:background="@android:color/holo_green_light">
+            android:background="@color/colorBg">
 
             <com.github.pavlospt.roundedletterview.RoundedLetterView
                 android:id="@+id/roundLetterView"
@@ -49,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="@{contact.name}"
+                tools:text="John Doe"
                 android:textColor="@color/colorAccent"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -61,6 +67,7 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="@{contact.phoneNumbers.get(0).getNumber()}"
+                tools:text="+919876543210"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="13sp"
                 android:textStyle="italic"

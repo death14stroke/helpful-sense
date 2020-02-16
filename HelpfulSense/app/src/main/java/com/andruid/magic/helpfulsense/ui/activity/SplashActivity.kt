@@ -10,7 +10,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         startActivity(Intent(this, when (isFirstTime()) {
             true -> IntroActivity::class.java
-            false -> MainActivity::class.java
+            false -> HomeActivity::class.java
         }))
         finish()
     }

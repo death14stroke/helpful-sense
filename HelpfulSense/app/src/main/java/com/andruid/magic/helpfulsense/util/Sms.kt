@@ -6,7 +6,6 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.telephony.SmsManager
-import android.util.Log
 import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.service.SensorService

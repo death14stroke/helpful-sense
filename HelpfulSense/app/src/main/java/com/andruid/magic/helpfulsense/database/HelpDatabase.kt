@@ -27,7 +27,7 @@ abstract class HelpDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(context,
-                HelpDatabase::class.java, "help-sense.db")
+                HelpDatabase::class.java, "helpful-sense.db")
                 .build()
 
     }
