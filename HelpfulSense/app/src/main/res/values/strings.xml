@@ -39,6 +39,10 @@
     <string name="quick_gestures_desc">Shake your phone to send emergency SMS to trusted contacts</string>
     <string name="emergency_contacts_title">Select contacts</string>
     <string name="emergency_contacts_desc">Select contacts you trust to send your location and message to get help</string>
+    <string name="shortcut_alert_short_label">Alert</string>
+    <string name="shortcut_alert_long_label">Emergency alert</string>
+    <string name="alert_disabled_message">Emergency alert disabled</string>
+    <string name="action_disabled_message">Action disabled</string>
 
     <string name="pref_first" translatable="false">pref_first</string>
     <string name="pref_low_battery" translatable="false">pref_low_battery</string>

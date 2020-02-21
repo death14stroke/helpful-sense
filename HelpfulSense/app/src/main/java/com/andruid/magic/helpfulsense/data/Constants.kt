@@ -8,8 +8,9 @@ const val ACTION_DIALOG_CANCEL = "action_dialog_cancel"
 const val ACTION_SMS = "action_sms"
 const val ACTION_SWIPE = "action_swipe"
 
-const val EXTRA_MESSAGE = "com.andruid.magic.helpfulsense.message"
+const val ACTION_SHORTCUT_LAUNCH = "com.andruid.magic.helpfulsense.SHORTCUT_LAUNCH"
 
-const val ACTION_LOC_SMS = "com.andruid.magic.helpfulsense.LOCATION_SMS"
-const val ACTION_STOP_SERVICE = "com.andruid.magic.helpfulsense.STOP_SERVICE"
-const val ACTION_SMS_SENT = "com.andruid.magic.helpfulsense.SMS_SENT"
+const val EXTRA_SHORTCUT_MESSAGE = "shortcut_message"
+
+const val SHORTCUT_ALERT = "alert"
+const val SHORTCUT_ACTION = "action"

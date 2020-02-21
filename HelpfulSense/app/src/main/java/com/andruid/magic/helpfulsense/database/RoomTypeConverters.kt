@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wafflecopter.multicontactpicker.RxContacts.PhoneNumber
 
-object Converter {
+object RoomTypeConverters {
     @JvmStatic
     @TypeConverter
     fun catToString(category: Category): String = Gson().toJson(category)

@@ -1,4 +1,4 @@
-package com.andruid.magic.helpfulsense.ui.util
+package com.andruid.magic.locationsms.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,23 +7,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
-import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
-import com.andruid.magic.helpfulsense.service.SensorService
-import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
-import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
+import com.andruid.magic.locationsms.R
+import com.andruid.magic.locationsms.data.ACTION_STOP_SERVICE
+import com.andruid.magic.locationsms.service.SmsService
 import splitties.systemservices.notificationManager
 
 private const val CHANNEL_ID = "channel_sensor"
 private const val CHANNEL_NAME = "Sensor Service"
 
-fun Context.buildNotification(): NotificationCompat.Builder {
-    val importance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        NotificationManager.IMPORTANCE_HIGH
-    else {
-        0
+fun Context.buildNotification(phoneNumbers: List<String>, className: String, @DrawableRes icon: Int): NotificationCompat.Builder {
+    val importance = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NotificationManager.IMPORTANCE_LOW
+        else -> 0
     }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
             enableLights(true)
@@ -31,14 +30,14 @@ fun Context.buildNotification(): NotificationCompat.Builder {
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
-    val stopIntent = Intent(this, SensorService::class.java).apply {
-        action = ACTION_STOP_SERVICE
-    }
-    val alertIntent = buildServiceSmsIntent(this, getString(R.string.alert_msg))
-    val clickIntent = Intent(this@buildNotification, HomeActivity::class.java)
+    val stopIntent = Intent(this, SmsService::class.java)
+            .setAction(ACTION_STOP_SERVICE)
+    val alertIntent = buildServiceSmsIntent(this, getString(R.string.alert_msg), phoneNumbers, className, icon)
+    val clazz = Class.forName(className)
+    val clickIntent = Intent(this, clazz::class.java)
     return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(icon)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setOnlyAlertOnce(true)
             .setContentIntent(PendingIntent.getActivity(this, 0, clickIntent,
@@ -48,15 +47,14 @@ fun Context.buildNotification(): NotificationCompat.Builder {
             .setShowWhen(true)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.stop),
                     PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-            .addAction(R.drawable.ic_message, getString(R.string.alert),
+            .addAction(android.R.drawable.ic_dialog_email, getString(R.string.alert),
                     PendingIntent.getService(this, 0, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT))
 }
 
-fun Context.buildProgressNotification(): NotificationCompat.Builder {
-    val importance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        NotificationManager.IMPORTANCE_HIGH
-    else {
-        0
+fun Context.buildProgressNotification(@DrawableRes icon: Int): NotificationCompat.Builder {
+    val importance = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NotificationManager.IMPORTANCE_HIGH
+        else -> 0
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
@@ -65,17 +63,13 @@ fun Context.buildProgressNotification(): NotificationCompat.Builder {
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
-    val intent = Intent(this, SensorService::class.java).apply {
-        action = ACTION_STOP_SERVICE
-    }
-    val clickIntent = Intent(this, HomeActivity::class.java)
+    val intent = Intent(this, SmsService::class.java)
+            .setAction(ACTION_STOP_SERVICE)
     return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(icon)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setOnlyAlertOnce(true)
-            .setContentIntent(PendingIntent.getActivity(this, 0, clickIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT))
             .setContentTitle(getString(R.string.progress_noti_title))
             .setContentText(getString(R.string.progress_noti_text))
             .setProgress(0, 0, true)

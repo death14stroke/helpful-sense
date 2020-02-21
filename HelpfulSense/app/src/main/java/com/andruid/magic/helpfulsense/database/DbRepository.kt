@@ -3,6 +3,8 @@ package com.andruid.magic.helpfulsense.database
 import android.app.Application
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.database.entity.Contact
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DbRepository {
     companion object {
@@ -29,9 +31,11 @@ class DbRepository {
         database.actionDao().delete(action)
     }
 
-    fun fetchActions() = database.actionDao().getAllActions()
+    fun fetchLiveActions() = database.actionDao().getLiveActions()
 
-    fun insertAll(contacts: List<Contact>) {
+    suspend fun fetchActions() = withContext(Dispatchers.IO) { database.actionDao().getAllActions() }
+
+    suspend fun insertAll(contacts: List<Contact>) {
         val oldContacts = fetchContacts()
         val deletedContacts = oldContacts.minus(contacts)
         deletedContacts.forEach { database.contactDao().delete(it) }
@@ -44,5 +48,5 @@ class DbRepository {
 
     fun fetchLiveContacts() = database.contactDao().getLiveContacts()
 
-    fun fetchContacts() = database.contactDao().getAllContacts()
+    suspend fun fetchContacts() = withContext(Dispatchers.IO) { database.contactDao().getAllContacts() }
 }

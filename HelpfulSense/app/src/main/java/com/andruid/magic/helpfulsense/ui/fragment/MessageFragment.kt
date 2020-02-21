@@ -6,14 +6,21 @@ import android.text.method.ScrollingMovementMethod
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import com.andruid.magic.helpfulsense.R
+import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
+import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
+import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import permissions.dispatcher.*
 import splitties.toast.toast
 
@@ -57,9 +64,13 @@ class MessageFragment : Fragment() {
 
     @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun sendSMS() {
-        val message = binding.messageET.text.toString().trim { it <= ' ' }
-        val intent = buildServiceSmsIntent(requireContext(), message)
-        startFgOrBgService(intent)
+        lifecycleScope.launch {
+            val message = binding.messageET.text.toString().trim { it <= ' ' }
+            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val intent = buildServiceSmsIntent(requireContext(), message, phoneNumbers,
+                    HomeActivity::class.java.name, R.mipmap.ic_launcher)
+            startFgOrBgService(intent)
+        }
     }
 
     @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)

@@ -11,7 +11,7 @@ import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.database.entity.Contact
 
 @Database(entities = [Action::class, Contact::class], version = 1)
-@TypeConverters(Converter::class)
+@TypeConverters(RoomTypeConverters::class)
 abstract class HelpDatabase : RoomDatabase() {
     companion object {
         @Volatile

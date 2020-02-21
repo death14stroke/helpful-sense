@@ -3,26 +3,38 @@ package com.andruid.magic.helpfulsense.ui.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.andruid.magic.helpfulsense.R
+import com.andruid.magic.helpfulsense.data.ACTION_SHORTCUT_LAUNCH
 import com.andruid.magic.helpfulsense.data.CONTACTS_PICKER_REQUEST
+import com.andruid.magic.helpfulsense.data.EXTRA_SHORTCUT_MESSAGE
+import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.database.entity.toContact
 import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
-import com.andruid.magic.helpfulsense.service.SensorService
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.util.color
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
+import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
+import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
+import com.andruid.magic.locationsms.service.SmsService
+import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import com.wafflecopter.multicontactpicker.MultiContactPicker
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import permissions.dispatcher.*
+import splitties.systemservices.shortcutManager
 import splitties.toast.toast
-import timber.log.Timber
 
 @RuntimePermissions
 class HomeActivity : AppCompatActivity() {
@@ -47,6 +59,17 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (ACTION_SHORTCUT_LAUNCH == intent.action && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+            handleShortcutLaunch()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding.unbind()
@@ -57,7 +80,6 @@ class HomeActivity : AppCompatActivity() {
         if (requestCode == CONTACTS_PICKER_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 val results = MultiContactPicker.obtainResult(data)
-                Timber.d("in activity: %d selected", results.size)
                 EventBus.getDefault().post(ContactsEvent(results.map { contactResult -> contactResult.toContact() }))
             }
         }
@@ -71,8 +93,13 @@ class HomeActivity : AppCompatActivity() {
     @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION)
     fun startSensorService() {
-        val intent = Intent(this, SensorService::class.java)
-        startFgOrBgService(intent)
+        lifecycleScope.launch {
+            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val intent = Intent(this@HomeActivity, SmsService::class.java)
+                    .setAction(ACTION_START_SERVICE)
+                    .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
+            startFgOrBgService(intent)
+        }
     }
 
     @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -89,5 +116,18 @@ class HomeActivity : AppCompatActivity() {
     @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
     fun showDenied() {
         toast("Permissions denied")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private fun handleShortcutLaunch() {
+        val message = intent.getStringExtra(EXTRA_SHORTCUT_MESSAGE) ?: getString(R.string.shake_msg)
+        lifecycleScope.launch {
+            val contacts = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val intent = buildServiceSmsIntent(this@HomeActivity, message, contacts,
+                    this@HomeActivity::class.java.name, R.mipmap.ic_launcher)
+            startFgOrBgService(intent)
+        }
+        val id = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+        shortcutManager?.reportShortcutUsed(id)
     }
 }

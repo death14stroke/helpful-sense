@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_threshold" translatable="false">pref_threshold</string>
+    <string name="pref_time_stop" translatable="false">pref_time_stop</string>
+
+    <string name="shake_msg">Shook phone. Sensing danger.</string>
+    <string name="sms_sent">SMS sent!</string>
+    <string name="alert_msg">I need help. Emergency.</string>
+    <string name="stop">Stop</string>
+    <string name="alert">Alert</string>
+    <string name="safety_service_title">Safety Service</string>
+    <string name="safety_service_text">We are ready for your safety!</string>
+    <string name="progress_noti_title">Starting service</string>
+    <string name="progress_noti_text">Please wait while we initialize your sensors and GPS…</string>
+</resources>

@@ -13,6 +13,7 @@ import androidx.core.content.res.use
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
+import com.andruid.magic.helpfulsense.database.entity.Contact
 import com.andruid.magic.helpfulsense.model.Category
 
 fun Context.color(color: Int) =
@@ -83,4 +84,14 @@ fun View.hide() {
 
 fun View.show() {
     visibility = View.VISIBLE
+}
+
+fun List<Contact>.toPhoneNumbers(): List<String> {
+    val numbers = mutableListOf<String>()
+    forEach {
+        val phoneNumbers = it.phoneNumbers.distinctBy { phoneNumber -> phoneNumber.number }
+                .map { phoneNumber -> phoneNumber.number }
+        numbers.addAll(phoneNumbers)
+    }
+    return numbers
 }

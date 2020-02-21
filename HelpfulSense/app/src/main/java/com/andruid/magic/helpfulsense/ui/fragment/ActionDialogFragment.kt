@@ -20,7 +20,6 @@ import splitties.alertdialog.appcompat.alertDialog
 import splitties.alertdialog.appcompat.cancelButton
 import splitties.alertdialog.appcompat.okButton
 import splitties.alertdialog.appcompat.title
-import timber.log.Timber
 
 class ActionDialogFragment : DialogFragment() {
     private lateinit var binding: DialogActionBinding
@@ -55,7 +54,6 @@ class ActionDialogFragment : DialogFragment() {
             okButton {
                 val message = binding.messageET.text.toString().trim()
                 val category = binding.spinner.selectedItem as Category
-                Timber.d("selected category %s", category.name)
                 val action = action?.copy(message = message, category = category)
                         ?: Action(message = message, category = category)
                 command = if (ACTION_SWIPE == command) ACTION_EDIT else command

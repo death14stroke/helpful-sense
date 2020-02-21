@@ -19,13 +19,15 @@ import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
+import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
-import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
+import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -104,7 +106,7 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
     }
 
     override fun onSwipe(position: Int, direction: Int) {
-        Timber.d("swiped: %d", position)
+        Timber.d("onSwipe: $position")
         swipedPos = position
         actionAdapter.getItem(position)?.action?.let { action ->
             when (direction) {
@@ -132,8 +134,12 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
 
     @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
     fun sendSMS(action: Action) {
-        val intent = buildServiceSmsIntent(requireContext(), action.message)
-        startFgOrBgService(intent)
+        lifecycleScope.launch {
+            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val intent = buildServiceSmsIntent(requireContext(), action.message, phoneNumbers,
+                    HomeActivity::class.java.name, R.mipmap.ic_launcher)
+            startFgOrBgService(intent)
+        }
     }
 
     @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)

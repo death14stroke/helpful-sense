@@ -1,4 +1,4 @@
-package com.andruid.magic.helpfulsense.service
+package com.andruid.magic.locationsms.service
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,19 +10,14 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresPermission
 import androidx.preference.PreferenceManager
-import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.data.ACTION_LOC_SMS
-import com.andruid.magic.helpfulsense.data.ACTION_SMS_SENT
-import com.andruid.magic.helpfulsense.data.ACTION_STOP_SERVICE
-import com.andruid.magic.helpfulsense.data.EXTRA_MESSAGE
-import com.andruid.magic.helpfulsense.ui.util.buildNotification
-import com.andruid.magic.helpfulsense.ui.util.buildProgressNotification
-import com.andruid.magic.helpfulsense.util.getShakeStopTime
-import com.andruid.magic.helpfulsense.util.getShakeThreshold
-import com.andruid.magic.helpfulsense.util.hasLocationPermission
-import com.andruid.magic.helpfulsense.util.sendSMS
+import com.andruid.magic.locationsms.R
+import com.andruid.magic.locationsms.data.*
+import com.andruid.magic.locationsms.util.buildNotification
+import com.andruid.magic.locationsms.util.buildProgressNotification
+import com.andruid.magic.locationsms.util.sendSMS
 import com.github.nisrulz.sensey.Sensey
 import com.github.nisrulz.sensey.ShakeDetector.ShakeListener
 import com.google.android.gms.common.ConnectionResult
@@ -33,26 +28,18 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import getShakeStopTime
+import getShakeThreshold
 import splitties.systemservices.locationManager
 import splitties.systemservices.notificationManager
 import splitties.toast.toast
 import timber.log.Timber
-import kotlin.coroutines.CoroutineContext
 
-class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListener, OnConnectionFailedListener,
+class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, ShakeListener,
         OnSharedPreferenceChangeListener {
     companion object {
         private const val NOTI_ID = 1
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-    private val job = Job()
-    private val serviceScope = CoroutineScope(coroutineContext)
 
     private val locationCallback = MyLocationCallback()
     private val googleApiClient by lazy {
@@ -70,8 +57,13 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     }
 
     private var apiConnected = false
-    private var message = ""
     private var startIntent: Intent? = null
+
+    private lateinit var message: String
+    private lateinit var phoneNumbers: List<String>
+    private lateinit var className: String
+    @DrawableRes
+    private var iconRes = android.R.drawable.sym_def_app_icon
 
     private val gpsReceiver = object : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
@@ -81,32 +73,15 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         }
     }
 
-    @RequiresPermission(anyOf = [Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION])
-    private fun requestLocation() {
-        LocationServices.getFusedLocationProviderClient(applicationContext)
-                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        job.start()
-        init()
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            if (!apiConnected) {
-                startIntent = intent
-                init()
-            } else
-                handleIntent(intent)
+            handleIntent(intent)
         }
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        job.cancel()
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this)
@@ -122,11 +97,11 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onConnected(bundle: Bundle?) {
         apiConnected = true
-        notificationManager.notify(NOTI_ID, buildNotification().build())
+        notificationManager.notify(NOTI_ID, buildNotification(phoneNumbers, className, iconRes).build())
         startIntent?.let {
             handleIntent(it)
             startIntent = null
@@ -142,9 +117,9 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     override fun onShakeDetected() {}
 
     override fun onShakeStopped() {
-        Timber.d("onShakeStopped: ")
+        Timber.i("onShakeStopped: ")
         message = getString(R.string.shake_msg)
-        if (apiConnected && hasLocationPermission())
+        if (apiConnected)
             startLocationReq()
     }
 
@@ -155,8 +130,14 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    private fun requestLocation() {
+        LocationServices.getFusedLocationProviderClient(applicationContext)
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+    }
+
     private fun init() {
-        startForeground(NOTI_ID, buildProgressNotification().build())
+        startForeground(NOTI_ID, buildProgressNotification(iconRes).build())
 
         Sensey.getInstance().init(applicationContext, Sensey.SAMPLING_PERIOD_NORMAL)
         googleApiClient.connect()
@@ -173,13 +154,30 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
     private fun handleIntent(intent: Intent) {
         when (intent.action) {
             ACTION_LOC_SMS -> {
-                message = intent.extras?.getString(EXTRA_MESSAGE) ?: ""
-                if (apiConnected && hasLocationPermission())
-                    startLocationReq()
+                intent.extras?.let {
+                    message = it.getString(EXTRA_MESSAGE, "")
+                    phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList() ?: emptyList()
+                    className = it.getString(EXTRA_CLASS, "")
+                    iconRes = it.getInt(EXTRA_ICON_RES)
+                    if (!apiConnected) {
+                        startIntent = intent
+                        init()
+                    } else
+                        startLocationReq()
+                }
             }
             ACTION_STOP_SERVICE -> {
                 stopForeground(true)
                 stopSelf()
+            }
+            ACTION_START_SERVICE -> {
+                if (!apiConnected) {
+                    intent.extras?.let {
+                        phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList() ?: emptyList()
+                        className = it.getString(EXTRA_CLASS, "")
+                    }
+                    init()
+                }
             }
             ACTION_SMS_SENT -> toast(R.string.sms_sent)
         }
@@ -190,9 +188,8 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             requestLocation()
         else {
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             registerReceiver(gpsReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
         }
@@ -202,8 +199,8 @@ class SensorService : Service(), CoroutineScope, ConnectionCallbacks, ShakeListe
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             val loc = locationResult.lastLocation
-            Timber.d("loc obtained")
-            serviceScope.launch { sendSMS(loc, message) }
+            Timber.i("onLocationResult: loc obtained")
+            sendSMS(loc, message, phoneNumbers)
         }
     }
 }

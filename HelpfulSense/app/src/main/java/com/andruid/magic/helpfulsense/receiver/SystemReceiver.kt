@@ -5,26 +5,44 @@ import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.service.SensorService
-import com.andruid.magic.helpfulsense.util.buildServiceSmsIntent
+import com.andruid.magic.helpfulsense.database.DbRepository.Companion.getInstance
+import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
+import com.andruid.magic.helpfulsense.util.isFirstTime
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
+import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
+import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
+import com.andruid.magic.locationsms.service.SmsService
+import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SystemReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         when (intent?.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
-                val i = Intent(context, SensorService::class.java)
-                Timber.d("boot start receiver")
-                context.startFgOrBgService(i)
+                Timber.i("onReceive: boot start receiver")
+                GlobalScope.launch {
+                    val phoneNumbers = getInstance().fetchContacts().toPhoneNumbers()
+                    val i = Intent(context, SmsService::class.java)
+                            .setAction(ACTION_START_SERVICE)
+                            .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
+                    if (!context.isFirstTime())
+                        context.startFgOrBgService(i)
+                }
             }
             Intent.ACTION_BATTERY_LOW -> {
-                Timber.d("battery low receiver")
+                Timber.i("onReceive: battery low receiver")
                 val send = PreferenceManager.getDefaultSharedPreferences(context)
                         .getBoolean(context.getString(R.string.pref_low_battery), false)
-                if (send) {
-                    val i = buildServiceSmsIntent(context, context.getString(R.string.low_battery_message))
-                    context.startFgOrBgService(i)
+                if (send && !context.isFirstTime()) {
+                    GlobalScope.launch {
+                        val phoneNumbers = getInstance().fetchContacts().toPhoneNumbers()
+                        val className = HomeActivity::class.java.name
+                        val i = buildServiceSmsIntent(context, context.getString(R.string.low_battery_message), phoneNumbers, className, R.mipmap.ic_launcher)
+                        context.startFgOrBgService(i)
+                    }
                 }
             }
         }

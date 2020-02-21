@@ -10,7 +10,10 @@ interface ActionDao {
     fun insert(action: Action)
 
     @Query("SELECT * FROM actions")
-    fun getAllActions(): LiveData<List<Action>>
+    fun getLiveActions(): LiveData<List<Action>>
+
+    @Query("SELECT * FROM actions")
+    fun getAllActions(): List<Action>
 
     @Delete
     fun delete(action: Action)

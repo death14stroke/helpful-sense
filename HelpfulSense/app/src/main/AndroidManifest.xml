@@ -8,9 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
 
     <application
         android:name=".application.MyApplication"
@@ -20,10 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.activity.HomeActivity"
+        <activity
+            android:name=".ui.activity.HomeActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -39,11 +37,6 @@
             android:name=".ui.activity.IntroActivity"
             android:launchMode="singleTop"
             android:theme="@style/FullScreenTheme" />
-
-        <service
-            android:name=".service.SensorService"
-            android:exported="false"
-            android:foregroundServiceType="location" />
 
         <receiver android:name=".widget.AlertWidget">
             <intent-filter>
@@ -61,5 +54,4 @@
             </intent-filter>
         </receiver>
     </application>
-
 </manifest>
