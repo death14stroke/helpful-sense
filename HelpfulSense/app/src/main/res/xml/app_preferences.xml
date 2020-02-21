@@ -11,6 +11,10 @@
             android:summaryOn="Let trusted people know battery low"
             android:title="SMS when low battery"
             app:iconSpaceReserved="false" />
+        <ListPreference
+            android:key="@string/pref_sms_sim"
+            android:title="Send SMS with"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
         android:title="Shake phone"

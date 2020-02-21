@@ -48,7 +48,5 @@
     <string name="pref_low_battery" translatable="false">pref_low_battery</string>
     <string name="pref_shutdown" translatable="false">pref_shutdown_contact</string>
     <string name="pref_help" translatable="false">pref_help</string>
-    <string name="pref_threshold" translatable="false">pref_threshold</string>
-    <string name="pref_time_stop" translatable="false">pref_time_stop</string>
     <string name="key_tab" translatable="false">key_tab</string>
 </resources>

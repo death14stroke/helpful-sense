@@ -7,6 +7,7 @@ import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.database.DbRepository.Companion.getInstance
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
+import com.andruid.magic.helpfulsense.util.areAllPermissionsGranted
 import com.andruid.magic.helpfulsense.util.isFirstTime
 import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.andruid.magic.helpfulsense.util.toPhoneNumbers
@@ -28,7 +29,7 @@ class SystemReceiver : BroadcastReceiver() {
                     val i = Intent(context, SmsService::class.java)
                             .setAction(ACTION_START_SERVICE)
                             .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
-                    if (!context.isFirstTime())
+                    if (!context.isFirstTime() && context.areAllPermissionsGranted())
                         context.startFgOrBgService(i)
                 }
             }

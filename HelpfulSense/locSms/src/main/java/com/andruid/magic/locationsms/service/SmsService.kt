@@ -15,9 +15,7 @@ import androidx.annotation.RequiresPermission
 import androidx.preference.PreferenceManager
 import com.andruid.magic.locationsms.R
 import com.andruid.magic.locationsms.data.*
-import com.andruid.magic.locationsms.util.buildNotification
-import com.andruid.magic.locationsms.util.buildProgressNotification
-import com.andruid.magic.locationsms.util.sendSMS
+import com.andruid.magic.locationsms.util.*
 import com.github.nisrulz.sensey.Sensey
 import com.github.nisrulz.sensey.ShakeDetector.ShakeListener
 import com.google.android.gms.common.ConnectionResult
@@ -28,8 +26,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import getShakeStopTime
-import getShakeThreshold
 import splitties.systemservices.locationManager
 import splitties.systemservices.notificationManager
 import splitties.toast.toast
@@ -200,6 +196,7 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
             super.onLocationResult(locationResult)
             val loc = locationResult.lastLocation
             Timber.i("onLocationResult: loc obtained")
+            if(checkPhoneStatePermission() && hasSmsPermission())
             sendSMS(loc, message, phoneNumbers)
         }
     }

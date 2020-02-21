@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.telephony.SubscriptionInfo
 import android.view.View
+import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -15,6 +17,10 @@ import androidx.preference.PreferenceManager
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.database.entity.Contact
 import com.andruid.magic.helpfulsense.model.Category
+import com.andruid.magic.locationsms.util.hasLocationPermission
+import com.andruid.magic.locationsms.util.checkPhoneStatePermission
+import com.andruid.magic.locationsms.util.hasSmsPermission
+import splitties.systemservices.subscriptionManager
 
 fun Context.color(color: Int) =
         ContextCompat.getColor(this, color)
@@ -22,19 +28,13 @@ fun Context.color(color: Int) =
 fun Context.drawable(res: Int) =
         ContextCompat.getDrawable(this, res)
 
-fun Context.getShakeThreshold(): Int {
-    return PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.pref_threshold),
-            resources.getInteger(R.integer.def_threshold).toString())!!.toInt()
-}
-
-fun Context.getShakeStopTime(): Int {
-    return PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.pref_time_stop),
-            resources.getInteger(R.integer.def_time_stop).toString())!!.toInt()
-}
-
-fun Context.hasLocationPermission(): Boolean {
-    return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+fun Context.hasContactsPermission(): Boolean {
+    return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==
             PackageManager.PERMISSION_GRANTED
+}
+
+fun Context.areAllPermissionsGranted(): Boolean {
+    return hasLocationPermission() && hasSmsPermission() && checkPhoneStatePermission() && hasContactsPermission()
 }
 
 fun Context.isFirstTime() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -95,3 +95,6 @@ fun List<Contact>.toPhoneNumbers(): List<String> {
     }
     return numbers
 }
+
+@RequiresPermission(Manifest.permission.READ_PHONE_STATE)
+fun getSimCards(): List<SubscriptionInfo> = subscriptionManager.activeSubscriptionInfoList

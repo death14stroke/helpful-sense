@@ -2,6 +2,7 @@
 <resources>
     <string name="pref_threshold" translatable="false">pref_threshold</string>
     <string name="pref_time_stop" translatable="false">pref_time_stop</string>
+    <string name="pref_sms_sim" translatable="false">pref_sms_sim</string>
 
     <string name="shake_msg">Shook phone. Sensing danger.</string>
     <string name="sms_sent">SMS sent!</string>
