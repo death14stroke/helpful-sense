@@ -72,8 +72,13 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
     private val gpsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action) {
+<<<<<<< HEAD:HelpfulSense/locationsms/src/main/java/com/andruid/magic/locationsms/service/SmsService.kt
                 //TODO: check intent extras for gps turn on or turn off action
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && checkLocationPermission())
+=======
+                Timber.d("onReceive: ${intent.extras?.keySet().toString()}")
+                if (checkLocationPermission())
+>>>>>>> origin/master:HelpfulSense/locationsms/src/main/java/com/andruid/magic/locationsms/service/SmsService.kt
                     requestLocation()
             }
         }
@@ -207,9 +212,12 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         }
     }
 
+<<<<<<< HEAD:HelpfulSense/locationsms/src/main/java/com/andruid/magic/locationsms/service/SmsService.kt
     /**
      * Request location if GPS is enabled else take to the settings screen to turn on GPS
      */
+=======
+>>>>>>> origin/master:HelpfulSense/locationsms/src/main/java/com/andruid/magic/locationsms/service/SmsService.kt
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     private fun startLocationReq() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))

@@ -32,6 +32,10 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+<<<<<<< HEAD:HelpfulSense/locationsms/build.gradle
+=======
+
+>>>>>>> origin/master:HelpfulSense/locationsms/build.gradle
     dokka {
         outputFormat = 'html'
         outputDirectory = "$buildDir/dokka"
