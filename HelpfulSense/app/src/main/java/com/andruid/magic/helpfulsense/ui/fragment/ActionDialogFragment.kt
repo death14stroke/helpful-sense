@@ -7,8 +7,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_DIALOG_CANCEL
-import com.andruid.magic.helpfulsense.data.ACTION_EDIT
-import com.andruid.magic.helpfulsense.data.ACTION_SWIPE
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.DialogActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
@@ -56,7 +54,6 @@ class ActionDialogFragment : DialogFragment() {
                 val category = binding.spinner.selectedItem as Category
                 val action = action?.copy(message = message, category = category)
                         ?: Action(message = message, category = category)
-                command = if (ACTION_SWIPE == command) ACTION_EDIT else command
                 EventBus.getDefault().post(ActionEvent(action, command))
             }
             cancelButton {

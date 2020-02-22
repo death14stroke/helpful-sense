@@ -1,2 +1,1 @@
-include ':locSms'
-include ':app', ':multicontactpicker'
+include ':app', ':multicontactpicker', ':locationsms'

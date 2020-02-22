@@ -22,9 +22,9 @@ import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.util.color
-import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.library.color
+import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
@@ -123,7 +123,7 @@ class HomeActivity : AppCompatActivity() {
         val message = intent.getStringExtra(EXTRA_SHORTCUT_MESSAGE) ?: getString(R.string.shake_msg)
         lifecycleScope.launch {
             val contacts = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
-            val intent = buildServiceSmsIntent(this@HomeActivity, message, contacts,
+            val intent = buildServiceSmsIntent(message, contacts,
                     this@HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)
         }

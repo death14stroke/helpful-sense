@@ -6,6 +6,8 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
+apply plugin: 'org.jetbrains.dokka'
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -33,6 +35,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
+    }
+    dokka {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/dokka"
     }
 }
 
@@ -74,8 +80,10 @@ dependencies {
     implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
     implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 
+    implementation 'com.andruid.magic:eezetensions:1.0.0'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
     implementation project(path: ':multicontactpicker')
-    implementation project(path: ':locSms')
+    implementation project(path: ':locationsms')
 }

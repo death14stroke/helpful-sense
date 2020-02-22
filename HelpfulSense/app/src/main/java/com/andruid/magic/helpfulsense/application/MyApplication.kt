@@ -25,6 +25,9 @@ import splitties.systemservices.shortcutManager
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
+/**
+ * Application class for the project
+ */
 @Suppress("unused")
 class MyApplication : Application(), LifecycleObserver {
     override fun onCreate() {
@@ -33,9 +36,11 @@ class MyApplication : Application(), LifecycleObserver {
             Timber.plant(DebugTree())
         DbRepository.init(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-
     }
 
+    /**
+     * Called when app moves to foreground
+     */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onMoveToBackground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
@@ -44,22 +49,30 @@ class MyApplication : Application(), LifecycleObserver {
         }
     }
 
+    /**
+     * Set dynamic shortcuts for the application
+     */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun initShortcuts() {
         GlobalScope.launch {
             val shortcuts = mutableListOf<ShortcutInfo>()
             shortcuts.add(buildAlertShortcut())
             shortcuts.addAll(buildActionsShortcuts())
-
             shortcutManager?.dynamicShortcuts = shortcuts.toList()
         }
     }
 
+    /**
+     * Build shortcuts to send category wise alert messages
+     * @return shortcuts for each category alert message
+     */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private suspend fun buildActionsShortcuts(): List<ShortcutInfo> {
         val shortcuts = mutableListOf<ShortcutInfo>()
+
         val actionsList = DbRepository.getInstance().fetchActions()
         val actionMap = actionsList.groupBy { action -> action.category.name }
+
         actionMap.values.forEachIndexed { index, list ->
             val action = list.random()
             val id = SHORTCUT_ACTION.plus(index)
@@ -68,6 +81,7 @@ class MyApplication : Application(), LifecycleObserver {
                     .putExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID, id)
                     .putExtra(EXTRA_SHORTCUT_MESSAGE, action.message)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
             val shortcut = ShortcutInfo.Builder(this, id)
                     .setShortLabel(action.category.name)
                     .setLongLabel(action.message)
@@ -82,6 +96,10 @@ class MyApplication : Application(), LifecycleObserver {
         return shortcuts.toList()
     }
 
+    /**
+     * Build shortcut to send emergency SMS which can be sent by shaking the phone
+     * @return shortcut which will send emergency SMS 
+     */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun buildAlertShortcut(): ShortcutInfo {
         val id = SHORTCUT_ALERT
@@ -90,6 +108,7 @@ class MyApplication : Application(), LifecycleObserver {
                 .putExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID, id)
                 .putExtra(EXTRA_SHORTCUT_MESSAGE, getString(R.string.shake_msg))
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        
         return ShortcutInfo.Builder(this, id)
                 .setShortLabel(getString(R.string.shortcut_alert_short_label))
                 .setLongLabel(getString(R.string.shortcut_alert_long_label))

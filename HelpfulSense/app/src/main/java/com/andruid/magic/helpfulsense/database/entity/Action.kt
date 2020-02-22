@@ -6,6 +6,12 @@ import androidx.room.PrimaryKey
 import com.andruid.magic.helpfulsense.model.Category
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Database entity for storing emergency actions defined by user
+ * @property id unique id for the action [PrimaryKey]
+ * @property message text to be sent as SMS along with location
+ * @property category type of the alert to be sent
+ */
 @Parcelize
 @Entity(tableName = "actions")
 data class Action(

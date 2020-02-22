@@ -1,7 +1,6 @@
 package com.andruid.magic.locationsms.service
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
@@ -31,9 +30,13 @@ import splitties.systemservices.notificationManager
 import splitties.toast.toast
 import timber.log.Timber
 
+/**
+ * Foreground service to handle shake detection and send SMS with current location
+ */
 class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, ShakeListener,
         OnSharedPreferenceChangeListener {
     companion object {
+        // notification ID of persistent notification
         private const val NOTI_ID = 1
     }
 
@@ -52,27 +55,32 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         numUpdates = 1
     }
 
-    private var apiConnected = false
+    // intent delivered to the service when service is not initialized yet
     private var startIntent: Intent? = null
 
+    // Message to be sent with location
     private lateinit var message: String
+    /// Selected phone numbers
     private lateinit var phoneNumbers: List<String>
+    // Activity to launch on notification click
     private lateinit var className: String
+    // Small icon shown in notification
     @DrawableRes
     private var iconRes = android.R.drawable.sym_def_app_icon
 
+    // broadcast receiver for GPS turn on action
     private val gpsReceiver = object : BroadcastReceiver() {
-        @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
-            if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action)
-                requestLocation()
+            if (LocationManager.PROVIDERS_CHANGED_ACTION == intent.action) {
+                //TODO: check intent extras for gps turn on or turn off action
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && checkLocationPermission())
+                    requestLocation()
+            }
         }
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            handleIntent(intent)
-        }
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        handleIntent(intent)
         return START_REDELIVER_INTENT
     }
 
@@ -96,7 +104,6 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onConnected(bundle: Bundle?) {
-        apiConnected = true
         notificationManager.notify(NOTI_ID, buildNotification(phoneNumbers, className, iconRes).build())
         startIntent?.let {
             handleIntent(it)
@@ -115,7 +122,7 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
     override fun onShakeStopped() {
         Timber.i("onShakeStopped: ")
         message = getString(R.string.shake_msg)
-        if (apiConnected)
+        if (googleApiClient.isConnected && checkLocationPermission())
             startLocationReq()
     }
 
@@ -126,12 +133,23 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         }
     }
 
+    /**
+     * Get one time live location from GPS
+     */
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     private fun requestLocation() {
+        try {
+            unregisterReceiver(gpsReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         LocationServices.getFusedLocationProviderClient(applicationContext)
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
+    /**
+     * Init [googleApiClient] and [Sensey] for shake detection and location request
+     */
     private fun init() {
         startForeground(NOTI_ID, buildProgressNotification(iconRes).build())
 
@@ -141,12 +159,19 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         initShakeDetection()
     }
 
+    /**
+     * Init shake detection with settings set in [SharedPreferences]
+     */
     private fun initShakeDetection() {
         val threshold = getShakeThreshold()
         val timeStop = getShakeStopTime()
         Sensey.getInstance().startShakeDetection(threshold.toFloat(), timeStop.toLong(), this)
     }
 
+    /**
+     * Process the intent received in [onStartCommand]
+     * @param intent which started the service
+     */
     private fun handleIntent(intent: Intent) {
         when (intent.action) {
             ACTION_LOC_SMS -> {
@@ -155,11 +180,13 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
                     phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList() ?: emptyList()
                     className = it.getString(EXTRA_CLASS, "")
                     iconRes = it.getInt(EXTRA_ICON_RES)
-                    if (!apiConnected) {
+                    if (!googleApiClient.isConnected) {
                         startIntent = intent
                         init()
-                    } else
-                        startLocationReq()
+                    } else {
+                        if (checkLocationPermission())
+                            startLocationReq()
+                    }
                 }
             }
             ACTION_STOP_SERVICE -> {
@@ -167,9 +194,10 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
                 stopSelf()
             }
             ACTION_START_SERVICE -> {
-                if (!apiConnected) {
+                if (!googleApiClient.isConnected) {
                     intent.extras?.let {
-                        phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList() ?: emptyList()
+                        phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList()
+                                ?: emptyList()
                         className = it.getString(EXTRA_CLASS, "")
                     }
                     init()
@@ -179,7 +207,10 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         }
     }
 
-    @SuppressLint("MissingPermission")
+    /**
+     * Request location if GPS is enabled else take to the settings screen to turn on GPS
+     */
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     private fun startLocationReq() {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             requestLocation()
@@ -191,13 +222,16 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
         }
     }
 
+    /**
+     * Callback for when location is received from GPS module
+     */
     private inner class MyLocationCallback : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             val loc = locationResult.lastLocation
             Timber.i("onLocationResult: loc obtained")
-            if(checkPhoneStatePermission() && hasSmsPermission())
-            sendSMS(loc, message, phoneNumbers)
+            if (checkPhoneStatePermission() && checkSmsPermission())
+                sendSMS(loc, message, phoneNumbers)
         }
     }
 }

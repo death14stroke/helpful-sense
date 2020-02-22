@@ -13,14 +13,29 @@ import com.andruid.magic.locationsms.service.SmsService
 import splitties.systemservices.subscriptionManager
 import timber.log.Timber
 
+//TODO: add this function to eezetensions lib
+/**
+ * Extension function to get Google Maps URL for a location
+ * @return Google Maps URL
+ * @receiver location to be shown in maps
+ */
 fun Location.getMapsUrl() = "http://maps.google.com/?q=${latitude},$longitude"
 
-@RequiresPermission(Manifest.permission.READ_PHONE_STATE)
+/**
+ * Send emergency SMS with location to trusted contacts
+ * @param location current location
+ * @param msg text to be sent along with location
+ * @param phoneNumbers selected contacts
+ * @receiver context of the calling component
+ */
+@RequiresPermission(allOf = [Manifest.permission.READ_PHONE_STATE, Manifest.permission.SEND_SMS])
 fun Context.sendSMS(location: Location, msg: String, phoneNumbers: List<String>) {
     val message = "$msg ${location.getMapsUrl()}"
+
     val simSlot = getSelectedSimSlot()
     val subscriptionId = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(simSlot).subscriptionId
     val smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+
     val parts = smsManager.divideMessage(message)
     val intent = Intent(this, SmsService::class.java)
             .setAction(ACTION_SMS_SENT)
@@ -28,6 +43,7 @@ fun Context.sendSMS(location: Location, msg: String, phoneNumbers: List<String>)
         PendingIntent.getForegroundService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     else
         PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
     Timber.i("sendSMS: before sending sms")
     for (phone in phoneNumbers) {
         Timber.d("sendSMS: $phone")

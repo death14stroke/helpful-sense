@@ -10,6 +10,9 @@ import com.andruid.magic.helpfulsense.database.dao.ContactDao
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.database.entity.Contact
 
+/**
+ * Abstract class extending [RoomDatabase]
+ */
 @Database(entities = [Action::class, Contact::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
 abstract class HelpDatabase : RoomDatabase() {
@@ -32,7 +35,15 @@ abstract class HelpDatabase : RoomDatabase() {
 
     }
 
+    /**
+     * Get dao for [Action] related queries
+     * @return dao
+     */
     abstract fun actionDao(): ActionDao
 
+    /**
+     * Get dao for [Contact] related queries
+     * @return dao
+     */
     abstract fun contactDao(): ContactDao
 }

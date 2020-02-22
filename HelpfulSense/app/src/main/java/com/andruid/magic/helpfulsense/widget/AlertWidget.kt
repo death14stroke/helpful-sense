@@ -23,7 +23,7 @@ class AlertWidget : AppWidgetProvider() {
             val serIntent = Intent(context, SmsService::class.java)
             GlobalScope.launch {
                 val phoneNumbers = withContext(Dispatchers.IO) { DbRepository.getInstance().fetchContacts().toPhoneNumbers() }
-                val alertIntent = buildServiceSmsIntent(context, context.getString(R.string.alert_msg), phoneNumbers,
+                val alertIntent = context.buildServiceSmsIntent(context.getString(R.string.alert_msg), phoneNumbers,
                         HomeActivity::class.java.name, R.mipmap.ic_launcher)
                 val views = RemoteViews(context.packageName, R.layout.alert_widget).apply {
                     setOnClickPendingIntent(R.id.serviceBtn, PendingIntent.getService(context, 0,
