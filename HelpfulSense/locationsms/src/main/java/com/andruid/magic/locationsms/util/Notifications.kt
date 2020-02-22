@@ -14,10 +14,21 @@ import com.andruid.magic.locationsms.data.ACTION_STOP_SERVICE
 import com.andruid.magic.locationsms.service.SmsService
 import splitties.systemservices.notificationManager
 
+// notification channel id for sensor service
 private const val CHANNEL_ID = "channel_sensor"
+// notification channel name for sensor service
 private const val CHANNEL_NAME = "Sensor Service"
 
-fun Context.buildNotification(phoneNumbers: List<String>, className: String, @DrawableRes icon: Int): NotificationCompat.Builder {
+/**
+ * Build [NotificationCompat.Builder] for running [SmsService] in foreground
+ * @param phoneNumbers selected phoneNumbers
+ * @param className name of the activity to be launched on notification click
+ * @param icon small icon for notification
+ * @return notification builder
+ * @receiver context of the calling component
+ */
+fun Context.buildNotification(phoneNumbers: List<String>, className: String, @DrawableRes icon: Int)
+        : NotificationCompat.Builder {
     val importance = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NotificationManager.IMPORTANCE_LOW
         else -> 0
@@ -30,11 +41,13 @@ fun Context.buildNotification(phoneNumbers: List<String>, className: String, @Dr
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
+
     val stopIntent = Intent(this, SmsService::class.java)
             .setAction(ACTION_STOP_SERVICE)
-    val alertIntent = buildServiceSmsIntent(this, getString(R.string.alert_msg), phoneNumbers, className, icon)
+    val alertIntent = buildServiceSmsIntent(getString(R.string.alert_msg), phoneNumbers, className, icon)
     val clazz = Class.forName(className)
     val clickIntent = Intent(this, clazz::class.java)
+
     return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(icon)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -51,11 +64,18 @@ fun Context.buildNotification(phoneNumbers: List<String>, className: String, @Dr
                     PendingIntent.getService(this, 0, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT))
 }
 
+/**
+ * Build [NotificationCompat.Builder] for running [SmsService] while it is initializing
+ * @param icon small icon for notification
+ * @return notification builder
+ * @receiver context of the calling component
+ */
 fun Context.buildProgressNotification(@DrawableRes icon: Int): NotificationCompat.Builder {
     val importance = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> NotificationManager.IMPORTANCE_HIGH
         else -> 0
     }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
             enableLights(true)
@@ -63,6 +83,7 @@ fun Context.buildProgressNotification(@DrawableRes icon: Int): NotificationCompa
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
+
     val intent = Intent(this, SmsService::class.java)
             .setAction(ACTION_STOP_SERVICE)
     return NotificationCompat.Builder(this, CHANNEL_ID)

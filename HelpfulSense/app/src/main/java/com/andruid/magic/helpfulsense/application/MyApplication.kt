@@ -33,7 +33,6 @@ class MyApplication : Application(), LifecycleObserver {
             Timber.plant(DebugTree())
         DbRepository.init(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -50,7 +49,6 @@ class MyApplication : Application(), LifecycleObserver {
             val shortcuts = mutableListOf<ShortcutInfo>()
             shortcuts.add(buildAlertShortcut())
             shortcuts.addAll(buildActionsShortcuts())
-
             shortcutManager?.dynamicShortcuts = shortcuts.toList()
         }
     }

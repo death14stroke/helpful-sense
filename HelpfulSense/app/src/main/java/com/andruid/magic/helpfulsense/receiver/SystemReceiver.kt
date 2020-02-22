@@ -9,8 +9,8 @@ import com.andruid.magic.helpfulsense.database.DbRepository.Companion.getInstanc
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.util.areAllPermissionsGranted
 import com.andruid.magic.helpfulsense.util.isFirstTime
-import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
@@ -41,7 +41,7 @@ class SystemReceiver : BroadcastReceiver() {
                     GlobalScope.launch {
                         val phoneNumbers = getInstance().fetchContacts().toPhoneNumbers()
                         val className = HomeActivity::class.java.name
-                        val i = buildServiceSmsIntent(context, context.getString(R.string.low_battery_message), phoneNumbers, className, R.mipmap.ic_launcher)
+                        val i = context.buildServiceSmsIntent(context.getString(R.string.low_battery_message), phoneNumbers, className, R.mipmap.ic_launcher)
                         context.startFgOrBgService(i)
                     }
                 }

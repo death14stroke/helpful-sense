@@ -74,8 +74,10 @@ dependencies {
     implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
     implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 
+    implementation 'com.andruid.magic:eezetensions:1.0.0'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
     implementation project(path: ':multicontactpicker')
-    implementation project(path: ':locSms')
+    implementation project(path: ':locationsms')
 }

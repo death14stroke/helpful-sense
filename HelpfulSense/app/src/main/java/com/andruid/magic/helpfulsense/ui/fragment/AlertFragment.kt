@@ -25,8 +25,8 @@ import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
-import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -136,7 +136,7 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
     fun sendSMS(action: Action) {
         lifecycleScope.launch {
             val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
-            val intent = buildServiceSmsIntent(requireContext(), action.message, phoneNumbers,
+            val intent = requireContext().buildServiceSmsIntent(action.message, phoneNumbers,
                     HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)
         }

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.util.buildSettingsIntent
+import com.andruid.magic.library.buildSettingsIntent
 import permissions.dispatcher.PermissionRequest
 import splitties.alertdialog.appcompat.*
 
@@ -12,7 +12,7 @@ fun Context.buildSettingsDialog(msgRes: Int): AlertDialog {
     return alertDialog {
         messageResource = msgRes
         positiveButton(R.string.settings) {
-            startActivity(buildSettingsIntent(this@buildSettingsDialog))
+            startActivity(buildSettingsIntent())
         }
         cancelButton()
     }

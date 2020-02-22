@@ -15,12 +15,10 @@ import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.util.startFgOrBgService
 import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import permissions.dispatcher.*
 import splitties.toast.toast
 
@@ -67,7 +65,7 @@ class MessageFragment : Fragment() {
         lifecycleScope.launch {
             val message = binding.messageET.text.toString().trim { it <= ' ' }
             val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
-            val intent = buildServiceSmsIntent(requireContext(), message, phoneNumbers,
+            val intent = requireContext().buildServiceSmsIntent(message, phoneNumbers,
                     HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)
         }

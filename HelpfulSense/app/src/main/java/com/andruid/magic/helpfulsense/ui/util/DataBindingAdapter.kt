@@ -3,11 +3,10 @@ package com.andruid.magic.helpfulsense.ui.util
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.andruid.magic.helpfulsense.model.Category
-import com.andruid.magic.helpfulsense.util.color
-import com.andruid.magic.helpfulsense.util.drawable
+import com.andruid.magic.library.color
+import com.andruid.magic.library.drawable
 import com.github.pavlospt.roundedletterview.RoundedLetterView
 import com.wafflecopter.multicontactpicker.ColorUtils
 
@@ -24,7 +23,7 @@ fun RoundedLetterView.firstLetter(name: String) {
 @BindingAdapter("category")
 fun TextView.setCategory(category: Category) {
     text = category.name
-    setTextColor(ContextCompat.getColor(context, category.iconColor))
+    setTextColor(context.color(category.iconColor))
     setCompoundDrawablesWithIntrinsicBounds(context.drawable(category.icon), null, null, null)
     for (drawable in compoundDrawables)
         drawable?.colorFilter = PorterDuffColorFilter(context.color(category.iconColor), PorterDuff.Mode.SRC_IN)

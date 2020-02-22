@@ -6,8 +6,8 @@ import android.view.View
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.util.hide
-import com.andruid.magic.helpfulsense.util.show
+import com.andruid.magic.library.hide
+import com.andruid.magic.library.show
 
 class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : RecyclerView(context, attrs, defStyleAttr) {
