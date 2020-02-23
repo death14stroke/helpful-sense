@@ -10,11 +10,11 @@ import com.andruid.magic.helpfulsense.database.entity.Action
 @Dao
 interface ActionDao {
     /**
-     * Query to insert/update action
-     * @param action to be added/updated
+     * Query to insert/update action(s)
+     * @param actions to be added/updated
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(action: Action)
+    fun insert(vararg actions: Action)
 
     /**
      * Query to fetch all actions as [LiveData]
@@ -31,9 +31,9 @@ interface ActionDao {
     fun getAllActions(): List<Action>
 
     /**
-     * Query to delete action
-     * @param action to be deleted
+     * Query to delete action(s)
+     * @param actions to be deleted
      */
     @Delete
-    fun delete(action: Action)
+    fun delete(vararg actions: Action)
 }

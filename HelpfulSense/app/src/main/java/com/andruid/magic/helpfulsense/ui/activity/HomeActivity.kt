@@ -22,7 +22,7 @@ import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.library.color
 import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
@@ -36,6 +36,9 @@ import permissions.dispatcher.*
 import splitties.systemservices.shortcutManager
 import splitties.toast.toast
 
+/**
+ * Home page activity of the application
+ */
 @RuntimePermissions
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -90,7 +93,10 @@ class HomeActivity : AppCompatActivity() {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
-    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_COARSE_LOCATION,
+    /**
+     * Start [SmsService] to send SMS with location to trusted contacts
+     */
+    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.ACCESS_FINE_LOCATION)
     fun startSensorService() {
         lifecycleScope.launch {
@@ -118,6 +124,9 @@ class HomeActivity : AppCompatActivity() {
         toast("Permissions denied")
     }
 
+    /**
+     * Handle shortcut launched intent
+     */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun handleShortcutLaunch() {
         val message = intent.getStringExtra(EXTRA_SHORTCUT_MESSAGE) ?: getString(R.string.shake_msg)

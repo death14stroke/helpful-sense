@@ -49,4 +49,5 @@
     <string name="pref_shutdown" translatable="false">pref_shutdown_contact</string>
     <string name="pref_help" translatable="false">pref_help</string>
     <string name="key_tab" translatable="false">key_tab</string>
+    <string name="phone_state_permission">Select SIM you want to use for sending emergeny SMS</string>
 </resources>

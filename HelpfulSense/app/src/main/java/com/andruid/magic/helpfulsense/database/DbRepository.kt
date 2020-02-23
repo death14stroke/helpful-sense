@@ -44,6 +44,16 @@ class DbRepository {
     }
 
     /**
+     * Helper to insert list of actions in the database by deleting all previous actions
+     * @param actions list of actions
+     */
+    suspend fun insertAllActions(actions: List<Action>) {
+        val oldActions = fetchActions()
+        database.actionDao().delete(*oldActions.toTypedArray())
+        database.actionDao().insert(*actions.toTypedArray())
+    }
+
+    /**
      * Helper to delete action from the database
      * @param action to be deleted
      */
@@ -67,11 +77,11 @@ class DbRepository {
      * Helper to insert list of contacts in the database by deleting all previous contacts
      * @param contacts list of contacts
      */
-    suspend fun insertAll(contacts: List<Contact>) {
+    suspend fun insertAllContacts(contacts: List<Contact>) {
         val oldContacts = fetchContacts()
         val deletedContacts = oldContacts.minus(contacts)
-        deletedContacts.forEach { database.contactDao().delete(it) }
-        database.contactDao().insertAll(contacts)
+        database.contactDao().delete(*deletedContacts.toTypedArray())
+        database.contactDao().insert(*contacts.toTypedArray())
     }
 
     /**

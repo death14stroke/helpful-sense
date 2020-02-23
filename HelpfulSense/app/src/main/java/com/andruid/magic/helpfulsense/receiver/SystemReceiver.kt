@@ -9,7 +9,7 @@ import com.andruid.magic.helpfulsense.database.DbRepository.Companion.getInstanc
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.util.areAllPermissionsGranted
 import com.andruid.magic.helpfulsense.util.isFirstTime
-import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS

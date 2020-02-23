@@ -15,13 +15,17 @@ import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.library.startFgOrBgService
+import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.launch
 import permissions.dispatcher.*
 import splitties.toast.toast
 
+/**
+ * Fragment to send custom alert message with location
+ */
 @RuntimePermissions
 class MessageFragment : Fragment() {
     private lateinit var binding: FragmentMessageBinding
@@ -60,7 +64,11 @@ class MessageFragment : Fragment() {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
-    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    /**
+     * Launch [SmsService] to send custom SMS with location to trusted contacts
+     */
+    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun sendSMS() {
         lifecycleScope.launch {
             val message = binding.messageET.text.toString().trim { it <= ' ' }
@@ -71,17 +79,20 @@ class MessageFragment : Fragment() {
         }
     }
 
-    @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showRationale(request: PermissionRequest) {
         buildInfoDialog(R.string.sms_permission, request).show()
     }
 
-    @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showDenied() {
         toast("Denied permission")
     }
 
-    @OnNeverAskAgain(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnNeverAskAgain(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showSettingsDialog() {
         buildSettingsDialog(R.string.sms_permission).show()
     }

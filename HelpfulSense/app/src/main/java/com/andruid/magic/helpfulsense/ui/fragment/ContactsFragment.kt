@@ -17,8 +17,8 @@ import com.andruid.magic.helpfulsense.data.CONTACTS_PICKER_REQUEST
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.databinding.FragmentContactsBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
-import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.helpfulsense.ui.adapter.ContactAdapter
+import com.andruid.magic.helpfulsense.ui.adapter.SwipeListener
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
@@ -26,7 +26,6 @@ import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -35,7 +34,7 @@ import splitties.toast.toast
 import timber.log.Timber
 
 @RuntimePermissions
-class ContactsFragment : Fragment(), ActionAdapter.SwipeListener {
+class ContactsFragment : Fragment(), SwipeListener {
     companion object {
         private const val MAX_CONTACTS = 5
     }
@@ -107,12 +106,17 @@ class ContactsFragment : Fragment(), ActionAdapter.SwipeListener {
         }
     }
 
+    override fun onMove(fromPosition: Int, toPosition: Int) {}
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onContactsEvent(contactsEvent: ContactsEvent) {
         val contacts = contactsEvent.results
-        lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().insertAll(contacts) }
+        lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().insertAllContacts(contacts) }
     }
 
+    /**
+     * Open contacts picker to select contacts
+     */
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     fun openContactsPicker() {
         lifecycleScope.launch {

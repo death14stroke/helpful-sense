@@ -8,7 +8,13 @@ import android.widget.BaseAdapter
 import androidx.databinding.DataBindingUtil
 import com.andruid.magic.helpfulsense.databinding.LayoutSpinnerBinding
 import com.andruid.magic.helpfulsense.model.Category
+import com.andruid.magic.helpfulsense.ui.fragment
+        .ActionDialogFragment
 
+/**
+ * Adapter for showimg dialog with list of categories [ActionDialogFragment]
+ * @property categories list of all categories
+ */
 class MySpinnerAdapter(val categories: List<Category>) : BaseAdapter() {
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

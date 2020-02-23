@@ -19,8 +19,12 @@ import splitties.alertdialog.appcompat.cancelButton
 import splitties.alertdialog.appcompat.okButton
 import splitties.alertdialog.appcompat.title
 
+/**
+ * Dialog to add/edit [Action]
+ */
 class ActionDialogFragment : DialogFragment() {
     private lateinit var binding: DialogActionBinding
+    // add/edit mode
     private lateinit var command: String
 
     private var action: Action? = null

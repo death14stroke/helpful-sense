@@ -5,15 +5,23 @@ import com.andruid.magic.helpfulsense.data.ACTION_SMS
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.LayoutActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
+import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.library.drawable
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 import org.greenrobot.eventbus.EventBus
 
+/**
+ * ViewHolder for [ActionAdapter]
+ */
 class ActionViewHolder(view: View, adapter: FlexibleAdapter<out IFlexible<*>>?) : FlexibleViewHolder(view, adapter) {
     private val binding = LayoutActionBinding.bind(view)
 
+    /**
+     * Bind data to the view
+     * @param action data for the view
+     */
     fun bind(action: Action) {
         binding.apply {
             this.action = action

@@ -10,6 +10,11 @@ import com.andruid.magic.library.drawable
 import com.github.pavlospt.roundedletterview.RoundedLetterView
 import com.wafflecopter.multicontactpicker.ColorUtils
 
+/**
+ * Set first letter of the string with random color as icon in textView
+ * @param name input string
+ * @receiver rounded letter textView
+ */
 @BindingAdapter("firstLetter")
 fun RoundedLetterView.firstLetter(name: String) {
     val color = ColorUtils.getRandomMaterialColor()
@@ -20,6 +25,11 @@ fun RoundedLetterView.firstLetter(name: String) {
     }
 }
 
+/**
+ * Set drawable resource for textView based on [Category]
+ * @param category type of the action
+ * @receiver textView
+ */
 @BindingAdapter("category")
 fun TextView.setCategory(category: Category) {
     text = category.name

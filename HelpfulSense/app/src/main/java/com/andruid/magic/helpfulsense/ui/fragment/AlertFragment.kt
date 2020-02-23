@@ -14,7 +14,10 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.data.*
+import com.andruid.magic.helpfulsense.data.ACTION_ADD
+import com.andruid.magic.helpfulsense.data.ACTION_DIALOG_CANCEL
+import com.andruid.magic.helpfulsense.data.ACTION_EDIT
+import com.andruid.magic.helpfulsense.data.ACTION_SMS
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.FragmentAlertBinding
@@ -22,10 +25,11 @@ import com.andruid.magic.helpfulsense.eventbus.ActionEvent
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.activity.IntroActivity
 import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
+import com.andruid.magic.helpfulsense.ui.adapter.SwipeListener
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
-import com.andruid.magic.helpfulsense.util.toPhoneNumbers
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.library.startFgOrBgService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +41,11 @@ import permissions.dispatcher.*
 import splitties.toast.toast
 import timber.log.Timber
 
+/**
+ * Fragment to show all added actions in the database
+ */
 @RuntimePermissions
-class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
+class AlertFragment : Fragment(), SwipeListener {
     private lateinit var binding: FragmentAlertBinding
 
     private val actionAdapter = ActionAdapter(this)
@@ -120,6 +127,13 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
         }
     }
 
+    override fun onMove(fromPosition: Int, toPosition: Int) {
+        val actions = actionAdapter.currentItems.map { actionHolder -> actionHolder.action }
+        lifecycleScope.launch(Dispatchers.IO) {
+            DbRepository.getInstance().insertAllActions(actions)
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onActionEvent(actionEvent: ActionEvent) {
         actionEvent.action?.let {
@@ -132,7 +146,12 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
         }
     }
 
-    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    /**
+     * Send SMS with the selected action message
+     * @param action selected action
+     */
+    @NeedsPermission(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun sendSMS(action: Action) {
         lifecycleScope.launch {
             val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
@@ -142,17 +161,20 @@ class AlertFragment : Fragment(), ActionAdapter.SwipeListener {
         }
     }
 
-    @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnShowRationale(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showRationale(request: PermissionRequest) {
         buildInfoDialog(R.string.sms_permission, request).show()
     }
 
-    @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showDenied() {
         toast("Denied permission")
     }
 
-    @OnNeverAskAgain(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnNeverAskAgain(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE)
     fun showSettingsDialog() {
         buildSettingsDialog(R.string.sms_permission).show()
     }

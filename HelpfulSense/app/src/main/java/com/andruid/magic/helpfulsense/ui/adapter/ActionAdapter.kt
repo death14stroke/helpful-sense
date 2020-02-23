@@ -5,6 +5,10 @@ import com.andruid.magic.helpfulsense.model.ActionHolder
 import com.andruid.magic.helpfulsense.model.toActionHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
 
+/**
+ * RecyclerView Adapter for showing list of all [Action]
+ * @property mListener callback for swiping left/right
+ */
 class ActionAdapter(private val mListener: SwipeListener) : FlexibleAdapter<ActionHolder>(mutableListOf<ActionHolder>()) {
 
     override fun onItemSwiped(position: Int, direction: Int) {
@@ -12,11 +16,16 @@ class ActionAdapter(private val mListener: SwipeListener) : FlexibleAdapter<Acti
         mListener.onSwipe(position, direction)
     }
 
-    fun setActions(actions: List<Action>) {
-        updateDataSet(actions.map { action -> action.toActionHolder() }, true)
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        mListener.onMove(fromPosition, toPosition)
+        return super.onItemMove(fromPosition, toPosition)
     }
 
-    interface SwipeListener {
-        fun onSwipe(position: Int, direction: Int)
+    /**
+     * Set dataSet for the adapter
+     * @param actions dataSet of all actions
+     */
+    fun setActions(actions: List<Action>) {
+        updateDataSet(actions.map { action -> action.toActionHolder() }, true)
     }
 }

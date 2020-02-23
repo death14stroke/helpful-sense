@@ -8,21 +8,22 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.database.DbRepository
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
-import com.andruid.magic.helpfulsense.util.toPhoneNumbers
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+/**
+ * Widget to send alert, start [SmsService] for listening shake events and more
+ */
 class AlertWidget : AppWidgetProvider() {
     companion object {
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val serIntent = Intent(context, SmsService::class.java)
             GlobalScope.launch {
-                val phoneNumbers = withContext(Dispatchers.IO) { DbRepository.getInstance().fetchContacts().toPhoneNumbers() }
+                val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
                 val alertIntent = context.buildServiceSmsIntent(context.getString(R.string.alert_msg), phoneNumbers,
                         HomeActivity::class.java.name, R.mipmap.ic_launcher)
                 val views = RemoteViews(context.packageName, R.layout.alert_widget).apply {

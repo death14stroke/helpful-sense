@@ -10,18 +10,11 @@ import com.andruid.magic.helpfulsense.database.entity.Contact
 @Dao
 interface ContactDao {
     /**
-     * Query to insert/update contact
-     * @param contact to be added/updated
+     * Query to insert/update contact(s)
+     * @param contacts to be added/updated
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(contact: Contact)
-
-    /**
-     * Query to insert list of contacts
-     * @param contacts list of contacts to be added/updated
-     */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(contacts: List<Contact>)
+    fun insert(vararg contacts: Contact)
 
     /**
      * Query to fetch all contacts as [LiveData]
@@ -38,9 +31,9 @@ interface ContactDao {
     fun getAllContacts(): List<Contact>
 
     /**
-     * Query to delete contact
-     * @param contact to be deleted
+     * Query to delete contact(s)
+     * @param contacts to be deleted
      */
     @Delete
-    fun delete(contact: Contact)
+    fun delete(vararg contacts: Contact)
 }

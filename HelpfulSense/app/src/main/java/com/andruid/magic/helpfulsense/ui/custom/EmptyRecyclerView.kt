@@ -9,6 +9,9 @@ import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.library.hide
 import com.andruid.magic.library.show
 
+/**
+ * Custom [RecyclerView] for showing empty [View] when no data is available
+ */
 class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : RecyclerView(context, attrs, defStyleAttr) {
     private lateinit var emptyView: View
@@ -61,10 +64,17 @@ class EmptyRecyclerView @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
+    /**
+     * Set onClick for when empty view is clicked
+     * @param l lambda action as listener
+     */
     fun setEmptyViewClickListener(l: (View) -> Unit) {
         emptyClickListener = l
     }
 
+    /**
+     * Hide [emptyView] if data is available else show it if dataSet is empty
+     */
     private fun toggleVisibility() {
         if (!::emptyView.isInitialized)
             return
