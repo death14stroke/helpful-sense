@@ -30,7 +30,7 @@ import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
 import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.library.startFgOrBgService
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

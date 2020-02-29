@@ -5,8 +5,8 @@ import android.graphics.PorterDuffColorFilter
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.andruid.magic.helpfulsense.model.Category
-import com.andruid.magic.library.color
-import com.andruid.magic.library.drawable
+import com.andruid.magic.eezetensions.color
+import com.andruid.magic.eezetensions.drawable
 import com.github.pavlospt.roundedletterview.RoundedLetterView
 import com.wafflecopter.multicontactpicker.ColorUtils
 

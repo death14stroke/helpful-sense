@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.util.firstTimeDone
-import com.andruid.magic.library.color
+import com.andruid.magic.eezetensions.color
 import com.github.paolorotolo.appintro.AppIntro
 import com.github.paolorotolo.appintro.AppIntroFragment
 import com.github.paolorotolo.appintro.model.SliderPagerBuilder

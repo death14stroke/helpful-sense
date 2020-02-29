@@ -23,8 +23,8 @@ import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.library.color
-import com.andruid.magic.library.startFgOrBgService
+import com.andruid.magic.eezetensions.color
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService

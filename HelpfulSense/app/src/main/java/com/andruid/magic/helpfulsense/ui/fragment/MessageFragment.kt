@@ -16,7 +16,7 @@ import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.library.startFgOrBgService
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.launch

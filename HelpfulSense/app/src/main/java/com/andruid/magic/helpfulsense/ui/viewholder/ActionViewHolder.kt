@@ -6,7 +6,7 @@ import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.LayoutActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
 import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
-import com.andruid.magic.library.drawable
+import com.andruid.magic.eezetensions.drawable
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder

@@ -6,8 +6,8 @@ import android.view.View
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.recyclerview.widget.RecyclerView
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.library.hide
-import com.andruid.magic.library.show
+import com.andruid.magic.eezetensions.hide
+import com.andruid.magic.eezetensions.show
 
 /**
  * Custom [RecyclerView] for showing empty [View] when no data is available

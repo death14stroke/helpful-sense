@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.library.buildSettingsIntent
+import com.andruid.magic.eezetensions.buildSettingsIntent
 import permissions.dispatcher.PermissionRequest
 import splitties.alertdialog.appcompat.*
 

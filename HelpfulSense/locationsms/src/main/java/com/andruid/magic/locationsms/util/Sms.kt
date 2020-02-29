@@ -8,18 +8,11 @@ import android.location.Location
 import android.os.Build
 import android.telephony.SmsManager
 import androidx.annotation.RequiresPermission
+import com.andruid.magic.eezetensions.getMapsUrl
 import com.andruid.magic.locationsms.data.ACTION_SMS_SENT
 import com.andruid.magic.locationsms.service.SmsService
 import splitties.systemservices.subscriptionManager
 import timber.log.Timber
-
-//TODO: add this function to eezetensions lib
-/**
- * Extension function to get Google Maps URL for a location
- * @return Google Maps URL
- * @receiver location to be shown in maps
- */
-fun Location.getMapsUrl() = "http://maps.google.com/?q=${latitude},$longitude"
 
 /**
  * Send emergency SMS with location to trusted contacts
@@ -47,8 +40,7 @@ fun Context.sendSMS(location: Location, msg: String, phoneNumbers: List<String>)
     Timber.i("sendSMS: before sending sms")
     for (phone in phoneNumbers) {
         Timber.d("sendSMS: $phone")
-        //TODO: uncomment to send actual sms
-        /*smsManager.sendMultipartTextMessage(phone, null, parts,
-                arrayListOf<PendingIntent>(sentIntent), null)*/
+        smsManager.sendMultipartTextMessage(phone, null, parts,
+                arrayListOf<PendingIntent>(sentIntent), null)
     }
 }

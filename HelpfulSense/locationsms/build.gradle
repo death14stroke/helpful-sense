@@ -53,6 +53,9 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.nisrulz:sensey:1.8.0'
 
+    //noinspection GradleDependency
+    implementation 'com.andruid.magic:eezetensions:1.0.0-alpha01'
+
     implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
     implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 }
