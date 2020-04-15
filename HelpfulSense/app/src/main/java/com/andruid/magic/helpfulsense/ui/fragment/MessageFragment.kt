@@ -4,19 +4,18 @@ import android.Manifest
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.*
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.database.DbRepository
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.launch
@@ -36,17 +35,12 @@ class MessageFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_message, container, false)
+        binding = FragmentMessageBinding.inflate(inflater, container, false)
         return with(binding) {
             messageET.movementMethod = ScrollingMovementMethod()
             sendBtn.setOnClickListener { sendSMSWithPermissionCheck() }
             root
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.unbind()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -3,7 +3,6 @@ package com.andruid.magic.helpfulsense.ui.fragment
 import android.Manifest
 import android.os.Bundle
 import android.view.*
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -51,7 +50,7 @@ class ContactsFragment : Fragment(), SwipeListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container, false)
+        binding = FragmentContactsBinding.inflate(inflater, container, false)
         binding.apply {
             recyclerView.apply {
                 adapter = contactsAdapter
@@ -64,14 +63,9 @@ class ContactsFragment : Fragment(), SwipeListener {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.unbind()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        contactViewModel.contactLiveData.observe(this) { contacts ->
+        contactViewModel.contactLiveData.observe(viewLifecycleOwner) { contacts ->
             contactsAdapter.setContacts(contacts)
         }
     }

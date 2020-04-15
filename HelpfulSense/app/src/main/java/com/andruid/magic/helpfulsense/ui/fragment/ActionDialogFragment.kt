@@ -3,9 +3,7 @@ package com.andruid.magic.helpfulsense.ui.fragment
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_DIALOG_CANCEL
 import com.andruid.magic.helpfulsense.database.entity.Action
 import com.andruid.magic.helpfulsense.databinding.DialogActionBinding
@@ -18,12 +16,14 @@ import splitties.alertdialog.appcompat.alertDialog
 import splitties.alertdialog.appcompat.cancelButton
 import splitties.alertdialog.appcompat.okButton
 import splitties.alertdialog.appcompat.title
+import timber.log.Timber
 
 /**
  * Dialog to add/edit [Action]
  */
 class ActionDialogFragment : DialogFragment() {
     private lateinit var binding: DialogActionBinding
+
     // add/edit mode
     private lateinit var command: String
 
@@ -34,13 +34,13 @@ class ActionDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_action,
-                null, false)
+        binding = DialogActionBinding.inflate(LayoutInflater.from(context), null, false)
         binding.spinner.adapter = mySpinnerAdapter
         arguments?.let { args ->
             val safeArgs = ActionDialogFragmentArgs.fromBundle(args)
             action = safeArgs.action
             command = safeArgs.command
+            Timber.tag("actionLog").d("onCreateDialog: action = ${action?.message ?: "null"}, cmd = $command")
             val categories = mySpinnerAdapter.categories
             action?.let {
                 binding.messageET.setText(it.message)

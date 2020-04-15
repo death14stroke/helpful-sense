@@ -8,24 +8,25 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutManagerCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.andruid.magic.eezetensions.color
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.helpfulsense.data.ACTION_SHORTCUT_LAUNCH
 import com.andruid.magic.helpfulsense.data.CONTACTS_PICKER_REQUEST
 import com.andruid.magic.helpfulsense.data.EXTRA_SHORTCUT_MESSAGE
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.database.entity.toContact
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
-import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.eezetensions.color
-import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
+import com.andruid.magic.locationsms.data.EXTRA_CLASS
+import com.andruid.magic.locationsms.data.EXTRA_ICON_RES
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
@@ -45,7 +46,8 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val navController = findNavController(R.id.nav_host_fragment)
         binding.apply {
@@ -73,11 +75,6 @@ class HomeActivity : AppCompatActivity() {
             handleShortcutLaunch()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.unbind()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CONTACTS_PICKER_REQUEST) {
@@ -103,6 +100,8 @@ class HomeActivity : AppCompatActivity() {
             val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
             val intent = Intent(this@HomeActivity, SmsService::class.java)
                     .setAction(ACTION_START_SERVICE)
+                    .putExtra(EXTRA_CLASS, this@HomeActivity::class.java.name)
+                    .putExtra(EXTRA_ICON_RES, R.mipmap.ic_launcher)
                     .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
             startFgOrBgService(intent)
         }

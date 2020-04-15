@@ -198,6 +198,7 @@ class SmsService : Service(), ConnectionCallbacks, OnConnectionFailedListener, S
                         phoneNumbers = it.getStringArray(EXTRA_PHONE_NUMBERS)?.toList()
                                 ?: emptyList()
                         className = it.getString(EXTRA_CLASS, "")
+                        iconRes = it.getInt(EXTRA_ICON_RES)
                     }
                     init()
                 }

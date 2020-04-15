@@ -23,12 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    buildFeatures{
-        dataBinding = true
-    }
-    androidExtensions {
-        experimental = true
-    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +31,17 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled true
+    }
+    viewBinding {
+        enabled true
+    }
+    androidExtensions {
+        experimental true
+    }
+
     dokka {
         outputFormat = 'html'
         outputDirectory = "$buildDir/dokka"
@@ -49,7 +55,6 @@ dependencies {
     implementation "androidx.core:core-ktx:1.2.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     implementation 'androidx.fragment:fragment-ktx:1.2.2'
-
     implementation 'androidx.appcompat:appcompat:1.2.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -79,7 +84,6 @@ dependencies {
     implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
     implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 
-    //noinspection GradleDependency
     implementation 'com.andruid.magic:eezetensions:1.0.0-alpha01'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'

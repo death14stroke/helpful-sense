@@ -13,6 +13,7 @@ import com.andruid.magic.locationsms.R
 import com.andruid.magic.locationsms.data.ACTION_STOP_SERVICE
 import com.andruid.magic.locationsms.service.SmsService
 import splitties.systemservices.notificationManager
+import timber.log.Timber
 
 // notification channel id for sensor service
 private const val CHANNEL_ID = "channel_sensor"
@@ -46,7 +47,8 @@ fun Context.buildNotification(phoneNumbers: List<String>, className: String, @Dr
             .setAction(ACTION_STOP_SERVICE)
     val alertIntent = buildServiceSmsIntent(getString(R.string.alert_msg), phoneNumbers, className, icon)
     val clazz = Class.forName(className)
-    val clickIntent = Intent(this, clazz::class.java)
+    Timber.tag("notiLog").d("className before = $className, after = ${clazz.canonicalName}")
+    val clickIntent = Intent(this, clazz)
 
     return NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(icon)
