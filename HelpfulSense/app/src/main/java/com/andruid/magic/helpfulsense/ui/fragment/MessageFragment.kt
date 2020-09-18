@@ -3,7 +3,10 @@ package com.andruid.magic.helpfulsense.ui.fragment
 import android.Manifest
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +19,7 @@ import com.andruid.magic.helpfulsense.databinding.FragmentMessageBinding
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.launch
@@ -26,20 +30,20 @@ import splitties.toast.toast
  * Fragment to send custom alert message with location
  */
 @RuntimePermissions
-class MessageFragment : Fragment() {
-    private lateinit var binding: FragmentMessageBinding
+class MessageFragment : Fragment(R.layout.fragment_message) {
+    private val binding by viewBinding(FragmentMessageBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentMessageBinding.inflate(inflater, container, false)
-        return with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
             messageET.movementMethod = ScrollingMovementMethod()
             sendBtn.setOnClickListener { sendSMSWithPermissionCheck() }
-            root
         }
     }
 

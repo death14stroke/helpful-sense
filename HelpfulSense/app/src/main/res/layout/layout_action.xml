@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="action"
             type="com.andruid.magic.helpfulsense.database.entity.Action" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="10dp"
@@ -24,14 +25,14 @@
             layout="@layout/layout_swipe_edit_left"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <include
             android:id="@+id/rear_right_layout"
             layout="@layout/layout_swipe_delete_right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/frontView"
@@ -39,16 +40,15 @@
             android:layout_height="match_parent"
             android:background="@android:color/holo_green_light">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/actionTV"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="7dp"
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/colorPrimary"
-                android:text="@{action.message}"
-                tools:text="Help"
                 android:gravity="center_vertical"
+                android:text="@{action.message}"
                 android:textAlignment="gravity"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
@@ -56,9 +56,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/sendBtn"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Help" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/sendBtn"
                 style="?borderlessButtonStyle"
                 android:layout_width="wrap_content"
@@ -68,5 +69,5 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/actionTV" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 </layout>

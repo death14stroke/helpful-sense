@@ -10,12 +10,11 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             style="?borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:contentDescription="@string/app_name"
             android:src="@android:drawable/ic_menu_delete" />
     </RelativeLayout>
 </layout>

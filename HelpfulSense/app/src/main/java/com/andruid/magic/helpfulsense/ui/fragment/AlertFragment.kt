@@ -3,7 +3,10 @@ package com.andruid.magic.helpfulsense.ui.fragment
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +31,7 @@ import com.andruid.magic.helpfulsense.ui.adapter.ActionAdapter
 import com.andruid.magic.helpfulsense.ui.adapter.SwipeListener
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
@@ -43,42 +47,25 @@ import timber.log.Timber
  * Fragment to show all added actions in the database
  */
 @RuntimePermissions
-class AlertFragment : Fragment(), SwipeListener {
-    private lateinit var binding: FragmentAlertBinding
-
+class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
+    private val binding by viewBinding(FragmentAlertBinding::bind)
     private val actionAdapter = ActionAdapter(this)
     private val actionViewModel by viewModels<ActionViewModel>()
+
     private var swipedPos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Timber.tag("actionLog").d("event bus register alert fragment")
+
         EventBus.getDefault().register(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentAlertBinding.inflate(inflater, container, false)
-        binding.apply {
-            recyclerView.apply {
-                adapter = actionAdapter
-                itemAnimator = DefaultItemAnimator()
-                setEmptyViewClickListener {
-                    val navController = findNavController()
-                    navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_ADD, null))
-                }
-            }
-            actionAdapter.apply {
-                isLongPressDragEnabled = true
-                isSwipeEnabled = true
-            }
-        }
-        return binding.root
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        actionViewModel.actionLiveData.observe(viewLifecycleOwner) { actions ->
+        actionViewModel.actionLiveData.observe(owner = viewLifecycleOwner) { actions ->
             actionAdapter.setActions(actions)
         }
     }
@@ -176,5 +163,21 @@ class AlertFragment : Fragment(), SwipeListener {
             Manifest.permission.READ_PHONE_STATE)
     fun showSettingsDialog() {
         buildSettingsDialog(R.string.sms_permission).show()
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.apply {
+            adapter = actionAdapter
+            itemAnimator = DefaultItemAnimator()
+            setEmptyViewClickListener {
+                val navController = findNavController()
+                navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_ADD, null))
+            }
+        }
+
+        actionAdapter.apply {
+            isLongPressDragEnabled = true
+            isSwipeEnabled = true
+        }
     }
 }

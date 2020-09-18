@@ -2,9 +2,10 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.3.61'
-        room_version = '2.2.4'
-        nav_version = '2.3.0-alpha02'
+        kotlin_version = '1.4.10'
+        room_version = '2.2.5'
+        nav_version = '2.3.0'
+        lifecycle_version = '2.2.0'
 
         splitties_version = '3.0.0-alpha06'
         permissions = '4.6.0'
@@ -18,7 +19,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
 
@@ -34,6 +35,7 @@ allprojects {
         jcenter()
         maven { url 'https://jitpack.io' }
     }
+
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }

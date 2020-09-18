@@ -24,6 +24,7 @@ import com.andruid.magic.helpfulsense.databinding.ActivityHomeBinding
 import com.andruid.magic.helpfulsense.eventbus.ContactsEvent
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_CLASS
 import com.andruid.magic.locationsms.data.EXTRA_ICON_RES
@@ -42,11 +43,10 @@ import splitties.toast.toast
  */
 @RuntimePermissions
 class HomeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityHomeBinding
+    private val binding by viewBinding(ActivityHomeBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navController = findNavController(R.id.nav_host_fragment)

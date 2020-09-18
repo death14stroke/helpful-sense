@@ -32,9 +32,11 @@ import timber.log.Timber.DebugTree
 class MyApplication : Application(), LifecycleObserver {
     override fun onCreate() {
         super.onCreate()
+
         if (BuildConfig.DEBUG)
             Timber.plant(DebugTree())
         DbRepository.init(this)
+
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
@@ -55,9 +57,10 @@ class MyApplication : Application(), LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun initShortcuts() {
         GlobalScope.launch {
-            val shortcuts = mutableListOf<ShortcutInfo>()
-            shortcuts.add(buildAlertShortcut())
-            shortcuts.addAll(buildActionsShortcuts())
+            val shortcuts = mutableListOf<ShortcutInfo>().apply {
+                add(buildAlertShortcut())
+                addAll(buildActionsShortcuts())
+            }
             shortcutManager?.dynamicShortcuts = shortcuts.toList()
         }
     }
@@ -69,12 +72,14 @@ class MyApplication : Application(), LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private suspend fun buildActionsShortcuts(): List<ShortcutInfo> {
         val shortcuts = mutableListOf<ShortcutInfo>()
-
         val actionsList = DbRepository.getInstance().fetchActions()
         val actionMap = actionsList.groupBy { action -> action.category.name }
 
         actionMap.values.forEachIndexed { index, list ->
-            val action = list.random()
+            val action = list.random().also {
+                Timber.d("buildActionsShortcuts: added ${it.message}")
+            }
+
             val id = SHORTCUT_ACTION.plus(index)
             val intent = Intent(this, HomeActivity::class.java)
                     .setAction(ACTION_SHORTCUT_LAUNCH)
@@ -90,15 +95,14 @@ class MyApplication : Application(), LifecycleObserver {
                     .setIntent(intent)
                     .build()
             shortcuts.add(shortcut)
-            Timber.d("buildActionsShortcuts: added ${action.message}")
         }
-        Timber.d("buildActionsShortcuts: size = ${shortcuts.size}")
-        return shortcuts.toList()
+
+        return shortcuts.toList().also { Timber.d("buildActionsShortcuts: size = ${shortcuts.size}") }
     }
 
     /**
      * Build shortcut to send emergency SMS which can be sent by shaking the phone
-     * @return shortcut which will send emergency SMS 
+     * @return shortcut which will send emergency SMS
      */
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private fun buildAlertShortcut(): ShortcutInfo {
@@ -108,7 +112,7 @@ class MyApplication : Application(), LifecycleObserver {
                 .putExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID, id)
                 .putExtra(EXTRA_SHORTCUT_MESSAGE, getString(R.string.shake_msg))
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        
+
         return ShortcutInfo.Builder(this, id)
                 .setShortLabel(getString(R.string.shortcut_alert_short_label))
                 .setLongLabel(getString(R.string.shortcut_alert_long_label))

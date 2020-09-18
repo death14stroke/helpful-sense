@@ -2,7 +2,10 @@ package com.andruid.magic.helpfulsense.ui.fragment
 
 import android.Manifest
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +23,7 @@ import com.andruid.magic.helpfulsense.ui.adapter.ContactAdapter
 import com.andruid.magic.helpfulsense.ui.adapter.SwipeListener
 import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
+import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
 import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
@@ -33,13 +37,12 @@ import splitties.toast.toast
 import timber.log.Timber
 
 @RuntimePermissions
-class ContactsFragment : Fragment(), SwipeListener {
+class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
     companion object {
         private const val MAX_CONTACTS = 5
     }
 
-    private lateinit var binding: FragmentContactsBinding
-
+    private val binding by viewBinding(FragmentContactsBinding::bind)
     private val contactViewModel by viewModels<ContactViewModel>()
     private val contactsAdapter = ContactAdapter(this)
 
@@ -49,23 +52,11 @@ class ContactsFragment : Fragment(), SwipeListener {
         EventBus.getDefault().register(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentContactsBinding.inflate(inflater, container, false)
-        binding.apply {
-            recyclerView.apply {
-                adapter = contactsAdapter
-                itemAnimator = DefaultItemAnimator()
-                addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-                setEmptyViewClickListener { openContactsPickerWithPermissionCheck() }
-            }
-            contactsAdapter.isSwipeEnabled = true
-        }
-        return binding.root
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        contactViewModel.contactLiveData.observe(viewLifecycleOwner) { contacts ->
+        contactViewModel.contactLiveData.observe(owner = viewLifecycleOwner) { contacts ->
             contactsAdapter.setContacts(contacts)
         }
     }
@@ -139,5 +130,16 @@ class ContactsFragment : Fragment(), SwipeListener {
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
     fun showDenied() {
         toast("Permission denied")
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.apply {
+            adapter = contactsAdapter
+            itemAnimator = DefaultItemAnimator()
+            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            setEmptyViewClickListener { openContactsPickerWithPermissionCheck() }
+        }
+
+        contactsAdapter.isSwipeEnabled = true
     }
 }
