@@ -10,29 +10,15 @@ import kotlinx.coroutines.withContext
 /**
  * Repository class for the database [HelpDatabase]
  */
-class DbRepository {
-    companion object {
-        private lateinit var database: HelpDatabase
-        private lateinit var instance: DbRepository
+object DbRepository {
+    private lateinit var database: HelpDatabase
 
-        /**
-         * Create the database and repository instance
-         * @param application current application
-         */
-        fun init(application: Application) {
-            database = HelpDatabase(application.applicationContext)
-            instance = DbRepository()
-        }
-
-        /**
-         * Get static instance of this class
-         * @return static instance of the repository
-         */
-        fun getInstance(): DbRepository {
-            if (!::instance.isInitialized)
-                throw Exception("must call init() first in application class")
-            return instance
-        }
+    /**
+     * Create the database and repository instance
+     * @param application current application
+     */
+    fun init(application: Application) {
+        database = HelpDatabase(application.applicationContext)
     }
 
     /**

@@ -10,12 +10,11 @@ import com.andruid.magic.helpfulsense.databinding.DialogActionBinding
 import com.andruid.magic.helpfulsense.eventbus.ActionEvent
 import com.andruid.magic.helpfulsense.model.Category
 import com.andruid.magic.helpfulsense.ui.adapter.MySpinnerAdapter
+import com.andruid.magic.helpfulsense.ui.util.cancelButton
+import com.andruid.magic.helpfulsense.ui.util.materialAlertDialog
+import com.andruid.magic.helpfulsense.ui.util.okButton
 import com.andruid.magic.helpfulsense.util.getCategoryFromRes
 import org.greenrobot.eventbus.EventBus
-import splitties.alertdialog.appcompat.alertDialog
-import splitties.alertdialog.appcompat.cancelButton
-import splitties.alertdialog.appcompat.okButton
-import splitties.alertdialog.appcompat.title
 import timber.log.Timber
 
 /**
@@ -50,8 +49,8 @@ class ActionDialogFragment : DialogFragment() {
             }
         }
         val header = "${action?.let { "Edit" } ?: "Add"} action"
-        return requireActivity().alertDialog {
-            title = header
+        return requireActivity().materialAlertDialog {
+            setTitle(header)
             setView(binding.root)
             okButton {
                 val message = binding.messageET.text.toString().trim()

@@ -72,7 +72,7 @@ class MyApplication : Application(), LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private suspend fun buildActionsShortcuts(): List<ShortcutInfo> {
         val shortcuts = mutableListOf<ShortcutInfo>()
-        val actionsList = DbRepository.getInstance().fetchActions()
+        val actionsList = DbRepository.fetchActions()
         val actionMap = actionsList.groupBy { action -> action.category.name }
 
         actionMap.values.forEachIndexed { index, list ->

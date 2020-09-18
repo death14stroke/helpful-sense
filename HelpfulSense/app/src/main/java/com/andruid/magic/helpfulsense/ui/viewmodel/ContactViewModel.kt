@@ -9,5 +9,5 @@ import com.andruid.magic.helpfulsense.database.entity.Contact
  * ViewModel for getting all [Contact] as [LiveData]
  */
 class ContactViewModel : ViewModel() {
-    val contactLiveData = DbRepository.getInstance().fetchLiveContacts()
+    val contactLiveData = DbRepository.fetchLiveContacts()
 }

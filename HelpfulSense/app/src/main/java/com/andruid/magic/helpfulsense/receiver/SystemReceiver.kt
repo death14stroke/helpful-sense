@@ -4,13 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.preference.PreferenceManager
+import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.helpfulsense.R
-import com.andruid.magic.helpfulsense.database.DbRepository.Companion.getInstance
+import com.andruid.magic.helpfulsense.database.DbRepository
+import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import com.andruid.magic.helpfulsense.util.areAllPermissionsGranted
 import com.andruid.magic.helpfulsense.util.isFirstTime
-import com.andruid.magic.helpfulsense.database.entity.toPhoneNumbers
-import com.andruid.magic.eezetensions.startFgOrBgService
 import com.andruid.magic.locationsms.data.ACTION_START_SERVICE
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
@@ -28,7 +28,7 @@ class SystemReceiver : BroadcastReceiver() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 Timber.i("onReceive: boot start receiver")
                 GlobalScope.launch {
-                    val phoneNumbers = getInstance().fetchContacts().toPhoneNumbers()
+                    val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
                     val i = Intent(context, SmsService::class.java)
                             .setAction(ACTION_START_SERVICE)
                             .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
@@ -42,7 +42,7 @@ class SystemReceiver : BroadcastReceiver() {
                         .getBoolean(context.getString(R.string.pref_low_battery), false)
                 if (send && !context.isFirstTime()) {
                     GlobalScope.launch {
-                        val phoneNumbers = getInstance().fetchContacts().toPhoneNumbers()
+                        val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
                         val className = HomeActivity::class.java.name
                         val i = context.buildServiceSmsIntent(context.getString(R.string.low_battery_message), phoneNumbers, className, R.mipmap.ic_launcher)
                         context.startFgOrBgService(i)

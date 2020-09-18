@@ -100,7 +100,7 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
         actionAdapter.getItem(position)?.action?.let { action ->
             when (direction) {
                 ItemTouchHelper.LEFT, ItemTouchHelper.START ->
-                    lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().delete(action) }
+                    lifecycleScope.launch(Dispatchers.IO) { DbRepository.delete(action) }
                 else -> {
                     val navController = findNavController()
                     navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_EDIT, action))
@@ -112,7 +112,7 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
     override fun onMove(fromPosition: Int, toPosition: Int) {
         val actions = actionAdapter.currentItems.map { actionHolder -> actionHolder.action }
         lifecycleScope.launch(Dispatchers.IO) {
-            DbRepository.getInstance().insertAllActions(actions)
+            DbRepository.insertAllActions(actions)
         }
     }
 
@@ -123,7 +123,7 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
             when (actionEvent.command) {
                 ACTION_ADD, ACTION_EDIT -> lifecycleScope.launch(Dispatchers.IO) {
                     Timber.tag("actionLog").d("action event: add/edit for ${it.message}")
-                    DbRepository.getInstance().insert(it)
+                    DbRepository.insert(it)
                 }
                 ACTION_DIALOG_CANCEL -> actionAdapter.notifyDataSetChanged()
                 ACTION_SMS -> sendSMSWithPermissionCheck(it)
@@ -140,7 +140,7 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
             Manifest.permission.READ_PHONE_STATE)
     fun sendSMS(action: Action) {
         lifecycleScope.launch {
-            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
             val intent = requireContext().buildServiceSmsIntent(action.message, phoneNumbers,
                     HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)

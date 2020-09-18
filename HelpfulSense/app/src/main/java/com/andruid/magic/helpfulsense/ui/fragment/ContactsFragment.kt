@@ -87,7 +87,7 @@ class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
     override fun onSwipe(position: Int, direction: Int) {
         Timber.d("onSwipe: $position")
         contactsAdapter.getItem(position)?.contact?.let { contact ->
-            lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().delete(contact) }
+            lifecycleScope.launch(Dispatchers.IO) { DbRepository.delete(contact) }
         }
     }
 
@@ -96,7 +96,7 @@ class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onContactsEvent(contactsEvent: ContactsEvent) {
         val contacts = contactsEvent.results
-        lifecycleScope.launch(Dispatchers.IO) { DbRepository.getInstance().insertAllContacts(contacts) }
+        lifecycleScope.launch(Dispatchers.IO) { DbRepository.insertAllContacts(contacts) }
     }
 
     /**
@@ -105,7 +105,7 @@ class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     fun openContactsPicker() {
         lifecycleScope.launch {
-            val contacts = DbRepository.getInstance().fetchContacts()
+            val contacts = DbRepository.fetchContacts()
             MultiContactPicker.Builder(requireActivity())
                     .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
                             android.R.anim.fade_in, android.R.anim.fade_out)

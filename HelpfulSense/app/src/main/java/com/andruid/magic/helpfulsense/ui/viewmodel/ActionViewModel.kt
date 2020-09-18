@@ -9,5 +9,5 @@ import com.andruid.magic.helpfulsense.database.entity.Action
  * ViewModel for getting all [Action] as [LiveData]
  */
 class ActionViewModel : ViewModel() {
-    val actionLiveData = DbRepository.getInstance().fetchLiveActions()
+    val actionLiveData = DbRepository.fetchLiveActions()
 }

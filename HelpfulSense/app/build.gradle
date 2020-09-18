@@ -10,6 +10,7 @@ apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion 30
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.andruid.magic.helpfulsense"
         minSdkVersion 23
@@ -77,14 +78,12 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.ashokvarma.android:bottom-navigation-bar:2.2.0'
     implementation 'com.github.pavlospt:roundedletterview:1.3'
-    implementation 'com.github.AppIntro:AppIntro:5.1.0'
+    implementation 'com.github.AppIntro:AppIntro:6.0.0'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation "org.permissionsdispatcher:permissionsdispatcher:$permissions"
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:$permissions"
-
-    implementation "com.louiscad.splitties:splitties-alertdialog-appcompat:$splitties_version"
     implementation "com.louiscad.splitties:splitties-toast:$splitties_version"
     implementation "com.louiscad.splitties:splitties-systemservices:$splitties_version"
 

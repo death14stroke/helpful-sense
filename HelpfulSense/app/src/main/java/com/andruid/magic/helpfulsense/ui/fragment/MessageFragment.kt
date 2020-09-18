@@ -70,7 +70,7 @@ class MessageFragment : Fragment(R.layout.fragment_message) {
     fun sendSMS() {
         lifecycleScope.launch {
             val message = binding.messageET.text.toString().trim { it <= ' ' }
-            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
             val intent = requireContext().buildServiceSmsIntent(message, phoneNumbers,
                     HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)

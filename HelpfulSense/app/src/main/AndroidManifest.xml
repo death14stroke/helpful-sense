@@ -15,26 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".ui.activity.HomeActivity"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.activity.SplashActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.activity.IntroActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/FullScreenTheme" />
-
         <receiver android:name=".widget.AlertWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -44,11 +24,35 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/alert_widget_info" />
         </receiver>
+
         <receiver android:name=".receiver.SystemReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BATTERY_LOW" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.IntroActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

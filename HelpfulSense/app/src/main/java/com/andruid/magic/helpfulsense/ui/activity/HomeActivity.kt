@@ -99,7 +99,7 @@ class HomeActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_FINE_LOCATION)
     fun startSensorService() {
         lifecycleScope.launch {
-            val phoneNumbers = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
             val intent = Intent(this@HomeActivity, SmsService::class.java)
                     .setAction(ACTION_START_SERVICE)
                     .putExtra(EXTRA_CLASS, this@HomeActivity::class.java.name)
@@ -132,7 +132,7 @@ class HomeActivity : AppCompatActivity() {
     private fun handleShortcutLaunch() {
         val message = intent.getStringExtra(EXTRA_SHORTCUT_MESSAGE) ?: getString(R.string.shake_msg)
         lifecycleScope.launch {
-            val contacts = DbRepository.getInstance().fetchContacts().toPhoneNumbers()
+            val contacts = DbRepository.fetchContacts().toPhoneNumbers()
             val intent = buildServiceSmsIntent(message, contacts,
                     this@HomeActivity::class.java.name, R.mipmap.ic_launcher)
             startFgOrBgService(intent)

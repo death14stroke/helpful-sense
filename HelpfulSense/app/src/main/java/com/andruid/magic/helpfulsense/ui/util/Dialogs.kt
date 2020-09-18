@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.andruid.magic.helpfulsense.R
 import com.andruid.magic.eezetensions.buildSettingsIntent
+import com.andruid.magic.helpfulsense.R
 import permissions.dispatcher.PermissionRequest
-import splitties.alertdialog.appcompat.*
 
 /**
  * Dialog to guide user to app settings to grant all permissions
@@ -16,11 +15,9 @@ import splitties.alertdialog.appcompat.*
  * @receiver context of the calling component
  */
 fun Context.buildSettingsDialog(@StringRes msgRes: Int): AlertDialog {
-    return alertDialog {
-        messageResource = msgRes
-        positiveButton(R.string.settings) {
-            startActivity(buildSettingsIntent())
-        }
+    return materialAlertDialog {
+        setMessage(msgRes)
+        positiveButton(R.string.settings) { startActivity(buildSettingsIntent()) }
         cancelButton()
     }
 }
@@ -40,8 +37,8 @@ fun Fragment.buildSettingsDialog(@StringRes msgRes: Int) = requireContext().buil
  * @receiver context of the calling component
  */
 fun Context.buildInfoDialog(@StringRes msgRes: Int, request: PermissionRequest): AlertDialog {
-    return alertDialog {
-        messageResource = msgRes
+    return materialAlertDialog {
+        setMessage(msgRes)
         okButton { request.proceed() }
         cancelButton { request.cancel() }
     }
