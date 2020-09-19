@@ -23,8 +23,8 @@ import com.andruid.magic.helpfulsense.util.getSimCards
 import com.andruid.magic.locationsms.util.getSelectedSimSlot
 import com.andruid.magic.locationsms.util.getShakeStopTime
 import com.andruid.magic.locationsms.util.getShakeThreshold
+import com.andruid.magic.locationsms.util.toast
 import permissions.dispatcher.*
-import splitties.toast.toast
 
 /**
  * Fragment to change settings

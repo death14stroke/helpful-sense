@@ -24,6 +24,7 @@ import com.andruid.magic.helpfulsense.ui.util.buildInfoDialog
 import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
+import com.andruid.magic.locationsms.util.toast
 import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.*
-import splitties.toast.toast
 import timber.log.Timber
 
 @RuntimePermissions

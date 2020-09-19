@@ -3,7 +3,10 @@ package com.andruid.magic.locationsms.util
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 
 /**
  * Check if the [Manifest.permission.ACCESS_FINE_LOCATION] permission is granted
@@ -33,4 +36,16 @@ fun Context.checkSmsPermission(): Boolean {
 fun Context.checkPhoneStatePermission(): Boolean {
     return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ==
             PackageManager.PERMISSION_GRANTED
+}
+
+fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Fragment.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    requireContext().toast(message, duration)
+}
+
+fun Context.toast(@StringRes messageRes: Int, duration: Int = Toast.LENGTH_SHORT) {
+    toast(getString(messageRes), duration)
 }

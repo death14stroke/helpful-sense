@@ -22,13 +22,13 @@ import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import com.andruid.magic.locationsms.util.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import permissions.dispatcher.*
-import splitties.toast.toast
 
 /**
  * Fragment to send custom alert message with location

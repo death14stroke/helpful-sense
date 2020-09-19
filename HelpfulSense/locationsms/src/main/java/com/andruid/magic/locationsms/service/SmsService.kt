@@ -27,7 +27,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import splitties.systemservices.locationManager
 import splitties.systemservices.notificationManager
-import splitties.toast.toast
 import timber.log.Timber
 
 /**

@@ -31,6 +31,7 @@ import com.andruid.magic.locationsms.data.EXTRA_ICON_RES
 import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import com.andruid.magic.locationsms.util.toast
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -40,7 +41,6 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import permissions.dispatcher.*
 import splitties.systemservices.shortcutManager
-import splitties.toast.toast
 
 /**
  * Home page activity of the application

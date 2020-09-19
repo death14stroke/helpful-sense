@@ -33,6 +33,7 @@ import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import com.andruid.magic.locationsms.util.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -42,7 +43,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import permissions.dispatcher.*
-import splitties.toast.toast
 import timber.log.Timber
 
 /**

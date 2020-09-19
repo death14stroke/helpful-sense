@@ -42,7 +42,6 @@ ext {
             appIntro           : "com.github.AppIntro:AppIntro:6.0.0",
             flexibleAdapter    : "eu.davidea:flexible-adapter:5.1.0",
             flexibleAdapter_ui : "eu.davidea:flexible-adapter-ui:1.0.0",
-            toastKtx           : "com.louiscad.splitties:splitties-toast:$splitties_version",
             systemServicesKtx  : "com.louiscad.splitties:splitties-systemservices:$splitties_version",
             permissions        : "org.permissionsdispatcher:permissionsdispatcher:$permissions_version",
             permission_kapt    : "org.permissionsdispatcher:permissionsdispatcher-processor:$permissions_version",
@@ -80,7 +79,6 @@ ext {
             appIntro           : "$dependencies.appIntro",
             flexibleAdapter    : "$dependencies.flexibleAdapter",
             flexibleAdapter_ui : "$dependencies.flexibleAdapter_ui",
-            toastKtx           : "$dependencies.toastKtx",
             systemServicesKtx  : "$dependencies.systemServicesKtx",
             permissions        : "$dependencies.permissions",
 
@@ -102,7 +100,6 @@ ext {
 
             timber           : "${dependencies.timber}",
             sensey           : "${dependencies.sensey}",
-            toastKtx         : "$dependencies.toastKtx",
             systemServicesKtx: "$dependencies.systemServicesKtx",
 
             eezetensions     : "${dependencies.eezetensions}"
