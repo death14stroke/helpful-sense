@@ -32,6 +32,10 @@ import com.andruid.magic.locationsms.data.EXTRA_PHONE_NUMBERS
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import com.wafflecopter.multicontactpicker.MultiContactPicker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import permissions.dispatcher.*
@@ -99,13 +103,14 @@ class HomeActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_FINE_LOCATION)
     fun startSensorService() {
         lifecycleScope.launch {
-            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
-            val intent = Intent(this@HomeActivity, SmsService::class.java)
-                    .setAction(ACTION_START_SERVICE)
-                    .putExtra(EXTRA_CLASS, this@HomeActivity::class.java.name)
-                    .putExtra(EXTRA_ICON_RES, R.mipmap.ic_launcher)
-                    .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
-            startFgOrBgService(intent)
+            DbRepository.fetchAllContacts().collect { phoneNumbers ->
+                val intent = Intent(this@HomeActivity, SmsService::class.java)
+                        .setAction(ACTION_START_SERVICE)
+                        .putExtra(EXTRA_CLASS, this@HomeActivity::class.java.name)
+                        .putExtra(EXTRA_ICON_RES, R.mipmap.ic_launcher)
+                        .putExtra(EXTRA_PHONE_NUMBERS, arrayOf(*phoneNumbers.toTypedArray()))
+                startFgOrBgService(intent)
+            }
         }
     }
 
@@ -132,10 +137,14 @@ class HomeActivity : AppCompatActivity() {
     private fun handleShortcutLaunch() {
         val message = intent.getStringExtra(EXTRA_SHORTCUT_MESSAGE) ?: getString(R.string.shake_msg)
         lifecycleScope.launch {
-            val contacts = DbRepository.fetchContacts().toPhoneNumbers()
-            val intent = buildServiceSmsIntent(message, contacts,
-                    this@HomeActivity::class.java.name, R.mipmap.ic_launcher)
-            startFgOrBgService(intent)
+            DbRepository.fetchAllContacts()
+                    .map { contacts -> contacts.toPhoneNumbers() }
+                    .flowOn(Dispatchers.Default)
+                    .collect { contacts ->
+                        val intent = buildServiceSmsIntent(message, contacts,
+                                this@HomeActivity::class.java.name, R.mipmap.ic_launcher)
+                        startFgOrBgService(intent)
+                    }
         }
         val id = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
         shortcutManager?.reportShortcutUsed(id)

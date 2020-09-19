@@ -22,6 +22,10 @@ import com.andruid.magic.helpfulsense.ui.util.buildSettingsDialog
 import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.locationsms.service.SmsService
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import permissions.dispatcher.*
 import splitties.toast.toast
@@ -70,10 +74,14 @@ class MessageFragment : Fragment(R.layout.fragment_message) {
     fun sendSMS() {
         lifecycleScope.launch {
             val message = binding.messageET.text.toString().trim { it <= ' ' }
-            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
-            val intent = requireContext().buildServiceSmsIntent(message, phoneNumbers,
-                    HomeActivity::class.java.name, R.mipmap.ic_launcher)
-            startFgOrBgService(intent)
+            DbRepository.fetchAllContacts()
+                    .map { contacts -> contacts.toPhoneNumbers() }
+                    .flowOn(Dispatchers.Default)
+                    .collect { phoneNumbers ->
+                        val intent = requireContext().buildServiceSmsIntent(message, phoneNumbers,
+                                HomeActivity::class.java.name, R.mipmap.ic_launcher)
+                        startFgOrBgService(intent)
+                    }
         }
     }
 

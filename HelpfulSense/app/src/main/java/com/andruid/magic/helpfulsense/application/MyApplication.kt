@@ -20,6 +20,7 @@ import com.andruid.magic.helpfulsense.data.SHORTCUT_ALERT
 import com.andruid.magic.helpfulsense.database.DbRepository
 import com.andruid.magic.helpfulsense.ui.activity.HomeActivity
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import splitties.systemservices.shortcutManager
 import timber.log.Timber
@@ -72,30 +73,31 @@ class MyApplication : Application(), LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private suspend fun buildActionsShortcuts(): List<ShortcutInfo> {
         val shortcuts = mutableListOf<ShortcutInfo>()
-        val actionsList = DbRepository.fetchActions()
-        val actionMap = actionsList.groupBy { action -> action.category.name }
+        DbRepository.fetchAllActions()
+                .collect { actionsList ->
+                    val actionMap = actionsList.groupBy { action -> action.category.name }
+                    actionMap.values.forEachIndexed { index, list ->
+                        val action = list.random().also {
+                            Timber.d("buildActionsShortcuts: added ${it.message}")
+                        }
 
-        actionMap.values.forEachIndexed { index, list ->
-            val action = list.random().also {
-                Timber.d("buildActionsShortcuts: added ${it.message}")
-            }
+                        val id = SHORTCUT_ACTION.plus(index)
+                        val intent = Intent(this, HomeActivity::class.java)
+                                .setAction(ACTION_SHORTCUT_LAUNCH)
+                                .putExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID, id)
+                                .putExtra(EXTRA_SHORTCUT_MESSAGE, action.message)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
-            val id = SHORTCUT_ACTION.plus(index)
-            val intent = Intent(this, HomeActivity::class.java)
-                    .setAction(ACTION_SHORTCUT_LAUNCH)
-                    .putExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID, id)
-                    .putExtra(EXTRA_SHORTCUT_MESSAGE, action.message)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
-            val shortcut = ShortcutInfo.Builder(this, id)
-                    .setShortLabel(action.category.name)
-                    .setLongLabel(action.message)
-                    .setDisabledMessage(getString(R.string.action_disabled_message))
-                    .setIcon(Icon.createWithResource(this, action.category.icon))
-                    .setIntent(intent)
-                    .build()
-            shortcuts.add(shortcut)
-        }
+                        val shortcut = ShortcutInfo.Builder(this, id)
+                                .setShortLabel(action.category.name)
+                                .setLongLabel(action.message)
+                                .setDisabledMessage(getString(R.string.action_disabled_message))
+                                .setIcon(Icon.createWithResource(this, action.category.icon))
+                                .setIntent(intent)
+                                .build()
+                        shortcuts.add(shortcut)
+                    }
+                }
 
         return shortcuts.toList().also { Timber.d("buildActionsShortcuts: size = ${shortcuts.size}") }
     }

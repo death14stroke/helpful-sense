@@ -12,7 +12,7 @@ import com.andruid.magic.helpfulsense.ui.fragment
         .ActionDialogFragment
 
 /**
- * Adapter for showimg dialog with list of categories [ActionDialogFragment]
+ * Adapter for showing dialog with list of categories [ActionDialogFragment]
  * @property categories list of all categories
  */
 class MySpinnerAdapter(val categories: List<Category>) : BaseAdapter() {

@@ -9,7 +9,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -28,6 +27,8 @@ import com.andruid.magic.helpfulsense.ui.viewmodel.ContactViewModel
 import com.wafflecopter.multicontactpicker.LimitColumn
 import com.wafflecopter.multicontactpicker.MultiContactPicker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -56,7 +57,7 @@ class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
 
-        contactViewModel.contactLiveData.observe(owner = viewLifecycleOwner) { contacts ->
+        contactViewModel.contactLiveData.observe(viewLifecycleOwner) { contacts ->
             contactsAdapter.setContacts(contacts)
         }
     }
@@ -105,15 +106,18 @@ class ContactsFragment : Fragment(R.layout.fragment_contacts), SwipeListener {
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     fun openContactsPicker() {
         lifecycleScope.launch {
-            val contacts = DbRepository.fetchContacts()
-            MultiContactPicker.Builder(requireActivity())
-                    .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                            android.R.anim.fade_in, android.R.anim.fade_out)
-                    .limitToColumn(LimitColumn.PHONE)
-                    .showTrack(true)
-                    .setSelectedContacts(*contacts.map { contact -> contact.contactID }.toTypedArray())
-                    .setSelectionLimit(MAX_CONTACTS)
-                    .showPickerForResult(CONTACTS_PICKER_REQUEST)
+            DbRepository.fetchAllContacts()
+                    .map { contacts -> contacts.map { contact -> contact.contactID }.toTypedArray() }
+                    .collect { contacts ->
+                        MultiContactPicker.Builder(requireActivity())
+                                .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                                        android.R.anim.fade_in, android.R.anim.fade_out)
+                                .limitToColumn(LimitColumn.PHONE)
+                                .showTrack(true)
+                                .setSelectedContacts(*contacts)
+                                .setSelectionLimit(MAX_CONTACTS)
+                                .showPickerForResult(CONTACTS_PICKER_REQUEST)
+                    }
         }
     }
 

@@ -1,8 +1,8 @@
 package com.andruid.magic.helpfulsense.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.andruid.magic.helpfulsense.database.entity.Action
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Dao for [Action] entity
@@ -14,26 +14,19 @@ interface ActionDao {
      * @param actions to be added/updated
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg actions: Action)
+    suspend fun insert(vararg actions: Action)
 
     /**
-     * Query to fetch all actions as [LiveData]
-     * @return liveData of list of actions
+     * Query to fetch all actions as [Flow]
+     * @return flow of list of actions
      */
     @Query("SELECT * FROM actions")
-    fun getLiveActions(): LiveData<List<Action>>
-
-    /**
-     * Query to fetch all actions
-     * @return list of actions
-     */
-    @Query("SELECT * FROM actions")
-    fun getAllActions(): List<Action>
+    fun getAllActions(): Flow<List<Action>>
 
     /**
      * Query to delete action(s)
      * @param actions to be deleted
      */
     @Delete
-    fun delete(vararg actions: Action)
+    suspend fun delete(vararg actions: Action)
 }

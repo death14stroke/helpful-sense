@@ -10,7 +10,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -35,6 +34,9 @@ import com.andruid.magic.helpfulsense.ui.viewbinding.viewBinding
 import com.andruid.magic.helpfulsense.ui.viewmodel.ActionViewModel
 import com.andruid.magic.locationsms.util.buildServiceSmsIntent
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -65,7 +67,7 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
 
-        actionViewModel.actionLiveData.observe(owner = viewLifecycleOwner) { actions ->
+        actionViewModel.actionLiveData.observe(viewLifecycleOwner) { actions ->
             actionAdapter.setActions(actions)
         }
     }
@@ -140,10 +142,14 @@ class AlertFragment : Fragment(R.layout.fragment_alert), SwipeListener {
             Manifest.permission.READ_PHONE_STATE)
     fun sendSMS(action: Action) {
         lifecycleScope.launch {
-            val phoneNumbers = DbRepository.fetchContacts().toPhoneNumbers()
-            val intent = requireContext().buildServiceSmsIntent(action.message, phoneNumbers,
-                    HomeActivity::class.java.name, R.mipmap.ic_launcher)
-            startFgOrBgService(intent)
+            DbRepository.fetchAllContacts()
+                    .flowOn(Dispatchers.Default)
+                    .map { contacts -> contacts.toPhoneNumbers() }
+                    .collect { phoneNumbers ->
+                        val intent = requireContext().buildServiceSmsIntent(action.message, phoneNumbers,
+                                HomeActivity::class.java.name, R.mipmap.ic_launcher)
+                        startFgOrBgService(intent)
+                    }
         }
     }
 

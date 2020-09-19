@@ -1,8 +1,8 @@
 package com.andruid.magic.helpfulsense.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.andruid.magic.helpfulsense.database.entity.Contact
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Dao for [Contact] entity
@@ -14,26 +14,19 @@ interface ContactDao {
      * @param contacts to be added/updated
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg contacts: Contact)
+    suspend fun insert(vararg contacts: Contact)
 
     /**
-     * Query to fetch all contacts as [LiveData]
-     * @return liveData of list of contacts
+     * Query to fetch all contacts as [Flow]
+     * @return flow of list of contacts
      */
     @Query("SELECT * FROM contacts")
-    fun getLiveContacts(): LiveData<List<Contact>>
-
-    /**
-     * Query to fetch all contacts
-     * @return list of contacts
-     */
-    @Query("SELECT * FROM contacts")
-    fun getAllContacts(): List<Contact>
+    fun getAllContacts(): Flow<List<Contact>>
 
     /**
      * Query to delete contact(s)
      * @param contacts to be deleted
      */
     @Delete
-    fun delete(vararg contacts: Contact)
+    suspend fun delete(vararg contacts: Contact)
 }
