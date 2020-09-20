@@ -18,5 +18,6 @@ data class Action(
         @PrimaryKey(autoGenerate = true)
         var id: Long = 0,
         val message: String,
-        val category: Category
+        val category: Category,
+        val order: Int = 0
 ) : Parcelable

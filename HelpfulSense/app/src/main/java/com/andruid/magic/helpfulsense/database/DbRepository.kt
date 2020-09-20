@@ -26,8 +26,11 @@ object DbRepository {
      * Helper to insert/update action in the database
      * @param action to be added/updated
      */
-    suspend fun insert(action: Action) {
-        database.actionDao().insert(action)
+    suspend fun insert(action: Action, update: Boolean = false) {
+        if (update)
+            database.actionDao().insert(action)
+        else
+            database.actionDao().insert(action.copy(order = getActionsCount() + 1))
     }
 
     /**
@@ -84,4 +87,6 @@ object DbRepository {
      * @return list of contacts
      */
     fun fetchAllContacts() = database.contactDao().getAllContacts()
+
+    suspend fun getActionsCount() = database.actionDao().count()
 }

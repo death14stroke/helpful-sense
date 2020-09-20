@@ -13,13 +13,14 @@ import eu.davidea.flexibleadapter.items.IFlexible
 /**
  * Holder class for creating swipeable and draggable views for [ActionAdapter]
  * @property action data for the view
- */
+ *//*
+
 data class ActionHolder(
         val action: Action
 ) : AbstractFlexibleItem<ActionViewHolder>() {
     override fun bindViewHolder(adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
                                 holder: ActionViewHolder?, position: Int, payloads: MutableList<Any>?) {
-        holder?.bind((adapter?.getItem(position) as ActionHolder).action)
+        holder?.bind((adapter?.getItem(position) as ActionHolder).action, dra)
     }
 
     override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?) =
@@ -28,9 +29,11 @@ data class ActionHolder(
     override fun getLayoutRes() = R.layout.layout_action
 }
 
+*/
 /**
  * Extension function to convert [Action] object to [ActionHolder] for recycler view
  * @receiver action object
  * @return actionHolder object
- */
-fun Action.toActionHolder() = ActionHolder(this)
+ *//*
+
+fun Action.toActionHolder() = ActionHolder(this)*/

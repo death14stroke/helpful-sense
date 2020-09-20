@@ -20,20 +20,6 @@
         app:cardCornerRadius="7dp"
         app:cardElevation="6dp">
 
-        <include
-            android:id="@+id/rear_left_layout"
-            layout="@layout/layout_swipe_edit_left"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:visibility="gone" />
-
-        <include
-            android:id="@+id/rear_right_layout"
-            layout="@layout/layout_swipe_delete_right"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:visibility="gone" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/frontView"
             android:layout_width="match_parent"
@@ -42,7 +28,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/actionTV"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="7dp"
                 android:drawablePadding="10dp"
@@ -54,7 +40,6 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sendBtn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Help" />
@@ -66,8 +51,16 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:src="@android:drawable/ic_menu_send"
+                app:layout_constraintEnd_toStartOf="@id/dragHandleView" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/dragHandleView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_agenda"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/actionTV" />
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 </layout>

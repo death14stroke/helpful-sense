@@ -20,7 +20,7 @@ interface ActionDao {
      * Query to fetch all actions as [Flow]
      * @return flow of list of actions
      */
-    @Query("SELECT * FROM actions")
+    @Query("SELECT * FROM actions ORDER BY `order` ASC")
     fun getAllActions(): Flow<List<Action>>
 
     /**
@@ -29,4 +29,7 @@ interface ActionDao {
      */
     @Delete
     suspend fun delete(vararg actions: Action)
+
+    @Query("SELECT COUNT(*) FROM actions")
+    suspend fun count(): Int
 }
