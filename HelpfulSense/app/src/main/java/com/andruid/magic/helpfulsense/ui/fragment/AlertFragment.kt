@@ -56,14 +56,17 @@ import timber.log.Timber
 class AlertFragment : Fragment(R.layout.fragment_alert), DragCallback.StartDragListener {
     private val binding by viewBinding(FragmentAlertBinding::bind)
     private val touchHelper by lazy {
-        val callback = DragCallback(actionAdapter, false)
+        val callback = DragCallback(requireContext(), actionAdapter, false)
         ItemTouchHelper(callback)
     }
     private val actionAdapter by lazy {
-        ActionAdapter(this) { fromPosition, toPosition ->
+        ActionAdapter(this, { fromPosition, toPosition ->
             lifecycleScope.launch { updateOrder(fromPosition, toPosition) }
+        }) { position, direction ->
+            handleSwipe(position, direction)
         }
     }
+
     private val actionViewModel by viewModels<ActionViewModel>()
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
@@ -221,6 +224,20 @@ class AlertFragment : Fragment(R.layout.fragment_alert), DragCallback.StartDragL
             for (i in fromPos downTo toPos) {
                 val action = actions[i]
                 DbRepository.insert(action.copy(order = i), true)
+            }
+        }
+    }
+
+    private fun handleSwipe(position: Int, direction: Int) {
+        actionAdapter.getItemAtPosition(position)?.let { action ->
+            when (direction) {
+                ItemTouchHelper.LEFT, ItemTouchHelper.START ->
+                    lifecycleScope.launch(Dispatchers.IO) { DbRepository.delete(action) }
+                else -> {
+                    actionAdapter.notifyItemChanged(position)
+                    val navController = findNavController()
+                    navController.navigate(AlertFragmentDirections.actionAlertFragmentToMenuAddAction(ACTION_EDIT, action))
+                }
             }
         }
     }

@@ -19,7 +19,8 @@ private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Action>() {
 
 class ActionAdapter(
         private val dragListener: DragCallback.StartDragListener,
-        private val onDragComplete: (fromPosition: Int, toPosition: Int) -> Unit
+        private val onDragComplete: (fromPosition: Int, toPosition: Int) -> Unit,
+        private val onSwiped: (position: Int, direction: Int) -> Unit
 ) : ListAdapter<Action, ActionViewHolder>(DIFF_CALLBACK), DragCallback.IDragDropContract {
     private var showHandle = false
 
@@ -53,6 +54,10 @@ class ActionAdapter(
         onDragComplete.invoke(fromPosition, toPosition)
     }
 
+    override fun onSwiped(position: Int, direction: Int) {
+        onSwiped.invoke(position, direction)
+    }
+
     fun showDragHandles() {
         showHandle = true
         notifyItemRangeChanged(0, currentList.size)
@@ -62,4 +67,6 @@ class ActionAdapter(
         showHandle = false
         notifyItemRangeChanged(0, currentList.size)
     }
+
+    fun getItemAtPosition(position: Int): Action? = getItem(position)
 }
